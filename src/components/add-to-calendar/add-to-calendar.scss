@@ -1,0 +1,43 @@
+@use '../design-tokens';
+
+.add-to-calendar {
+  display: inline-block;
+  position: relative;
+  margin-bottom: 1rem;
+  width: 100%;
+
+  button {
+    display: block;
+    width: 100%;
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  > button {
+    margin-top: 1rem;
+  }
+
+  .atc-drawer {
+    overflow: hidden;
+    max-height: 0;
+    box-sizing: border-box;
+    transition-property: max-height, padding-top, padding-bottom;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-in-out;
+    background-color: var(--color-ui-panel);
+    padding: 0 1rem;
+
+    button {
+      margin-bottom: 0.125rem;
+    }
+
+    &.active {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      max-height: 12rem;
+      box-shadow: 2px 2px 4px inset rgba(0, 0, 0, 0.1);
+    }
+  }
+}

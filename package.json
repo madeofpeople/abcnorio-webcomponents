@@ -1,0 +1,64 @@
+{
+  "name": "abcnorio-webcomponents",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist",
+    "src/components"
+  ],
+  "exports": {
+    "./add-to-calendar": "./src/components/add-to-calendar/add-to-calendar.astro",
+    "./add-to-calendar/element": "./src/components/add-to-calendar/add-to-calendar.js",
+    "./event-listing": "./src/components/event-listing/event-listing.astro",
+    "./event-listing/element": "./src/components/event-listing/event-listing.js",
+    "./event-teaser": "./src/components/event-teaser/event-teaser.astro",
+    "./event-teaser/element": "./src/components/event-teaser/event-teaser.js",
+    "./event-teaser/payload": "./src/components/event-teaser/event-teaser-payload.js",
+    "./wp-blocks/paragraph": "./src/components/wp-blocks/paragraph/paragraph.astro",
+    "./wp-blocks/heading": "./src/components/wp-blocks/heading/heading.astro",
+    "./wp-blocks/image": "./src/components/wp-blocks/image/image.astro",
+    "./wp-blocks/quote": "./src/components/wp-blocks/quote/quote.astro",
+    "./wp-blocks/list": "./src/components/wp-blocks/list/list.astro",
+    "./wp-blocks/list-item": "./src/components/wp-blocks/list-item/list-item.astro",
+    "./wp-blocks/gallery": "./src/components/wp-blocks/gallery/gallery.astro",
+    "./wp-blocks/youtube": "./src/components/wp-blocks/youtube/youtube.astro",
+    "./wp-blocks/matterport": "./src/components/wp-blocks/matterport/matterport.astro",
+    "./wp-blocks/buttons": "./src/components/wp-blocks/buttons/buttons.astro",
+    "./wp-blocks/group": "./src/components/wp-blocks/group/group.astro",
+    "./user-card": "./src/components/user-card/user-card.astro",
+    "./user-card/element": "./src/components/user-card/user-card.js",
+    "./styles/*": "./dist/styles/*"
+  },
+  "workspaces": [
+    "demo",
+    "src/components/*"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev --root demo",
+    "dev:demo": "astro dev --root demo",
+    "docker-dev": "astro dev --root demo --host 0.0.0.0 --port 3033",
+    "build": "npm run build:lib && npm run build:demo",
+    "build:lib": "astro build && node src/util/generate-fixtures-registry.js",
+    "build:demo": "astro build --root demo",
+    "check": "astro check && astro check --root demo"
+  },
+  "dependencies": {
+    "@astro-community/astro-embed-youtube": "^0.5.10",
+    "@astrojs/check": "^0.9.9",
+    "astro": "^6.4.0",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "astro-stargazer": "^1.5.45",
+    "sass-embedded": "^1.100.0"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.5.6": true,
+    "esbuild@0.27.7": true,
+    "sharp@0.34.5": true
+  }
+}

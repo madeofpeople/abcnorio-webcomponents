@@ -1,0 +1,16 @@
+---
+const { attributes } = Astro.props;
+---
+<iframe
+  src={attributes.url}
+  responsive="true"
+  allowfullscreen
+  allow="autoplay; fullscreen; web-share; xr-spatial-tracking;"
+></iframe>
+<style>
+  iframe {
+    border: none;
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+</style>

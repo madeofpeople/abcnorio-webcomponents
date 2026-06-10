@@ -1,0 +1,55 @@
+---
+import EventListing from '../../event-listing/event-listing.astro';
+
+const {
+  attributes = {},
+  restPath = '',
+  hrefBase = '/events',
+  timezone = 'America/New_York',
+} = Astro.props;
+
+const itemCount = Math.max(1, Number.parseInt(String(attributes?.itemCount ?? 6), 10) || 6);
+const sortOrder = String(attributes?.order || 'desc').toLowerCase() === 'asc' ? 'asc' : 'desc';
+const dateFilter = String(attributes?.dateFilter || 'upcoming').toLowerCase();
+
+const now = new Date().toLocaleString('sv', { timeZone: timezone });
+const startOfToday = `${now.slice(0, 10)} 00:00:00`;
+
+const params = new URLSearchParams({
+  per_page: String(itemCount),
+  orderby: 'event_start_date',
+  order: sortOrder,
+  _embed: 'wp:featuredmedia',
+});
+
+if (dateFilter === 'upcoming') {
+  params.set('event_effective_end_after', startOfToday);
+} else if (dateFilter === 'past') {
+  params.set('event_start_before', now);
+}
+
+const eventType = String(attributes?.eventType || '').trim();
+if (eventType !== '') {
+  // Keep raw slug contract from block payload. API support can evolve independently.
+  params.set('event_type', eventType);
+}
+
+const collectiveAssociation = String(attributes?.collectiveAssociation || '').trim();
+if (collectiveAssociation !== '') {
+  params.set('collective_association', collectiveAssociation);
+}
+
+const endpoint = restPath ? `${restPath}events?${params.toString()}` : '';
+const response = endpoint ? await fetch(endpoint).catch(() => null) : null;
+
+const items = response?.ok ? await response.json() : [];
+const totalResults = Number.parseInt(response?.headers?.get('X-WP-Total') || String(items.length), 10) || items.length;
+const totalPages = Number.parseInt(response?.headers?.get('X-WP-TotalPages') || '1', 10) || 1;
+---
+<EventListing
+  items={items}
+  page={1}
+  totalResults={totalResults}
+  totalPages={totalPages}
+  hrefBase={hrefBase}
+/>

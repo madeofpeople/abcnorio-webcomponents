@@ -1,0 +1,97 @@
+---
+import EventTeaser from '../event-teaser/event-teaser.astro';
+import Pagination from '../pagination/pagination.astro';
+import { buildEventTeaserPayload } from '../event-teaser/event-teaser-payload.js';
+
+interface EventTeaserItem {
+  href?: string;
+  slug?: string;
+  title?: string;
+  excerpt?: string;
+  showTeaser?: boolean;
+  priority?: boolean;
+  isPastEvent?: boolean;
+  startLabelDate?: string;
+  startLabelTime?: string;
+  startDateTime?: string;
+  page?: number;
+  totalResults?: number;
+  totalPages?: number;
+
+  image?: {
+    url?: string;
+    alt?: string;
+    width?: number;
+    height?: number;
+  } | null;
+}
+
+const {
+  class: className,
+  ariaLabel = 'Event results',
+  busy = false,
+  items = [],
+  totalResults,
+  totalPages,
+  page,
+  hrefBase = '/events',
+  countText,
+} = Astro.props;
+
+const sourceItems = (Array.isArray(items) ? items : []) as any[];
+
+const looksLikeTeaserPayload = (item: any) => typeof item?.href === 'string' || typeof item?.startLabelDate === 'string';
+
+const normalizedItems = sourceItems.map((item: any, index: number) => {
+  if (looksLikeTeaserPayload(item)) {
+    return item as EventTeaserItem;
+  }
+
+  return buildEventTeaserPayload(
+    {
+      ...item,
+      priority: item?.priority ?? index < 5,
+      event_start_date: item?.event_start_date ?? item?.meta?.event_start_date ?? '',
+      event_end_date: item?.event_end_date ?? item?.meta?.event_end_date ?? '',
+      event_effective_end: item?.event_effective_end ?? item?.meta?.event_effective_end ?? '',
+    },
+    { hrefBase },
+  );
+});
+
+const itemCount = normalizedItems.length;
+const displayCount = typeof totalResults === 'number' ? totalResults : itemCount;
+---
+
+<event-listing id="events-listing" data-component="abcnorio/event-listing">
+
+  <section
+    id="teaser-list"
+    class="teaser-list"
+    role="region"
+    aria-label={ariaLabel}
+    aria-busy={busy ? 'true' : 'false'}
+  >
+
+    {itemCount > 0 &&
+      normalizedItems.map((item) => <EventTeaser {...item} />)
+    }
+  </section>
+  <Pagination
+      id="pagination"
+      currentPage={page}
+      totalPages={totalPages}
+      hxGet="/events/listing"
+      hrefBase={hrefBase}
+      hxTarget="#events-listing"
+      hxInclude="#event-filters-form"
+  />
+</event-listing>
+
+<script>
+  import './event-listing.js';
+</script>
+
+<style lang="scss">
+  @use './event-listing.scss';
+</style>

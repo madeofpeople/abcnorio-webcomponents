@@ -1,0 +1,37 @@
+---
+const { innerBlocks = [], Block } = Astro.props;
+---
+<style>
+  .gallery {
+    display: block;
+    overflow: hidden;
+    overflow-x: auto;
+    padding-top: 1rem;
+    margin-bottom: 2rem;
+
+    .images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      object-fit: cover;
+      object-position: center top;
+
+      img {
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        display: block;
+        max-width: 200px;
+        width: auto;
+      }
+    }
+  }
+</style>
+<section class="gallery">
+  <div class="images">
+    {innerBlocks.length > 0 && innerBlocks.map((block: any) => {
+      block.attributes.loading = 'lazy';
+      return (
+        <Block component={block.name} attributes={block.attributes} innerBlocks={block.innerBlocks || null} />
+      );
+    })}
+  </div>
+</section>

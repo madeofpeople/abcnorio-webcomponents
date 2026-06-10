@@ -1,0 +1,5 @@
+---
+const { attributes = {} } = Astro.props;
+const content = attributes?.value || attributes?.content || '';
+---
+<p set:html={content}></p>

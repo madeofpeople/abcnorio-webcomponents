@@ -1,0 +1,153 @@
+---
+const { attributes, loading = 'lazy', decoding = 'async', cmsUrl = '' } = Astro.props;
+const alt = attributes?.alt ?? '';
+const sizeSlug = attributes?.sizeSlug ?? '';
+const rawSrcset = attributes?.srcset ?? '';
+const rawSizes = attributes?.sizes ?? attributes?.sizes_attr;
+const variantMap = attributes?.sizes_data ?? attributes?.media_details?.sizes ?? {};
+
+type Variant = {
+  name: string;
+  sourceUrl: string;
+  width: number;
+  height?: number;
+};
+
+const cmsOrigin = (() => {
+  try {
+    return new URL(cmsUrl).origin;
+  } catch {
+    return '';
+  }
+})();
+
+function resolveWordPressImageUrl(value?: string): string | undefined {
+  if (!value || !cmsOrigin) {
+    return value;
+  }
+
+  try {
+    const url = new URL(value);
+    const isLegacyUploadsPath = url.pathname.startsWith('/wp-content/uploads/');
+    const isCurrentUploadsPath = url.pathname.startsWith('/app/uploads/');
+    const isWordPressLikeUploadsHost =
+      url.hostname.includes('abcnorio.org') ||
+      url.hostname.includes('itztlacoliuhqui.org');
+
+    if (!isWordPressLikeUploadsHost) {
+      return value;
+    }
+
+    if (!isLegacyUploadsPath && !isCurrentUploadsPath) {
+      return value;
+    }
+
+    const canonicalPath = isLegacyUploadsPath
+      ? url.pathname.replace('/wp-content/uploads/', '/app/uploads/')
+      : url.pathname;
+
+    return `${cmsOrigin}${canonicalPath}`;
+  } catch {
+    return value;
+  }
+}
+
+const variants: Variant[] = [];
+
+for (const [name, value] of Object.entries(variantMap)) {
+  const variant = value as {
+    source_url?: string;
+    width?: number;
+    height?: number;
+  };
+
+  if (!variant.source_url || !variant.width) {
+    continue;
+  }
+
+  const resolvedVariantSource = resolveWordPressImageUrl(variant.source_url);
+
+  variants.push({
+    name,
+    sourceUrl: resolvedVariantSource || variant.source_url,
+    width: Number(variant.width),
+    height: variant.height ? Number(variant.height) : undefined,
+  });
+}
+
+variants.sort((a, b) => a.width - b.width);
+
+const preferredVariant =
+  variants.find((variant) => variant.name === sizeSlug) ||
+  variants.find((variant) => variant.name === 'full') ||
+  variants[variants.length - 1];
+
+const resolvedSource = resolveWordPressImageUrl(
+  attributes?.url || attributes?.src || preferredVariant?.sourceUrl,
+);
+const src = resolvedSource;
+
+const width = Number(attributes?.width || preferredVariant?.width) || undefined;
+
+const explicitHeight = Number(attributes?.height || preferredVariant?.height) || undefined;
+const fallbackAspectRatio =
+  preferredVariant?.width && preferredVariant?.height
+    ? preferredVariant.height / preferredVariant.width
+    : undefined;
+const height = explicitHeight || (
+  width && fallbackAspectRatio
+    ? Math.round(width * fallbackAspectRatio)
+    : undefined
+);
+
+const sizes = rawSizes || undefined;
+
+const altText = src
+  ? alt
+  : 'No source URL was available from attributes.url, attributes.src, or attributes.sizes_data.';
+
+const caption = attributes?.caption || '';
+---
+
+{src && caption && (
+  <figure>
+    <img
+      src={src}
+      srcset={rawSrcset || undefined}
+      sizes={sizes}
+      alt={altText}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding={decoding}
+    />
+    <figcaption set:html={caption} />
+  </figure>
+)}
+{src && !caption && (
+  <img
+    src={src}
+    srcset={rawSrcset || undefined}
+    sizes={sizes}
+    alt={altText}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding={decoding}
+  />
+)}
+<style>
+  figure {
+    margin: 1.5rem 0;
+    display: inline-block;
+    padding: 1px;
+    background-color: var(--color-panel-bg);
+    max-width: 100%;
+  }
+
+  figcaption {
+    padding: 0.25rem 0.25rem;
+    font-size: 0.875rem;
+    background-color: var(--color-panel-bg);
+  }
+</style>

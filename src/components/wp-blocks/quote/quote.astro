@@ -1,0 +1,8 @@
+---
+const { innerBlocks = [], Block } = Astro.props;
+---
+<blockquote class="quote">
+  {innerBlocks.length > 0 && innerBlocks.map((innerBlock: any) => (
+    <Block component={innerBlock.name} attributes={innerBlock.attributes} innerBlocks={innerBlock.innerBlocks || null} />
+  ))}
+</blockquote>

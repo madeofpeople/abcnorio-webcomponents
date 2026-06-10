@@ -1,0 +1,52 @@
+---
+const {
+  class: className,
+  href = '#',
+  title = 'Untitled event',
+  showTeaser = true,
+  priority = false,
+  isPastEvent = false,
+  startLabelDate = '',
+  startLabelTime = '',
+  startDateTime = '',
+  image = null,
+} = Astro.props;
+
+const imageProps = image && typeof image === 'object' ? image : null;
+---
+
+<event-teaser class:list={['events-teaser', className]} data-component="abcnorio/event-teaser">
+  <article class:list={['teaser', 'events', { past: isPastEvent }]}>
+    <a href={href}>
+      {showTeaser !== false && imageProps?.url && (
+        <img
+          src={imageProps.url}
+          alt={imageProps.alt || ''}
+          width={Number(imageProps.width || 290)}
+          height={Number(imageProps.height || 9999)}
+          decoding="async"
+          fetchpriority={priority ? 'high' : undefined}
+          loading={priority ? undefined : 'lazy'}
+        />
+      )}
+
+      <div class="content">
+        {(startLabelDate || startLabelTime) && (
+          <time datetime={startDateTime}>
+            <span>{startLabelDate}<br />@ {startLabelTime}</span>
+          </time>
+        )}
+
+        <h3 set:html={title} />
+      </div>
+    </a>
+  </article>
+</event-teaser>
+
+<script>
+  import './event-teaser.js';
+</script>
+
+<style lang="scss">
+  @use './event-teaser.scss';
+</style>

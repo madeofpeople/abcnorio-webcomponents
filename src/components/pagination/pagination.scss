@@ -1,0 +1,23 @@
+.pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    li a {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        text-decoration: none;
+        color: inherit;
+        &:hover,
+        &:focus {
+            background: #f0f0f0;
+        }
+        &.is-current {
+            font-weight: bold;
+            border-color: currentColor;
+        }
+    }
+}

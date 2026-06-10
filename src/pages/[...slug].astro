@@ -1,0 +1,33 @@
+---
+/* 
+This file mostly just makes sure to output the fixtures and is not part of any build
+its weirdly abstract, but "astro takes care of it" otherwise we'd need custom build pipelines.
+(also no big deal, but I'm leaning on my tools here.)
+*/
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { getFixtureEntryBySlug, getFixtureStaticPaths } from '../util/component-fixtures.js';
+
+export const partial = true;
+
+export function getStaticPaths() {
+  return getFixtureStaticPaths();
+}
+
+const fixtureEntry = getFixtureEntryBySlug(Astro.params.slug);
+
+if (!fixtureEntry) {
+  throw new Error(`Unknown fixture route: ${Astro.params.slug}`);
+}
+
+const container = await AstroContainer.create();
+const renderedComponent = await container.renderToString(fixtureEntry.component, {
+  props: fixtureEntry.fixture.props,
+  slots: fixtureEntry.fixture.slots,
+});
+const fixtureMarkup = renderedComponent
+  .replace(/^<!DOCTYPE html>/i, '')
+  .replace(/<script\b[\s\S]*?<\/script>/gi, '')
+  .trim();
+---
+
+<Fragment set:html={fixtureMarkup} />
