@@ -6,12 +6,20 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const componentsDir = path.resolve(__dirname, '../src/components');
-const designTokensRoot = process.env.DESIGN_TOKENS_ROOT?.trim() || '/abcnorio-design-tokens';
-const fontsDir = path.join(designTokensRoot, 'fonts');
+const configuredDesignTokensRoot = process.env.DESIGN_TOKENS_ROOT?.trim();
+const designTokensCandidates = [
+    configuredDesignTokensRoot,
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'node_modules', 'abcnorio-design-tokens'),
+    '/abcnorio-design-tokens',
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'abcnorio-astro', 'design-tokens')
+].filter(Boolean);
+const designTokensRoot = designTokensCandidates.find((candidate) => existsSync(candidate));
 
-if (!existsSync(designTokensRoot)) {
-    throw new Error(`[startup] Missing design-tokens directory: ${designTokensRoot}`);
+if (!designTokensRoot) {
+    throw new Error(`[startup] Missing design-tokens directory. Checked: ${designTokensCandidates.join(', ')}`);
 }
+
+const fontsDir = path.join(designTokensRoot, 'fonts');
 
 // The demo setup behaves like a standard website, entirely separate from your root library config
 export default defineConfig({

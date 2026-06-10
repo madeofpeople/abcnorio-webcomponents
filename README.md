@@ -4,6 +4,8 @@ Light-DOM Astro component library with fixture export and bind-mount-friendly bu
 
 ## Build Pipeline
 
+Library builds consume a repo-local package dependency at [design-tokens](design-tokens), so `prepare` can run in isolated git installs.
+
 Library build and demo build are intentionally split:
 
 - `npm run build:lib`

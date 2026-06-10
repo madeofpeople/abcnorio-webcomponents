@@ -7,6 +7,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const configuredDesignTokensRoot = process.env.DESIGN_TOKENS_ROOT?.trim();
 const designTokensCandidates = [
     configuredDesignTokensRoot,
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'node_modules', 'abcnorio-design-tokens'),
     '/abcnorio-design-tokens',
     path.join(repoRoot, 'abcnorio-astro', 'design-tokens')
 ].filter(Boolean);

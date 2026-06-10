@@ -1,0 +1,16 @@
+@use "sass:map";
+
+$spacing: (
+    sm: 1rem,
+    lg: 2rem,
+);
+
+:root {
+    @each $sp_name, $val in $spacing {
+        --spacing-#{$sp_name}: #{$val};
+    }
+}
+
+@function get($name) {
+    @return map.get($spacing, $name);
+}

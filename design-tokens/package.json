@@ -1,0 +1,10 @@
+{
+  "name": "abcnorio-design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "files": [
+    "fonts",
+    "mixins",
+    "tokens"
+  ]
+}
