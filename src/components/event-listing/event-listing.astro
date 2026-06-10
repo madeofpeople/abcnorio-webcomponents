@@ -35,6 +35,10 @@ const {
   totalPages,
   page,
   hrefBase = '/events',
+  mountId = 'events-listing',
+  teaserListId = 'teaser-list',
+  paginationId = 'pagination',
+  filtersFormSelector = '#event-filters-form',
   countText,
 } = Astro.props;
 
@@ -63,10 +67,10 @@ const itemCount = normalizedItems.length;
 const displayCount = typeof totalResults === 'number' ? totalResults : itemCount;
 ---
 
-<event-listing id="events-listing" data-component="abcnorio/event-listing">
+<event-listing id={mountId} data-component="abcnorio/event-listing">
 
   <section
-    id="teaser-list"
+    id={teaserListId}
     class="teaser-list"
     role="region"
     aria-label={ariaLabel}
@@ -78,13 +82,13 @@ const displayCount = typeof totalResults === 'number' ? totalResults : itemCount
     }
   </section>
   <Pagination
-      id="pagination"
+      id={paginationId}
       currentPage={page}
       totalPages={totalPages}
       hxGet="/events/listing"
       hrefBase={hrefBase}
-      hxTarget="#events-listing"
-      hxInclude="#event-filters-form"
+      hxTarget={`#${mountId}`}
+      hxInclude={filtersFormSelector}
   />
 </event-listing>
 

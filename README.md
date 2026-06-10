@@ -15,6 +15,12 @@ Library build and demo build are intentionally split:
 - `npm run build`
 : Runs library build first, then demo build.
 
+## Package Consumer Contract
+
+- Package installs are expected to expose prebuilt library artifacts under [dist](dist).
+- Required artifacts for downstream ingestion are [dist/fixtures-manifest.json](dist/fixtures-manifest.json) and [dist/styles/components.css](dist/styles/components.css).
+- Consumers should ingest from package dist and should not execute package-internal build utilities.
+
 ## Local Development
 
 - `npm run dev`

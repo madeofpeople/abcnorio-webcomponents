@@ -7,7 +7,7 @@ $event-teaser-in-duration: 0.2s;
 $stagger-count: 22;
 $stagger-step: 23ms;
 
-:global(#events-listing .teaser) {
+:global(event-listing[data-component="abcnorio/event-listing"] .teaser) {
   position: relative;
   overflow: hidden;
   opacity: 1;
@@ -19,7 +19,7 @@ $stagger-step: 23ms;
   transition-delay: 0ms;
 }
 
-:global(#events-listing) {
+:global(event-listing[data-component="abcnorio/event-listing"]) {
   &.htmx-swapping .teaser,
   &.htmx-settling .teaser,
   .teaser.htmx-added {
@@ -31,20 +31,20 @@ $stagger-step: 23ms;
   }
 }
 
-:global(#events-listing.htmx-swapping .teaser) {
+:global(event-listing[data-component="abcnorio/event-listing"].htmx-swapping .teaser) {
   opacity: 0;
   transform: translate3d(-16rem, 0, 0);
   filter: blur(0.2rem);
 }
 
-:global(#events-listing .teaser.htmx-added) {
+:global(event-listing[data-component="abcnorio/event-listing"] .teaser.htmx-added) {
   opacity: 0;
   transform: translate3d(16rem, 0, 0);
   filter: blur(0.35rem);
   transition-duration: $event-teaser-in-duration;
 }
 
-:global(#events-listing.htmx-settling .teaser.htmx-added) {
+:global(event-listing[data-component="abcnorio/event-listing"].htmx-settling .teaser.htmx-added) {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   filter: blur(0);

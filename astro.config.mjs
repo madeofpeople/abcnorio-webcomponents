@@ -1,14 +1,24 @@
 import { defineConfig } from 'astro/config';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const designTokensRoot = process.env.DESIGN_TOKENS_ROOT?.trim() || '/abcnorio-design-tokens';
-const fontsDir = path.join(designTokensRoot, 'fonts');
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const configuredDesignTokensRoot = process.env.DESIGN_TOKENS_ROOT?.trim();
+const designTokensCandidates = [
+    configuredDesignTokensRoot,
+    '/abcnorio-design-tokens',
+    path.join(repoRoot, 'abcnorio-astro', 'design-tokens')
+].filter(Boolean);
 
-if (!existsSync(designTokensRoot)) {
+const designTokensRoot = designTokensCandidates.find((candidate) => existsSync(candidate));
+
+if (!designTokensRoot) {
     // Fail loudly.
-    throw new Error(`[startup] Missing design-tokens directory: ${designTokensRoot}`);
+    throw new Error(`[startup] Missing design-tokens directory. Checked: ${designTokensCandidates.join(', ')}`);
 }
+
+const fontsDir = path.join(designTokensRoot, 'fonts');
 
 export default defineConfig({
     build: {
