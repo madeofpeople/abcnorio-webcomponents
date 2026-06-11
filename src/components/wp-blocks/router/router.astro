@@ -1,0 +1,83 @@
+---
+import { Debug } from 'astro:components';
+
+import ParagraphBlock from '../paragraph/paragraph.astro';
+import Heading from '../heading/heading.astro';
+import Image from '../image/image.astro';
+import Quote from '../quote/quote.astro';
+import List from '../list/list.astro';
+import ListItem from '../list-item/list-item.astro';
+import Gallery from '../gallery/gallery.astro';
+import YouTube from '../youtube/youtube.astro';
+import Matterport from '../matterport/matterport.astro';
+import Buttons from '../buttons/buttons.astro';
+import Group from '../group/group.astro';
+
+const {
+  component,
+  attributes,
+  innerBlocks,
+  Block,
+  restPath,
+  cmsUrl,
+  registry = {},
+  embedRegistry = {},
+  showDebug = true,
+} = Astro.props;
+
+const baseRegistry = {
+  'core/paragraph': ParagraphBlock,
+  'core/heading': Heading,
+  'core/image': Image,
+  'core/quote': Quote,
+  'core/list': List,
+  'core/list-item': ListItem,
+  'core/gallery': Gallery,
+  'core/buttons': Buttons,
+  'core/group': Group,
+};
+
+const baseEmbedRegistry = {
+  youtube: YouTube,
+  matterport: Matterport,
+};
+
+const mergedRegistry = {
+  ...baseRegistry,
+  ...registry,
+};
+
+const mergedEmbedRegistry = {
+  ...baseEmbedRegistry,
+  ...embedRegistry,
+};
+
+const providerName = String(attributes?.providerNameSlug || '').toLowerCase();
+
+let Component = mergedRegistry[component];
+
+if (component === 'core/embed' && providerName) {
+  Component = mergedEmbedRegistry[providerName] || Component;
+}
+
+const shouldRenderDebug = !Component && showDebug;
+---
+
+{Component && (
+  <Component
+    attributes={attributes}
+    component={component}
+    innerBlocks={innerBlocks || null}
+    Block={Block}
+    restPath={restPath}
+    cmsUrl={cmsUrl}
+  />
+)}
+
+{shouldRenderDebug && (
+  <div class="debug-block">
+    <p><strong>Unknown block type:</strong> {component}</p>
+    <Debug component={component} />
+    <Debug attributes={attributes} />
+  </div>
+)}

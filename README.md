@@ -23,13 +23,27 @@ Library build and demo build are intentionally split:
 - Required artifacts for downstream ingestion are [dist/fixtures-manifest.json](dist/fixtures-manifest.json) and [dist/styles/components.css](dist/styles/components.css).
 - Consumers should ingest from package dist and should not execute package-internal build utilities.
 
+### WP Block Router Export
+
+- Shared router export: `abcnorio-webcomponents/wp-blocks/router`
+- Core block renderers remain package-owned under `abcnorio-webcomponents/wp-blocks/*`.
+- Consumers can pass a `registry` override map for site-specific blocks without forking core block routing.
+
+Expected router props:
+
+- `component`, `attributes`, `innerBlocks`, `Block`
+- Optional site runtime props: `restPath`, `cmsUrl`
+- Optional override maps: `registry`, `embedRegistry`
+
+Recommended boundary:
+
+- Keep presentational/default block routing in this package.
+- Keep site REST/query orchestration in consumer adapters.
+
 ## Local Development
 
 - `npm run dev`
 : Starts demo dev server.
-
-- `npm run dev:demo`
-: Explicit alias for demo dev server.
 
 Open `/stargazer` on the demo dev server for component previews.
 

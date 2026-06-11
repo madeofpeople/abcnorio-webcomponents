@@ -65,9 +65,13 @@ const normalizedItems = sourceItems.map((item: any, index: number) => {
 
 const itemCount = normalizedItems.length;
 const displayCount = typeof totalResults === 'number' ? totalResults : itemCount;
+const resolvedCountText = typeof countText === 'string' && countText.trim() !== ''
+  ? countText
+  : `The current filters are displaying ${displayCount} ${displayCount === 1 ? 'event' : 'events'}.`;
 ---
 
 <event-listing id={mountId} data-component="abcnorio/event-listing">
+  <p class="event-listing__count events__count">{resolvedCountText}</p>
 
   <section
     id={teaserListId}

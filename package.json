@@ -32,6 +32,7 @@
     "./wp-blocks/matterport": "./src/components/wp-blocks/matterport/matterport.astro",
     "./wp-blocks/buttons": "./src/components/wp-blocks/buttons/buttons.astro",
     "./wp-blocks/group": "./src/components/wp-blocks/group/group.astro",
+    "./wp-blocks/router": "./src/components/wp-blocks/router/router.astro",
     "./user-card": "./src/components/user-card/user-card.astro",
     "./user-card/element": "./src/components/user-card/user-card.js",
     "./styles/*": "./dist/styles/*"
@@ -45,7 +46,6 @@
   },
   "scripts": {
     "dev": "astro dev --root demo",
-    "dev:demo": "astro dev --root demo",
     "docker-dev": "astro dev --root demo --host 0.0.0.0 --port 3033",
     "prepare": "npm run build:lib",
     "build": "npm run build:lib && npm run build:demo",
@@ -56,10 +56,11 @@
   },
   "dependencies": {
     "@astro-community/astro-embed-youtube": "^0.5.10",
-    "@astrojs/check": "^0.9.9",
+    "@astrojs/check": "^0.9.2",
+    "@astrojs/language-server": "^2.13.4",
     "abcnorio-design-tokens": "file:./design-tokens",
-    "astro": "^6.4.0",
-    "typescript": "^6.0.3"
+    "astro": "^6.4.6",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "astro-stargazer": "^1.5.45",
@@ -69,5 +70,8 @@
     "@parcel/watcher@2.5.6": true,
     "esbuild@0.27.7": true,
     "sharp@0.34.5": true
+  },
+  "overrides": {
+    "yaml": "^2.8.3"
   }
 }

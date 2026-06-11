@@ -67,3 +67,8 @@ declare module 'abcnorio-webcomponents/wp-blocks/group' {
   const Component: any;
   export default Component;
 }
+
+declare module 'abcnorio-webcomponents/wp-blocks/router' {
+  const Component: any;
+  export default Component;
+}
