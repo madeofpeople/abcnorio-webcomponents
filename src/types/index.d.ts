@@ -1,3 +1,13 @@
+declare module 'abcnorio-webcomponents/article-teaser' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/content-listing' {
+  const Component: any;
+  export default Component;
+}
+
 declare module 'abcnorio-webcomponents/event-listing' {
   const Component: any;
   export default Component;

@@ -1,6 +1,6 @@
 # abcnorio-webcomponents
 
-Light-DOM Astro component library with fixture export and bind-mount-friendly build artifacts for WordPress ingestion.
+Light-DOM Astro component library with fixture export and package-consumable build artifacts for WordPress ingestion.
 
 ## Build Pipeline
 

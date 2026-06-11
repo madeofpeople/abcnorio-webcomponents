@@ -1,0 +1,17 @@
+.content-listing {
+  display: block;
+}
+
+.content-listing__items {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.content-listing__count {
+  margin: 0 0 1rem;
+}
+
+.content-listing__item {
+  min-width: 0;
+}

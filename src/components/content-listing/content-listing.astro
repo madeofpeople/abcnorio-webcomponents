@@ -1,0 +1,73 @@
+---
+import EventTeaser from '../event-teaser/event-teaser.astro';
+import ArticleTeaser from '../article-teaser/article-teaser.astro';
+import { buildEventTeaserPayload } from '../event-teaser/event-teaser-payload.js';
+
+const {
+  class: className,
+  ariaLabel = 'Content results',
+  busy = false,
+  items = [],
+  totalResults,
+  mountId = 'content-listing',
+  listId = 'content-listing-list',
+  articleHrefBase = '/articles',
+  eventHrefBase = '/events',
+} = Astro.props;
+
+const sourceItems = Array.isArray(items) ? items : [];
+
+const eventItems = sourceItems
+  .filter((item: any) => item?.post_type === 'event')
+  .map((item: any, index: number) => buildEventTeaserPayload(
+    {
+      ...item,
+      priority: item?.priority ?? index < 5,
+      event_start_date: item?.event_start_date ?? item?.acf?.event_start_date ?? '',
+      event_end_date: item?.event_end_date ?? item?.acf?.event_end_date ?? '',
+      event_effective_end: item?.event_effective_end ?? item?.acf?.event_effective_end ?? '',
+    },
+    { hrefBase: eventHrefBase },
+  ));
+
+const articleItems = sourceItems
+  .filter((item: any) => item?.post_type === 'article')
+  .map((item: any) => {
+    const slug = String(item?.slug || '').trim();
+    const rawDate = String(item?.acf?.item_date || item?.date || '').trim();
+
+    return {
+      href: slug ? `${articleHrefBase}/${slug}` : articleHrefBase,
+      title: item?.title?.rendered || slug || 'Untitled article',
+      dateLabel: rawDate,
+      dateTime: rawDate,
+      image: item?.featured_image ?? null,
+      placeholderText: 'Article teaser placeholder',
+    };
+  });
+
+const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;
+---
+
+<content-listing id={mountId} class:list={['content-listing', className]} data-component="abcnorio/content-listing">
+  <p class="content-listing__count">Displaying {displayCount} items.</p>
+
+  <section
+    id={listId}
+    class="content-listing__items"
+    role="region"
+    aria-label={ariaLabel}
+    aria-busy={busy ? 'true' : 'false'}
+  >
+    {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
+    {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
+  </section>
+</content-listing>
+
+<script>
+  import './content-listing.js';
+</script>
+
+<style lang="scss">
+  @use './content-listing.scss';
+</style>

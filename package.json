@@ -12,6 +12,10 @@
   "exports": {
     "./add-to-calendar": "./src/components/add-to-calendar/add-to-calendar.astro",
     "./add-to-calendar/element": "./src/components/add-to-calendar/add-to-calendar.js",
+    "./article-teaser": "./src/components/article-teaser/article-teaser.astro",
+    "./article-teaser/element": "./src/components/article-teaser/article-teaser.js",
+    "./content-listing": "./src/components/content-listing/content-listing.astro",
+    "./content-listing/element": "./src/components/content-listing/content-listing.js",
     "./event-listing": "./src/components/event-listing/event-listing.astro",
     "./event-listing/element": "./src/components/event-listing/event-listing.js",
     "./event-teaser": "./src/components/event-teaser/event-teaser.astro",
