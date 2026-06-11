@@ -1,6 +1,6 @@
 {
   "name": "abcnorio-webcomponents",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
   "types": "./src/types/index.d.ts",
@@ -49,7 +49,7 @@
     "dev": "astro dev --root demo",
     "docker-dev": "astro dev --root demo --host 0.0.0.0 --port 3033",
     "preversion": "test -d design-tokens && test -d design-tokens/tokens && test -d design-tokens/mixins && test -d design-tokens/fonts",
-    "version": "npm run build:lib && test -d dist && test -d design-tokens && git add dist design-tokens package.json package-lock.json",
+    "version": "npm run build:lib && test -d dist && test -d design-tokens && git add -f dist design-tokens package.json package-lock.json",
     "prepare": "npm run build:lib",
     "build": "npm run build:lib && npm run build:demo",
     "build:lib": "astro build && node src/util/generate-fixtures-registry.js",
