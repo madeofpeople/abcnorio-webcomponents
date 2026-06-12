@@ -1,6 +1,11 @@
+$font-url-root-static: '/fonts' !default;
+$font-url-root: '@abcnorio-design-tokens/fonts' !default;
+
 @font-face {
     font-family: 'Source Sans 3';
-    src: url('@abcnorio-design-tokens/fonts/SourceSans3-Regular.woff2') format('woff2');
+    src:
+        url('#{$font-url-root-static}/SourceSans3-Regular.woff2') format('woff2'),
+        url('#{$font-url-root}/SourceSans3-Regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -8,7 +13,9 @@
 
 @font-face {
     font-family: 'Source Sans 3';
-    src: url('@abcnorio-design-tokens/fonts/SourceSans3-Bold.woff2') format('woff2');
+    src:
+        url('#{$font-url-root-static}/SourceSans3-Bold.woff2') format('woff2'),
+        url('#{$font-url-root}/SourceSans3-Bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -16,7 +23,9 @@
 
 @font-face {
     font-family: 'Source Sans 3';
-    src: url('@abcnorio-design-tokens/fonts/SourceSans3-Italic.woff2') format('woff2');
+    src:
+        url('#{$font-url-root-static}/SourceSans3-Italic.woff2') format('woff2'),
+        url('#{$font-url-root}/SourceSans3-Italic.woff2') format('woff2');
     font-weight: 400;
     font-style: italic;
     font-display: swap;
@@ -24,7 +33,9 @@
 
 @font-face {
     font-family: 'Source Sans 3';
-    src: url('@abcnorio-design-tokens/fonts/SourceSans3-BoldItalic.woff2') format('woff2');
+    src:
+        url('#{$font-url-root-static}/SourceSans3-BoldItalic.woff2') format('woff2'),
+        url('#{$font-url-root}/SourceSans3-BoldItalic.woff2') format('woff2');
     font-weight: 700;
     font-style: italic;
     font-display: swap;
@@ -32,7 +43,9 @@
 
 @font-face {
     font-family: 'Special Elite';
-    src: url('@abcnorio-design-tokens/fonts/SpecialElite-Regular.woff2') format('woff2');
+    src:
+        url('#{$font-url-root-static}/SpecialElite-Regular.woff2') format('woff2'),
+        url('#{$font-url-root}/SpecialElite-Regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -40,7 +53,9 @@
 
 @font-face {
     font-family: 'Geist Mono';
-    src: url('@abcnorio-design-tokens/fonts/GeistMono-Regular.woff2') format('woff2');
+    src:
+        url('#{$font-url-root-static}/GeistMono-Regular.woff2') format('woff2'),
+        url('#{$font-url-root}/GeistMono-Regular.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -48,12 +63,17 @@
 
 @font-face {
     font-family: 'Impact Label Reversed';
-    src: url('@abcnorio-design-tokens/fonts/Impact_Label_Reversed.woff2') format('woff2');
+    src:
+        url('#{$font-url-root-static}/Impact_Label_Reversed.woff2') format('woff2'),
+        url('#{$font-url-root}/Impact_Label_Reversed.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
 :root {
+    --font-source-sans: 'Source Sans 3';
+    --font-super-elite: 'Special Elite';
+    --font-geist: 'Geist Mono';
     --font-impact-label-reversed: 'Impact Label Reversed';
 }

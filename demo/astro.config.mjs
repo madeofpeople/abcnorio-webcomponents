@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const componentsDir = path.resolve(__dirname, '../src/components');
+const demoSrcDir = path.resolve(__dirname, 'src');
 const configuredDesignTokensRoot = process.env.DESIGN_TOKENS_ROOT?.trim();
 const designTokensCandidates = [
     configuredDesignTokensRoot,
@@ -27,7 +28,7 @@ export default defineConfig({
     vite: {
         server: {
             fs: {
-                allow: [designTokensRoot, componentsDir]
+                allow: [designTokensRoot, componentsDir, demoSrcDir]
             },
             port: 3033,
             allowedHosts: ['components.itztlacoliuhqui.org']
