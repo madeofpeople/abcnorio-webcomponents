@@ -2,8 +2,10 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const normalizeHref = (basePath, slug) => {
-  const trimmedBasePath = String(basePath).replace(/\/+$/, '');
-  return `${trimmedBasePath}/${slug}`;
+  const [pathPart, queryPart = ''] = String(basePath).split('?');
+  const trimmedPath = String(pathPart || '/events').replace(/\/+$/, '');
+  const normalizedPath = `${trimmedPath}/${slug}`;
+  return queryPart ? `${normalizedPath}?${queryPart}` : normalizedPath;
 };
 
 export function formatEventDate(raw) {
