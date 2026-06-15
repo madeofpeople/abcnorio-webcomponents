@@ -5,8 +5,6 @@ import contentListingFixtures from './src/components/content-listing/content-lis
 import eventListingFixtures from './src/components/event-listing/event-listing.fixture.js';
 import eventTeaserFixtures from './src/components/event-teaser/event-teaser.fixture.js';
 
-// const stargazerEventsHref = import.meta.env.STARGAZER_EVENTS_HREF || '/events/';
-
 const config: StargazerConfig = {
   mode: 'files',
   base: '/',

@@ -4,7 +4,9 @@ import stargazer from 'astro-stargazer';
 const designTokensRoot = './src/design-tokens';
 
 export default defineConfig({
-    integrations: [stargazer()],
+    integrations: [stargazer({
+        base: '/'
+    })],
     build: {
         // Keeps file structures clean (e.g., /user-card/index.html)
         format: 'file' 
