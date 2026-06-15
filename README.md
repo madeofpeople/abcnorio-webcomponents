@@ -4,18 +4,21 @@ Light-DOM Astro component library with fixture export and package-consumable bui
 
 ## Build Pipeline
 
-Library builds consume a repo-local package dependency at [design-tokens](design-tokens), so `prepare` can run in isolated git installs.
+Current package scripts:
 
-Library build and demo build are intentionally split:
+- `npm run dev`
+: Starts local dev server from package root.
+
+- `npm run docker-dev`
+: Starts dev server on `0.0.0.0:3033` for container/proxy use.
 
 - `npm run build:lib`
-: Builds library fixtures into [dist](dist) and generates [dist/fixtures-manifest.json](dist/fixtures-manifest.json).
+: Builds fixtures into [dist](dist) and generates [dist/fixtures-manifest.json](dist/fixtures-manifest.json).
 
-- `npm run build:demo`
-: Builds demo site in [demo](demo) only.
+- `npm run check`
+: Runs Astro type/content checks.
 
-- `npm run build`
-: Runs library build first, then demo build.
+Use `npm run build:lib` as the canonical artifact build command for ingestion.
 
 ## Package Consumer Contract
 
@@ -43,13 +46,26 @@ Recommended boundary:
 ## Local Development
 
 - `npm run dev`
-: Starts demo dev server.
+: Starts dev server.
 
-Open `/stargazer` on the demo dev server for component previews.
+Open `/stargazer` for component previews. Stargazer registry is manually curated in [stargazer.config.ts](stargazer.config.ts) (`mode: 'files'`).
+
+## Design Tokens
+
+Token source lives in [src/design-tokens](src/design-tokens):
+
+- Core partials: `_colors.scss`, `_breakpoints.scss`, `_typography.scss`, `_spacing.scss`, `_fonts.scss`
+- Mixins: [src/design-tokens/mixins](src/design-tokens/mixins)
+- Font files: [src/design-tokens/fonts](src/design-tokens/fonts)
+
+Token usage contract:
+
+- SCSS modules import from Sass load paths, e.g. `@use 'colors'`, `@use 'breakpoints'`, `@use 'mixins/layout'`.
+- Asset URL alias is `@tokens/...` (configured in Astro/Vite alias) for token-hosted static assets such as fonts.
+- Shared component token include lives in [src/components/_design-tokens.scss](src/components/_design-tokens.scss).
 
 ## Layout
 
 - Components: [src/components](src/components)
 - Fixture route export: [src/pages/[...slug].astro](src/pages/[...slug].astro)
 - Fixture manifest generator: [src/util/generate-fixtures-registry.js](src/util/generate-fixtures-registry.js)
-- Demo app: [demo](demo)

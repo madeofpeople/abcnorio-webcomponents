@@ -1,0 +1,37 @@
+social-share {
+  display: block;
+
+  .social-links {
+    .social-links__actuator {
+      ul {
+        display: flex;
+      }
+    }
+
+    .social-links__list {
+      overflow: hidden;
+      max-height: 0;
+      box-sizing: border-box;
+      transition-property: max-height, padding-top, padding-bottom;
+      transition-duration: 0.3s;
+      transition-timing-function: ease-in-out;
+      background-color: var(--color-ui-panel);
+      padding: 0 1rem;
+
+      ul {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+      }
+
+      &.active {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        max-height: 12rem;
+        box-shadow: 2px 2px 4px inset rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}

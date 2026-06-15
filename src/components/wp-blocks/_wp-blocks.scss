@@ -1,9 +1,3 @@
-@charset "UTF-8";
-@use 'tokens/typography';
-@use 'tokens/colors';
-@use 'tokens/breakpoints';
-@use 'mixins/visibility';
-
 .tout {
   margin-bottom: 2rem;
   background: var(--color-text);

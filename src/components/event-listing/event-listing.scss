@@ -1,7 +1,5 @@
-// @use '../design-tokens';
-@use "tokens/breakpoints";
+@use "breakpoints";
 @use "mixins/layout";
-
 $event-teaser-out-duration: 0.2s;
 $event-teaser-in-duration: 0.2s;
 $stagger-count: 22;

@@ -3,12 +3,47 @@ declare module 'abcnorio-webcomponents/article-teaser' {
   export default Component;
 }
 
+declare module 'abcnorio-webcomponents/articles-teaser' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/articles-listing' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/homepage-articles-listing' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/segmented-control' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/social-share' {
+  const Component: any;
+  export default Component;
+}
+
 declare module 'abcnorio-webcomponents/content-listing' {
   const Component: any;
   export default Component;
 }
 
 declare module 'abcnorio-webcomponents/event-listing' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/event-teaser' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/homepage-events-listing' {
   const Component: any;
   export default Component;
 }

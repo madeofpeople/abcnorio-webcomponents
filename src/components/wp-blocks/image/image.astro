@@ -30,13 +30,6 @@ function resolveWordPressImageUrl(value?: string): string | undefined {
     const url = new URL(value);
     const isLegacyUploadsPath = url.pathname.startsWith('/wp-content/uploads/');
     const isCurrentUploadsPath = url.pathname.startsWith('/app/uploads/');
-    const isWordPressLikeUploadsHost =
-      url.hostname.includes('abcnorio.org') ||
-      url.hostname.includes('itztlacoliuhqui.org');
-
-    if (!isWordPressLikeUploadsHost) {
-      return value;
-    }
 
     if (!isLegacyUploadsPath && !isCurrentUploadsPath) {
       return value;

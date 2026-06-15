@@ -1,9 +1,5 @@
 ---
-/* 
-This file mostly just makes sure to output the fixtures and is not part of any build
-its weirdly abstract, but "astro takes care of it" otherwise we'd need custom build pipelines.
-(also no big deal, but I'm leaning on my tools here.)
-*/
+
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { getFixtureEntryBySlug, getFixtureStaticPaths } from '../util/component-fixtures.js';
 

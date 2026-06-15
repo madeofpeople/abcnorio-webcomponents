@@ -1,0 +1,85 @@
+segmented-control {
+  display: inline-flex;
+
+  legend {
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+
+    .segmented-control__options {
+      position: relative;
+      display: inline-flex;
+      background-color: #eee;
+      box-shadow: 0 0 3px inset rgba(0, 0, 0, 0.3);
+      border-radius: 2em;
+    }
+
+    input[type='radio'] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+      padding: 0;
+      border: none;
+    }
+
+    label {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 0;
+      font-size: 0.875rem;
+      position: relative;
+      z-index: 1;
+      padding: 0.25em 0.875em;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s ease;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+
+    input[type='radio']:checked + label {
+      background: currentColor;
+      color: var(--color-page-bg);
+      border-radius: 2em;
+      white-space: nowrap;
+    }
+
+    &.js-pill-active {
+      input[type='radio']:checked + label {
+        background: transparent;
+        color: var(--color-page-bg);
+      }
+
+      .segmented-control__pill {
+        display: block;
+      }
+    }
+
+    .segmented-control__pill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-radius: 2em;
+      background: currentColor;
+      transition:
+        transform 0.2s ease,
+        width 0.2s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    input[type='radio']:focus-visible + label {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+      border-radius: 2em;
+    }
+  }
+}

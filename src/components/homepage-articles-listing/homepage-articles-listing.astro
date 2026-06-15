@@ -1,0 +1,41 @@
+---
+import ArticlesTeaser from '../articles-teaser/articles-teaser.astro';
+
+interface Props {
+  items?: any[];
+  limit?: number;
+  hrefBase?: string;
+  showViewAllLink?: boolean;
+}
+
+const {
+  items = [],
+  limit = 7,
+  hrefBase = '/articles',
+  showViewAllLink = true,
+} = Astro.props as Props;
+
+const hasValue = (value: any) => value !== null && value !== undefined && String(value).trim() !== '';
+
+let listing = Array.isArray(items)
+  ? items.filter((item: any) => hasValue(item?.acf?.item_date) || hasValue(item?.date))
+  : [];
+
+listing = listing.slice(0, limit);
+---
+<homepage-articles-listing data-component="abcnorio/homepage-articles-listing">
+  <section class="listing">
+    {listing.map((item: any) => (
+      <ArticlesTeaser data={item} hrefBase={hrefBase} />
+    ))}
+  </section>
+  {showViewAllLink && <a href={hrefBase} class="view-all-link">View all articles</a>}
+</homepage-articles-listing>
+
+<script>
+  import './homepage-articles-listing.js';
+</script>
+
+<style lang="scss">
+  @use './homepage-articles-listing.scss';
+</style>

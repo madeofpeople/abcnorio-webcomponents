@@ -1,0 +1,42 @@
+---
+import ArticlesTeaser from '../articles-teaser/articles-teaser.astro';
+
+interface Props {
+  articles?: any[];
+  id?: string;
+  class?: string;
+  ariaLabel?: string;
+  busy?: boolean;
+  hrefBase?: string;
+}
+
+const {
+  articles = [],
+  id = 'articles__listing',
+  class: className,
+  ariaLabel = 'Article results',
+  busy = false,
+  hrefBase = '/articles',
+} = Astro.props as Props;
+---
+<articles-listing data-component="abcnorio/articles-listing">
+  <section
+    id={id}
+    class:list={['articles__listing', className]}
+    role="region"
+    aria-label={ariaLabel}
+    aria-busy={busy ? 'true' : 'false'}
+  >
+    {articles.map((result) => (
+      <ArticlesTeaser data={result} hrefBase={hrefBase} />
+    ))}
+  </section>
+</articles-listing>
+
+<script>
+  import './articles-listing.js';
+</script>
+
+<style lang="scss">
+  @use './articles-listing.scss';
+</style>

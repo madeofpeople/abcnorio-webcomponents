@@ -13,6 +13,10 @@
   "exports": {
     "./add-to-calendar": "./src/components/add-to-calendar/add-to-calendar.astro",
     "./add-to-calendar/element": "./src/components/add-to-calendar/add-to-calendar.js",
+    "./articles-listing": "./src/components/articles-listing/articles-listing.astro",
+    "./articles-listing/element": "./src/components/articles-listing/articles-listing.js",
+    "./articles-teaser": "./src/components/articles-teaser/articles-teaser.astro",
+    "./articles-teaser/element": "./src/components/articles-teaser/articles-teaser.js",
     "./article-teaser": "./src/components/article-teaser/article-teaser.astro",
     "./article-teaser/element": "./src/components/article-teaser/article-teaser.js",
     "./content-listing": "./src/components/content-listing/content-listing.astro",
@@ -22,6 +26,14 @@
     "./event-teaser": "./src/components/event-teaser/event-teaser.astro",
     "./event-teaser/element": "./src/components/event-teaser/event-teaser.js",
     "./event-teaser/payload": "./src/components/event-teaser/event-teaser-payload.js",
+    "./homepage-articles-listing": "./src/components/homepage-articles-listing/homepage-articles-listing.astro",
+    "./homepage-articles-listing/element": "./src/components/homepage-articles-listing/homepage-articles-listing.js",
+    "./homepage-events-listing": "./src/components/homepage-events-listing/homepage-events-listing.astro",
+    "./homepage-events-listing/element": "./src/components/homepage-events-listing/homepage-events-listing.js",
+    "./segmented-control": "./src/components/segmented-control/segmented-control.astro",
+    "./segmented-control/element": "./src/components/segmented-control/segmented-control.js",
+    "./social-share": "./src/components/social-share/social-share.astro",
+    "./social-share/element": "./src/components/social-share/social-share.js",
     "./wp-blocks/paragraph": "./src/components/wp-blocks/paragraph/paragraph.astro",
     "./wp-blocks/heading": "./src/components/wp-blocks/heading/heading.astro",
     "./wp-blocks/image": "./src/components/wp-blocks/image/image.astro",
@@ -39,30 +51,26 @@
     "./styles/*": "./dist/styles/*"
   },
   "workspaces": [
-    "demo",
     "src/components/*"
   ],
   "engines": {
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev --root demo",
-    "docker-dev": "astro dev --root demo --host 0.0.0.0 --port 3033",
+    "dev": "astro dev",
+    "docker-dev": "astro dev --host 0.0.0.0 --port 3033",
     "preversion": "test -d design-tokens && test -d design-tokens/tokens && test -d design-tokens/mixins && test -d design-tokens/fonts",
-    "version": "npm run build:lib && test -d dist && test -d design-tokens && git add -f dist design-tokens package.json package-lock.json",
-    "prepare": "npm run build:lib",
-    "build": "npm run build:lib && npm run build:demo",
+    "version": "npm run build && test -d dist && test -d design-tokens && git add -f dist design-tokens package.json package-lock.json",
+    "build": "npm run build",
     "build:lib": "astro build && node src/util/generate-fixtures-registry.js",
-    "build:demo": "astro build --root demo",
-    "check": "astro check && astro check --root demo",
+    "check": "astro check",
     "postversion": "git push origin main --follow-tags"
   },
   "dependencies": {
     "@astro-community/astro-embed-youtube": "^0.5.10",
     "@astrojs/check": "^0.9.2",
     "@astrojs/language-server": "^2.13.4",
-    "abcnorio-design-tokens": "file:./design-tokens",
-    "astro": "^6.4.6",
+    "astro": "^6.4.7",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

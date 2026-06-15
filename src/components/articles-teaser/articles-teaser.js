@@ -1,4 +1,4 @@
-class UserCard extends HTMLElement {
+export class ArticlesTeaser extends HTMLElement {
   connectedCallback() {
     if (this.dataset.upgraded === 'true') {
       return;
@@ -9,8 +9,6 @@ class UserCard extends HTMLElement {
   }
 }
 
-if (!customElements.get('user-card')) {
-  customElements.define('user-card', UserCard);
+if (!customElements.get('articles-teaser')) {
+  customElements.define('articles-teaser', ArticlesTeaser);
 }
-
-export { UserCard };

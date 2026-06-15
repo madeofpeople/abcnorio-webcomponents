@@ -1,0 +1,41 @@
+---
+interface Option {
+  value: string;
+  label: string;
+  checked?: boolean;
+}
+
+interface Props {
+  name: string;
+  options: Option[];
+  label?: string;
+}
+
+const { name, options, label } = Astro.props as Props;
+---
+
+<segmented-control data-component="abcnorio/segmented-control">
+  <fieldset>
+    {label && <legend>{label}</legend>}
+    <div class="segmented-control__options">
+      {options.map((opt) => {
+        const id = `${name}-${opt.value || 'all'}`;
+        return (
+          <>
+            <input type="radio" id={id} name={name} value={opt.value} checked={opt.checked} />
+            <label for={id}>{opt.label}</label>
+          </>
+        );
+      })}
+      <span class="segmented-control__pill" aria-hidden="true"></span>
+    </div>
+  </fieldset>
+</segmented-control>
+
+<script>
+  import './segmented-control.js';
+</script>
+
+<style lang="scss">
+  @use './segmented-control.scss';
+</style>
