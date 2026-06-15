@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import stargazer from 'astro-stargazer';
 
 const designTokensRoot = './src/design-tokens';
 

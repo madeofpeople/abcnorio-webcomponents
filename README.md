@@ -12,13 +12,13 @@ Current package scripts:
 - `npm run docker-dev`
 : Starts dev server on `0.0.0.0:3033` for container/proxy use.
 
-- `npm run build:lib`
+- `npm run build`
 : Builds fixtures into [dist](dist) and generates [dist/fixtures-manifest.json](dist/fixtures-manifest.json).
 
 - `npm run check`
 : Runs Astro type/content checks.
 
-Use `npm run build:lib` as the canonical artifact build command for ingestion.
+Use `npm run build` as the canonical artifact build command for ingestion.
 
 ## Package Consumer Contract
 
