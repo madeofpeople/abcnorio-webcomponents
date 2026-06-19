@@ -1,0 +1,26 @@
+---
+const {
+  href,
+  target,
+  rel,
+  type = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes = ['button', className];
+---
+
+{href ? (
+  <a class:list={classes} href={href} target={target} rel={rel} {...rest}>
+    <slot />
+  </a>
+) : (
+  <button class:list={classes} type={type} {...rest}>
+    <slot />
+  </button>
+)}
+
+<style lang="scss">
+  @use './button.scss';
+</style>

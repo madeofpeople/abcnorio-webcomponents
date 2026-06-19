@@ -8,6 +8,7 @@
     "dist",
     "design-tokens",
     "src/components",
+    "src/styles",
     "src/types"
   ],
   "exports": {
@@ -34,6 +35,7 @@
     "./segmented-control/element": "./src/components/segmented-control/segmented-control.js",
     "./social-share": "./src/components/social-share/social-share.astro",
     "./social-share/element": "./src/components/social-share/social-share.js",
+    "./button": "./src/components/button/button.astro",
     "./wp-blocks/paragraph": "./src/components/wp-blocks/paragraph/paragraph.astro",
     "./wp-blocks/heading": "./src/components/wp-blocks/heading/heading.astro",
     "./wp-blocks/image": "./src/components/wp-blocks/image/image.astro",
@@ -48,6 +50,7 @@
     "./wp-blocks/router": "./src/components/wp-blocks/router/router.astro",
     "./user-card": "./src/components/user-card/user-card.astro",
     "./user-card/element": "./src/components/user-card/user-card.js",
+    "./styles/foundation": "./src/styles/foundation.scss",
     "./styles/*": "./dist/styles/*"
   },
   "workspaces": [
@@ -57,11 +60,16 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "sync:fonts": "bash scripts/sync-font-assets.sh",
+    "predev": "npm run sync:fonts",
     "dev": "astro dev",
+    "predocker-dev": "npm run sync:fonts",
     "docker-dev": "astro dev --host 0.0.0.0 --port 3033",
-    "preversion": "test -d src/design-tokens && test -d src/design-tokens/mixins && test -d src/design-tokens/fonts",
+    "prebuild": "npm run sync:fonts",
+    "preversion": "npm run sync:fonts && test -d src/design-tokens && test -d src/design-tokens/mixins && test -d src/design-tokens/fonts",
     "version": "npm run build && test -d dist && test -d src/design-tokens && git add -f dist src/design-tokens package.json package-lock.json",
-    "build": "astro build && node src/util/generate-fixtures-registry.js",
+    "build": "astro build && vite build --config vite.elements.config.mjs && node src/util/generate-fixtures-registry.js && node src/util/validate-manifest.js",
+    "check:manifest": "node src/util/validate-manifest.js",
     "check": "astro check",
     "postversion": "git push origin main --follow-tags"
   },
@@ -70,9 +78,10 @@
     "@astrojs/check": "^0.9.2",
     "@astrojs/language-server": "^2.13.4",
     "astro": "6.4.7",
-    "typescript": "^5.9.3",
     "astro-stargazer": "^1.5.45",
-    "sass-embedded": "^1.100.0"
+    "normalize.css": "^8.0.1",
+    "sass-embedded": "^1.100.0",
+    "typescript": "^5.9.3"
   },
   "allowScripts": {
     "@parcel/watcher@2.5.6": true,
@@ -80,6 +89,7 @@
     "esbuild@0.28.1": true
   },
   "overrides": {
+    "shiki": "4.0.2",
     "esbuild": "0.28.1",
     "yaml": "^2.8.3"
   }

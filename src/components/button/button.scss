@@ -1,0 +1,40 @@
+.button {
+    border-radius: 0;
+    outline: none;
+    border: 2px transparent solid;
+    background-color: var(--color-accent);
+    color: white;
+    display: inline-block;
+    padding: 0.5rem;
+    vertical-align: bottom;
+    cursor: pointer;
+    font-family: var(--font-impact-label-reversed), monospace;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    text-decoration: none;
+}
+
+.button svg {
+    display: inline-block;
+    padding-top: 0.125rem;
+    vertical-align: top;
+}
+
+.button.secondary {
+    background-color: var(--color-accent-secondary);
+    border-color: var(--color-accent-secondary);
+    color: var(--color-page-bg);
+}
+
+.button.alt {
+    background-color: var(--color-grey-mid);
+    border-color: var(--color-grey-mid);
+    color: var(--color-page-bg);
+}
+
+.button:focus,
+.button:hover {
+    border-color: var(--color-link);
+    background-color: var(--color-page-bg);
+    color: var(--color-link);
+}

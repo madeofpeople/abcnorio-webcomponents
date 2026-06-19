@@ -1,5 +1,12 @@
 import { buildEventTeaserPayload } from './event-teaser-payload.js';
 
+export const metadata = {
+  deps: {
+    css: [],
+    js: [],
+  },
+};
+
 export default {
   default: {
     props: buildEventTeaserPayload(

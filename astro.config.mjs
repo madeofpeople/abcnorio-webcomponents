@@ -2,10 +2,11 @@ import { defineConfig } from 'astro/config';
 import stargazer from 'astro-stargazer';
 
 const designTokensRoot = './src/design-tokens';
+const siteDomain = process.env.DOMAIN_COMPONENTS;
 
 export default defineConfig({
     integrations: [stargazer({
-        base: '/'
+        base: '/lib'
     })],
     build: {
         // Keeps file structures clean (e.g., /user-card/index.html)
@@ -16,7 +17,7 @@ export default defineConfig({
             allow: [designTokensRoot]
         },
         port: 3033,
-        allowedHosts: process.env.DOMAIN_COMPONENTS
+        allowedHosts: siteDomain
     },
     vite: {
         css: {

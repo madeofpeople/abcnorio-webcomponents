@@ -2,6 +2,8 @@
 import EventTeaser from '../event-teaser/event-teaser.astro';
 import ArticleTeaser from '../article-teaser/article-teaser.astro';
 import { buildEventTeaserPayload } from '../event-teaser/event-teaser-payload.js';
+import eventTeaserStylesHref from '../event-teaser/event-teaser.scss?url';
+import articleTeaserStylesHref from '../article-teaser/article-teaser.scss?url';
 
 const {
   class: className,
@@ -50,6 +52,8 @@ const displayCount = typeof totalResults === 'number' ? totalResults : sourceIte
 ---
 
 <content-listing id={mountId} class:list={['content-listing', className]} data-component="abcnorio/content-listing">
+  <link rel="stylesheet" href={eventTeaserStylesHref} />
+  <link rel="stylesheet" href={articleTeaserStylesHref} />
   <p class="content-listing__count">Displaying {displayCount} items.</p>
 
   <section

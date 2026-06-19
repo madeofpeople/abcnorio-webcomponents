@@ -4,6 +4,7 @@ event-teaser {
   article.teaser.events {
     position: relative;
     aspect-ratio: 3 / 4;
+    max-width: 400px;
     background-color: var(--color-event-teaser-bg, #ffbaba);
     border: 2px solid transparent;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
@@ -122,6 +123,7 @@ event-teaser {
 
       &::after {
         position: absolute;
+        box-sizing: border-box;
         content: 'Past Event';
         padding: 1rem 0.5rem;
         font-size: 1.2rem;

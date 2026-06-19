@@ -1,0 +1,1 @@
+class e extends HTMLElement{connectedCallback(){this.dataset.upgraded!=="true"&&(this.dataset.upgraded="true",this.classList.add("is-upgraded"))}}customElements.get("homepage-events-listing")||customElements.define("homepage-events-listing",e);

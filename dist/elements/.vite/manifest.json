@@ -1,0 +1,68 @@
+{
+  "src/components/add-to-calendar/add-to-calendar.js": {
+    "file": "add-to-calendar.js",
+    "name": "add-to-calendar",
+    "src": "src/components/add-to-calendar/add-to-calendar.js",
+    "isEntry": true
+  },
+  "src/components/article-teaser/article-teaser.js": {
+    "file": "article-teaser.js",
+    "name": "article-teaser",
+    "src": "src/components/article-teaser/article-teaser.js",
+    "isEntry": true
+  },
+  "src/components/articles-listing/articles-listing.js": {
+    "file": "articles-listing.js",
+    "name": "articles-listing",
+    "src": "src/components/articles-listing/articles-listing.js",
+    "isEntry": true
+  },
+  "src/components/articles-teaser/articles-teaser.js": {
+    "file": "articles-teaser.js",
+    "name": "articles-teaser",
+    "src": "src/components/articles-teaser/articles-teaser.js",
+    "isEntry": true
+  },
+  "src/components/content-listing/content-listing.js": {
+    "file": "content-listing.js",
+    "name": "content-listing",
+    "src": "src/components/content-listing/content-listing.js",
+    "isEntry": true
+  },
+  "src/components/event-listing/event-listing.js": {
+    "file": "event-listing.js",
+    "name": "event-listing",
+    "src": "src/components/event-listing/event-listing.js",
+    "isEntry": true
+  },
+  "src/components/event-teaser/event-teaser.js": {
+    "file": "event-teaser.js",
+    "name": "event-teaser",
+    "src": "src/components/event-teaser/event-teaser.js",
+    "isEntry": true
+  },
+  "src/components/homepage-articles-listing/homepage-articles-listing.js": {
+    "file": "homepage-articles-listing.js",
+    "name": "homepage-articles-listing",
+    "src": "src/components/homepage-articles-listing/homepage-articles-listing.js",
+    "isEntry": true
+  },
+  "src/components/homepage-events-listing/homepage-events-listing.js": {
+    "file": "homepage-events-listing.js",
+    "name": "homepage-events-listing",
+    "src": "src/components/homepage-events-listing/homepage-events-listing.js",
+    "isEntry": true
+  },
+  "src/components/segmented-control/segmented-control.js": {
+    "file": "segmented-control.js",
+    "name": "segmented-control",
+    "src": "src/components/segmented-control/segmented-control.js",
+    "isEntry": true
+  },
+  "src/components/social-share/social-share.js": {
+    "file": "social-share.js",
+    "name": "social-share",
+    "src": "src/components/social-share/social-share.js",
+    "isEntry": true
+  }
+}

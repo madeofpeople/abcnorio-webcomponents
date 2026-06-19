@@ -1,11 +1,14 @@
 ---
 const { attributes } = Astro.props;
+const iframeAttributes = {
+  src: attributes.url,
+  responsive: 'true',
+  allowfullscreen: true,
+  allow: 'autoplay; fullscreen; web-share; xr-spatial-tracking;',
+};
 ---
 <iframe
-  src={attributes.url}
-  responsive="true"
-  allowfullscreen
-  allow="autoplay; fullscreen; web-share; xr-spatial-tracking;"
+  {...iframeAttributes}
 ></iframe>
 <style>
   iframe {

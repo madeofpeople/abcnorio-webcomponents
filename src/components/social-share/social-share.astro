@@ -1,4 +1,6 @@
 ---
+import Button from '../button/button.astro';
+
 const {
   title = '',
   excerpt = '',
@@ -15,7 +17,7 @@ const twitterHref = `https://twitter.com/intent/tweet?url=${encodeURIComponent(n
 
 <social-share data-component="abcnorio/social-share">
   <div class="social-links">
-    <button
+    <Button
       class="social-links__actuator alt"
       aria-controls="social-links__list"
       aria-expanded="false"
@@ -32,7 +34,7 @@ const twitterHref = `https://twitter.com/intent/tweet?url=${encodeURIComponent(n
         ></path>
       </svg>
       <span>Share</span>
-    </button>
+    </Button>
 
     <nav class="social-links__list" id="social-links__list">
       <ul>

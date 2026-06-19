@@ -1,3 +1,13 @@
+export const metadata = {
+  deps: {
+    css: [
+      'styles/event-teaser.css',
+      'styles/article-teaser.css',
+    ],
+    js: [],
+  },
+};
+
 export default {
   default: {
     props: {

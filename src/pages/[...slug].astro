@@ -1,0 +1,41 @@
+---
+
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { getFixtureComponentByPath, getFixtureStaticPaths } from '../util/component-fixtures.js';
+
+export function getStaticPaths() {
+  return getFixtureStaticPaths();
+}
+
+const { componentPath, fixture } = Astro.props;
+const fixtureComponent = getFixtureComponentByPath(componentPath);
+
+const container = await AstroContainer.create();
+const renderedResponse = await container.renderToResponse(fixtureComponent, {
+  props: fixture.props,
+  slots: fixture.slots,
+});
+const renderedHtml = await renderedResponse.text();
+const extractedStyles = renderedHtml.match(/<style\b[\s\S]*?<\/style>|<link\b[^>]*>/gi)?.join('\n') ?? '';
+const extractedBody = renderedHtml.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? renderedHtml;
+const fixtureMarkup = `${extractedStyles}${extractedBody}`
+  .replace(/^<!DOCTYPE html>/i, '')
+  .replace(/<script\b[\s\S]*?<\/script>/gi, '')
+  .trim();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <Fragment set:html={fixtureMarkup} />
+  </body>
+</html>
+
+<style is:global lang="scss">
+  @use '../styles/foundation';
+</style>
+

@@ -1,0 +1,31 @@
+@use 'normalize.css/normalize.css';
+@use '@tokens/breakpoints';
+@use '@tokens/colors';
+@use '@tokens/typography';
+@use '@tokens/mixins/visibility';
+
+:root {
+    --font-family-heading: var(--font-super-elite);
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+}
+
+body {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+a,
+a:visited {
+    color: var(--color-nav-link);
+    text-decoration: underline;
+}
+
+.sr-only {
+    @include visibility.sr-only();
+}

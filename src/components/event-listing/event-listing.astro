@@ -2,6 +2,7 @@
 import EventTeaser from '../event-teaser/event-teaser.astro';
 import Pagination from '../pagination/pagination.astro';
 import { buildEventTeaserPayload } from '../event-teaser/event-teaser-payload.js';
+import eventTeaserStylesHref from '../event-teaser/event-teaser.scss?url';
 
 interface EventTeaserItem {
   href?: string;
@@ -70,7 +71,8 @@ const resolvedCountText = typeof countText === 'string' && countText.trim() !== 
   : `The current filters are displaying ${displayCount} ${displayCount === 1 ? 'event' : 'events'}.`;
 ---
 
-<event-listing id={mountId} data-component="abcnorio/event-listing">
+<event-listing id={mountId} class="event-listing" data-component="abcnorio/event-listing">
+  <link rel="stylesheet" href={eventTeaserStylesHref} />
   <p class="event-listing__count events__count">{resolvedCountText}</p>
 
   <section

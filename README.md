@@ -13,7 +13,10 @@ Current package scripts:
 : Starts dev server on `0.0.0.0:3033` for container/proxy use.
 
 - `npm run build`
-: Builds fixtures into [dist](dist) and generates [dist/fixtures-manifest.json](dist/fixtures-manifest.json).
+: Builds fixtures into [dist](dist) and generates [dist/manifest.json](dist/manifest.json).
+
+- `npm run check:manifest`
+: Validates the manifest contract against dist assets without rebuilding. Also available as `just verify-webcomponents`.
 
 - `npm run check`
 : Runs Astro type/content checks.
@@ -23,7 +26,9 @@ Use `npm run build` as the canonical artifact build command for ingestion.
 ## Package Consumer Contract
 
 - Package installs are expected to expose prebuilt library artifacts under [dist](dist).
-- Required artifacts for downstream ingestion are [dist/fixtures-manifest.json](dist/fixtures-manifest.json) and [dist/styles/components.css](dist/styles/components.css).
+- Required artifact for downstream ingestion is [dist/manifest.json](dist/manifest.json).
+- Manifest schema per component: `id`, `fixtures`, `css`, `js`, `deps` — where `deps` is a flat array of relative dist paths for transitive CSS/JS assets the component requires (e.g. a listing declaring dependency on its child teaser stylesheet). Fixture modules declare deps via `export const metadata = { deps: { css: [], js: [] } }`.
+- Runtime shared CSS remains available at [dist/styles/components.css](dist/styles/components.css) when emitted.
 - Consumers should ingest from package dist and should not execute package-internal build utilities.
 
 ### WP Block Router Export

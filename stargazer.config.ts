@@ -7,10 +7,11 @@ import eventTeaserFixtures from './src/components/event-teaser/event-teaser.fixt
 
 const config: StargazerConfig = {
   mode: 'files',
-  base: '/',
-  defaultLayout: 'canvas',
+  base: '/lib',
+  defaultLayout: 'componentView',
   layouts: {
     canvas: 'src/layouts/StargazerPreviewLayout.astro',
+    componentView: 'src/layouts/StargazerComponentViewLayout.astro',
   },
   darkMode: {
     method: 'attribute',
@@ -18,11 +19,7 @@ const config: StargazerConfig = {
     dark: 'dark',
     light: 'light',
   },
-  navLinks: [
-    // { label: 'Demo Home', href: '/' },
-    // { label: 'Events', href: stargazerEventsHref, target: '_blank', highlight: true },
-  ],
-  logoHref: '/',
+  logoHref: '/lib/',
   components: [
     {
       name: 'Add To Calendar',

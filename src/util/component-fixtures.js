@@ -2,12 +2,40 @@
 const fixtureModules = import.meta.glob('../components/*/*.fixture.js', { eager: true });
 const componentModules = import.meta.glob('../components/*/*.astro', { eager: true });
 
+function fail(message) {
+  throw new Error(message);
+}
+
 function assertPlainObject(value, message) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    throw new Error(message);
+    fail(message);
   }
 
   return value;
+}
+
+function assertModuleDefault(moduleValue, message) {
+  if (!moduleValue?.default) {
+    fail(message);
+  }
+
+  return moduleValue.default;
+}
+
+function parseFixturePath(fixturePath) {
+  const pathParts = fixturePath.split('/');
+  const componentName = pathParts.at(-2);
+  const fixtureFileName = pathParts.at(-1);
+  const expectedFixtureFile = `${componentName}.fixture.js`;
+
+  if (!componentName || fixtureFileName !== expectedFixtureFile) {
+    fail(`Fixture file "${fixturePath}" must match its folder name.`);
+  }
+
+  return {
+    componentName,
+    componentPath: fixturePath.replace('.fixture.js', '.astro'),
+  };
 }
 
 function normalizeFixture(componentName, variantName, fixture) {
@@ -35,21 +63,11 @@ function normalizeFixture(componentName, variantName, fixture) {
 
 function buildFixtureEntries() {
   return Object.entries(fixtureModules).flatMap(([fixturePath, fixtureModule]) => {
-    const pathParts = fixturePath.split('/');
-    const componentName = pathParts.at(-2);
-    const fixtureFileName = pathParts.at(-1);
-    const expectedFixtureFile = `${componentName}.fixture.js`;
-
-    if (!componentName || fixtureFileName !== expectedFixtureFile) {
-      throw new Error(`Fixture file \"${fixturePath}\" must match its folder name.`);
-    }
-
-    const componentPath = fixturePath.replace('.fixture.js', '.astro');
-    const componentModule = componentModules[componentPath];
-
-    if (!componentModule?.default) {
-      throw new Error(`Fixture file \"${fixturePath}\" is missing matching component \"${componentPath}\".`);
-    }
+    const { componentName, componentPath } = parseFixturePath(fixturePath);
+    const component = assertModuleDefault(
+      componentModules[componentPath],
+      `Fixture file "${fixturePath}" is missing matching component "${componentPath}".`,
+    );
 
     const fixtures = assertPlainObject(
       fixtureModule.default,
@@ -57,14 +75,15 @@ function buildFixtureEntries() {
     );
 
     if (!('default' in fixtures)) {
-      throw new Error(`Fixture file \"${fixturePath}\" must define a default fixture.`);
+      fail(`Fixture file "${fixturePath}" must define a default fixture.`);
     }
 
     return Object.entries(fixtures).map(([variantName, fixture]) => ({
       componentName,
       variantName,
       slug: variantName === 'default' ? componentName : `${componentName}/${variantName}`,
-      component: componentModule.default,
+      componentPath,
+      component,
       fixture: normalizeFixture(componentName, variantName, fixture),
     }));
   });
@@ -77,7 +96,18 @@ export function getFixtureStaticPaths() {
     params: {
       slug: entry.slug,
     },
+    props: {
+      componentPath: entry.componentPath,
+      fixture: entry.fixture,
+    },
   }));
+}
+
+export function getFixtureComponentByPath(componentPath) {
+  return assertModuleDefault(
+    componentModules[componentPath],
+    `Unknown fixture component path: ${componentPath}`,
+  );
 }
 
 export function getFixtureEntryBySlug(slugParam) {

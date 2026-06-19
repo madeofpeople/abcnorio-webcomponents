@@ -71,6 +71,10 @@ $stagger-step: 23ms;
   animation: event-teaser-in $event-teaser-in-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
+.event-listing {
+  border: 1px #000 solid;
+}
+
 .teaser-list {
   @include layout.max-width();
   display: grid;
