@@ -53,7 +53,7 @@ Recommended boundary:
 - `npm run dev`
 : Starts dev server.
 
-Open `/stargazer` for component previews. Stargazer registry is manually curated in [stargazer.config.ts](stargazer.config.ts) (`mode: 'files'`).
+Open `/` for the fixture index, then follow the linked fixture routes. Component previewing now happens in site-dev workshop pages; this package stays focused on component source and fixture routes.
 
 ## Design Tokens
 

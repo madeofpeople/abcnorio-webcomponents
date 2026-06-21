@@ -1,13 +1,27 @@
+---
+import { getFixtureStaticPaths } from '../util/component-fixtures.js';
+
+const fixturePaths = getFixtureStaticPaths();
+---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="refresh" content="0; url=/lib/" />
-    <title>Redirecting…</title>
-    <link rel="canonical" href="/lib/" />
+    <title>abcnorio-webcomponents</title>
   </head>
   <body>
-    <p>Redirecting to component library preview: <a href="/lib/">/lib/</a>.</p>
+    <main>
+      <h1>abcnorio-webcomponents</h1>
+      <p>Open a fixture route below. This package now serves plain fixture pages.</p>
+      <ul>
+        {fixturePaths.map(({ params }) => (
+          <li>
+            <a href={`/${params.slug}`}>{params.slug}</a>
+          </li>
+        ))}
+      </ul>
+    </main>
   </body>
 </html>

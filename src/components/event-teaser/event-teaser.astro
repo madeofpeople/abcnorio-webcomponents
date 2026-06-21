@@ -3,7 +3,6 @@ const {
   class: className,
   href = '#',
   title = 'Untitled event',
-  showTeaser = true,
   priority = false,
   isPastEvent = false,
   startLabelDate = '',
@@ -15,32 +14,31 @@ const {
 const imageProps = image && typeof image === 'object' ? image : null;
 ---
 
-<event-teaser class:list={['events-teaser', className]} data-component="abcnorio/event-teaser">
-  <article class:list={['teaser', 'events', { past: isPastEvent }]}>
-    <a href={href}>
-      {showTeaser !== false && imageProps?.url && (
-        <img
-          src={imageProps.url}
-          alt={imageProps.alt || ''}
-          width={Number(imageProps.width || 290)}
-          height={Number(imageProps.height || 9999)}
-          decoding="async"
-          fetchpriority={priority ? 'high' : undefined}
-          loading={priority ? undefined : 'lazy'}
-        />
+<event-teaser class:list={['event-teaser', 'events', className, { 'event-teaser--past': isPastEvent }]} data-component="abcnorio/event-teaser">
+  <a href={href}>
+    {imageProps?.url && (
+      <img
+        class="event-teaser__image"
+        src={imageProps.url}
+        alt={imageProps.alt || ''}
+        width={Number(imageProps.width || 290)}
+        height={Number(imageProps.height || 9999)}
+        decoding="async"
+        fetchpriority={priority ? 'high' : undefined}
+        loading={priority ? undefined : 'lazy'}
+      />
+    )}
+
+    <div class="event-teaser__content">
+      {(startLabelDate || startLabelTime) && (
+        <time class="event-teaser__date" datetime={startDateTime}>
+          <span>{startLabelDate}<br />@ {startLabelTime}</span>
+        </time>
       )}
 
-      <div class="content">
-        {(startLabelDate || startLabelTime) && (
-          <time datetime={startDateTime}>
-            <span>{startLabelDate}<br />@ {startLabelTime}</span>
-          </time>
-        )}
-
-        <h3 set:html={title} />
-      </div>
-    </a>
-  </article>
+      <h3 class="event-teaser__title" set:html={`${title} ` } />
+    </div>
+  </a>
 </event-teaser>
 
 <script>

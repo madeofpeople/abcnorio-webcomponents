@@ -1,20 +1,5 @@
-articles-teaser {
-  display: block;
+@use "mixins/teasers";
 
-  article.teaser.article {
-    h3 {
-      font-size: 1rem;
-    }
-
-    a {
-      color: var(--color-text);
-      text-decoration: none;
-
-      &:hover,
-      &:focus {
-        color: var(--color-link);
-        text-decoration: underline;
-      }
-    }
-  }
+.article-teaser {
+  @include teasers.teaser();
 }

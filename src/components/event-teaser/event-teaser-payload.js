@@ -39,7 +39,6 @@ export function buildEventTeaserPayload(attributes = {}, options = {}) {
     event_end_date: endRaw = '',
     event_effective_end: effectiveEndRaw = '',
     featured_image: featuredImage = null,
-    showTeaser = true,
     priority = false,
   } = attributes;
   const hrefBase = options.hrefBase || '/events';
@@ -59,7 +58,6 @@ export function buildEventTeaserPayload(attributes = {}, options = {}) {
     slug,
     title,
     excerpt,
-    showTeaser,
     priority,
     isPastEvent,
     startLabelDate: start ? start.label_date : '',

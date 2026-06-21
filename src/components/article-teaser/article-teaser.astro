@@ -1,45 +1,58 @@
 ---
 const {
   class: className,
-  href = '#',
-  title = 'Untitled article',
-  dateLabel = '',
-  dateTime = '',
-  placeholderText = 'Article teaser placeholder',
+  href = "#",
+  title = "Untitled article",
+  dateLabel = "",
+  dateTime = "",
+  placeholderText = "Article teaser placeholder",
   image = null,
 } = Astro.props;
 
-const imageProps = image && typeof image === 'object' ? image : null;
+const imageProps = image && typeof image === "object" ? image : null;
 ---
 
-<article-teaser class:list={['article-teaser', className]} data-component="abcnorio/article-teaser">
-  <article class="article-teaser__card">
-    <a class="article-teaser__link" href={href}>
-      {imageProps?.url && (
+<article-teaser
+  class:list={[
+    "article-teaser",
+    "articles",
+    className,
+  ]}
+  data-component="abcnorio/article-teaser"
+>
+  <a href={href}>
+    {
+      imageProps?.url && (
         <img
           class="article-teaser__image"
           src={imageProps.url}
-          alt={imageProps.alt || ''}
+          alt={imageProps.alt || ""}
           width={Number(imageProps.width || 900)}
           height={Number(imageProps.height || 600)}
           decoding="async"
           loading="lazy"
         />
-      )}
+      )
+    }
 
-      <div class="article-teaser__content">
-        {dateLabel && <time class="article-teaser__date" datetime={dateTime}>{dateLabel}</time>}
-        <h3 class="article-teaser__title" set:html={title} />
-        <p class="article-teaser__placeholder">{placeholderText}</p>
-      </div>
-    </a>
-  </article>
+    <div class="article-teaser__content">
+      {
+        dateLabel && (
+          <time class="article-teaser__date" datetime={dateTime}>
+            {dateLabel}
+          </time>
+        )
+      }
+      <h3 class="article-teaser__title" set:html={title} />
+      <p class="article-teaser__placeholder">{placeholderText}</p>
+    </div>
+  </a>
 </article-teaser>
 
 <script>
-  import './article-teaser.js';
+  import "./article-teaser.js";
 </script>
 
 <style lang="scss">
-  @use './article-teaser.scss';
+  @use "./article-teaser.scss";
 </style>
