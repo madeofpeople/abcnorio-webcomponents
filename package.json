@@ -18,8 +18,6 @@
     "./add-to-calendar/element": "./src/components/add-to-calendar/add-to-calendar.js",
     "./articles-listing": "./src/components/articles-listing/articles-listing.astro",
     "./articles-listing/element": "./src/components/articles-listing/articles-listing.js",
-    "./articles-teaser": "./src/components/articles-teaser/articles-teaser.astro",
-    "./articles-teaser/element": "./src/components/articles-teaser/articles-teaser.js",
     "./article-teaser": "./src/components/article-teaser/article-teaser.astro",
     "./article-teaser/element": "./src/components/article-teaser/article-teaser.js",
     "./content-listing": "./src/components/content-listing/content-listing.astro",

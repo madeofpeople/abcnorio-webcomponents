@@ -1,5 +1,0 @@
-@use "mixins/teasers";
-
-.article-teaser {
-  @include teasers.teaser();
-}

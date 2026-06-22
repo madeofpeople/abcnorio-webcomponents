@@ -15,7 +15,12 @@ export default {
         title: { rendered: 'Example event' },
         excerpt: { rendered: '' },
         event_start_date: '2026-06-06 19:00:00',
-        featured_image: null,
+        featured_image: {
+          url: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=900&q=80',
+          alt: 'Audience at an event',
+          width: 900,
+          height: 1200,
+        },
         priority: true,
       },
       { hrefBase: '/events' },

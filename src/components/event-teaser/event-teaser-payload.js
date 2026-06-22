@@ -63,7 +63,7 @@ export function buildEventTeaserPayload(attributes = {}, options = {}) {
     startLabelDate: start ? start.label_date : '',
     startLabelTime: start ? start.label_time : '',
     startDateTime: start ? start.datetime : startRaw,
-    image: featuredImage && featuredImage.url
+    featured_image: featuredImage && featuredImage.url
       ? {
           url: featuredImage.url,
           alt: featuredImage.alt || '',

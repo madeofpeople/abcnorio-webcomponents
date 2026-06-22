@@ -3,11 +3,6 @@ declare module 'abcnorio-webcomponents/article-teaser' {
   export default Component;
 }
 
-declare module 'abcnorio-webcomponents/articles-teaser' {
-  const Component: any;
-  export default Component;
-}
-
 declare module 'abcnorio-webcomponents/articles-listing' {
   const Component: any;
   export default Component;

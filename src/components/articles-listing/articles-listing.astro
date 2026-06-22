@@ -1,5 +1,5 @@
 ---
-import ArticlesTeaser from '../articles-teaser/articles-teaser.astro';
+import ArticleTeaser from '../article-teaser/article-teaser.astro';
 
 interface Props {
   articles?: any[];
@@ -18,6 +18,49 @@ const {
   busy = false,
   hrefBase = '/articles',
 } = Astro.props as Props;
+
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatArticleDate(raw: string): { datetime: string; label: string } | null {
+  const value = String(raw || '').trim();
+  if (!value) return null;
+
+  const datePart = value.slice(0, 10);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(datePart);
+  if (!match) return null;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (!year || month < 1 || month > 12 || day < 1 || day > 31) return null;
+
+  return {
+    datetime: `${datePart}T00:00:00`,
+    label: `${months[month - 1]} ${day}, ${year}`,
+  };
+}
+
+function toArticleTeaserProps(item: any, baseHref: string) {
+  const dateRaw = item?.acf?.item_date ?? item?.date?.slice(0, 10) ?? '';
+  const date = formatArticleDate(dateRaw);
+  const slug = item?.slug || '';
+  const featuredImage = item?._embedded?.['wp:featuredmedia']?.[0];
+  const cardSize = featuredImage?.media_details?.sizes?.['abcnorio-card'];
+
+  return {
+    href: slug ? `${baseHref}/${slug}` : baseHref,
+    title: item?.title?.rendered || slug || 'Untitled',
+    dateLabel: date?.label || '',
+    dateTime: date?.datetime || '',
+    excerpt: item?.excerpt,
+    featured_image: {
+      url: item?.featured_image?.url ?? cardSize?.source_url ?? featuredImage?.source_url ?? featuredImage?.url ?? '',
+      alt: item?.featured_image?.alt ?? featuredImage?.alt_text ?? '',
+      width: Number(item?.featured_image?.width || cardSize?.width || 900),
+      height: Number(item?.featured_image?.height || cardSize?.height || 600),
+    },
+  };
+}
 ---
 <articles-listing data-component="abcnorio/articles-listing">
   <section
@@ -28,7 +71,7 @@ const {
     aria-busy={busy ? 'true' : 'false'}
   >
     {articles.map((result) => (
-      <ArticlesTeaser data={result} hrefBase={hrefBase} />
+      <ArticleTeaser {...toArticleTeaserProps(result, hrefBase)} />
     ))}
   </section>
 </articles-listing>

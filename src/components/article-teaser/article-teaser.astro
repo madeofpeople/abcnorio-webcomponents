@@ -1,21 +1,21 @@
 ---
 const {
   class: className,
-  href = "#",
-  title = "Untitled article",
-  dateLabel = "",
-  dateTime = "",
-  placeholderText = "Article teaser placeholder",
-  image = null,
+  href = '#',
+  title = 'Untitled article',
+  dateLabel = '',
+  dateTime = '',
+  featured_image = null,
 } = Astro.props;
 
-const imageProps = image && typeof image === "object" ? image : null;
+const imageProps = featured_image && typeof featured_image === 'object' ? featured_image : null;
+const excerpt = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 ---
 
 <article-teaser
   class:list={[
-    "article-teaser",
-    "articles",
+    'article-teaser',
+    'articles',
     className,
   ]}
   data-component="abcnorio/article-teaser"
@@ -26,7 +26,7 @@ const imageProps = image && typeof image === "object" ? image : null;
         <img
           class="article-teaser__image"
           src={imageProps.url}
-          alt={imageProps.alt || ""}
+          alt={imageProps.alt || ''}
           width={Number(imageProps.width || 900)}
           height={Number(imageProps.height || 600)}
           decoding="async"
@@ -44,7 +44,7 @@ const imageProps = image && typeof image === "object" ? image : null;
         )
       }
       <h3 class="article-teaser__title" set:html={title} />
-      <p class="article-teaser__placeholder">{placeholderText}</p>
+      <div class="article-teaser__excerpt" set:html={excerpt} />
     </div>
   </a>
 </article-teaser>

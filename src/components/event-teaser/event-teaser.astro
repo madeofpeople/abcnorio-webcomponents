@@ -8,10 +8,10 @@ const {
   startLabelDate = '',
   startLabelTime = '',
   startDateTime = '',
-  image = null,
+  featured_image = null,
 } = Astro.props;
 
-const imageProps = image && typeof image === 'object' ? image : null;
+const imageProps = featured_image && typeof featured_image === 'object' ? featured_image : null;
 ---
 
 <event-teaser class:list={['event-teaser', 'events', className, { 'event-teaser--past': isPastEvent }]} data-component="abcnorio/event-teaser">
