@@ -1,5 +1,4 @@
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+import { formatEventDate } from '../../util/dates.js';
 
 const normalizeHref = (basePath, slug) => {
   const [pathPart, queryPart = ''] = String(basePath).split('?');
@@ -8,27 +7,7 @@ const normalizeHref = (basePath, slug) => {
   return queryPart ? `${normalizedPath}?${queryPart}` : normalizedPath;
 };
 
-export function formatEventDate(raw) {
-  if (!raw) {
-    return null;
-  }
-
-  const date = new Date(raw);
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-
-  const hour = date.getHours() % 12 || 12;
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const ampm = date.getHours() < 12 ? 'AM' : 'PM';
-
-  return {
-    datetime: String(raw).replace(' ', 'T'),
-    label_date: `${WEEKDAYS[date.getDay()]}, ${MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`,
-    label_time: `${hour}:${minutes}`,
-    ampm,
-  };
-}
+export { formatEventDate };
 
 export function buildEventTeaserPayload(attributes = {}, options = {}) {
   const {

@@ -10,10 +10,12 @@
     "src/components",
     "src/fixtures",
     "src/styles",
-    "src/types"
+    "src/types",
+    "src/util"
   ],
   "exports": {
     "./fixtures": "./src/fixtures/index.js",
+    "./util/dates": "./src/util/dates.js",
     "./add-to-calendar": "./src/components/add-to-calendar/add-to-calendar.astro",
     "./add-to-calendar/element": "./src/components/add-to-calendar/add-to-calendar.js",
     "./articles-listing": "./src/components/articles-listing/articles-listing.astro",
