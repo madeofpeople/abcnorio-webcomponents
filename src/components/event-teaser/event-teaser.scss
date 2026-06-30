@@ -10,8 +10,11 @@
 
     .event-teaser__content {
       &__date {
-        color: #333;
-        background-color: var(--color-grey-light);
+        span {
+          display: block;
+          color: #333;
+          background-color: var(--color-grey-light);
+        }
       }
 
       .event-teaser__title {

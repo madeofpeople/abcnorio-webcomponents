@@ -17,6 +17,7 @@ const {
   component,
   attributes,
   innerBlocks,
+  isSlider,
   Block,
   restPath,
   cmsUrl,
@@ -24,6 +25,8 @@ const {
   embedRegistry = {},
   showDebug = true,
 } = Astro.props;
+
+const RecursiveBlock = Block || Astro.self;
 
 const baseRegistry = {
   'core/paragraph': ParagraphBlock,
@@ -68,9 +71,13 @@ const shouldRenderDebug = !Component && showDebug;
     attributes={attributes}
     component={component}
     innerBlocks={innerBlocks || null}
-    Block={Block}
+    Block={RecursiveBlock}
+    isSlider={isSlider}
     restPath={restPath}
     cmsUrl={cmsUrl}
+    registry={registry}
+    embedRegistry={embedRegistry}
+    showDebug={showDebug}
   />
 )}
 

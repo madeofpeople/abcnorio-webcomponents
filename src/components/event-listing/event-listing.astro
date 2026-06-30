@@ -1,8 +1,10 @@
 ---
-import EventTeaser from '../event-teaser/event-teaser.astro';
-import Pagination from '../pagination/pagination.astro';
-import { buildEventTeaserPayload } from '../event-teaser/event-teaser-payload.js';
-import eventTeaserStylesHref from '../event-teaser/event-teaser.scss?url';
+import EventTeaser from "../event-teaser/event-teaser.astro";
+import Pagination from "../pagination/pagination.astro";
+import { buildEventTeaserPayload } from "../event-teaser/event-teaser-payload.js";
+import eventTeaserStylesHref from "../event-teaser/event-teaser.scss?url";
+import eventListingStylesHref from "../event-listing/event-listing.scss?url";
+import 'blaze-slider/dist/blaze.css';
 
 interface EventTeaserItem {
   href?: string;
@@ -17,6 +19,7 @@ interface EventTeaserItem {
   page?: number;
   totalResults?: number;
   totalPages?: number;
+  isSlider?: boolean;
 
   featured_image?: {
     url?: string;
@@ -28,23 +31,27 @@ interface EventTeaserItem {
 
 const {
   class: className,
-  ariaLabel = 'Event results',
+  ariaLabel = "Event results",
   busy = false,
   items = [],
   totalResults,
   totalPages,
+  isSlider = false,
+  showCount = false,
+  showPagination = false,
   page,
-  hrefBase = '/events',
-  mountId = 'events-listing',
-  teaserListId = 'teaser-list',
-  paginationId = 'pagination',
-  filtersFormSelector = '#event-filters-form',
+  hrefBase = "/events",
+  mountId = "events-listing",
+  teaserListId = "teaser-list",
+  paginationId = "pagination",
+  filtersFormSelector = "#event-filters-form",
   countText,
 } = Astro.props;
 
 const sourceItems = (Array.isArray(items) ? items : []) as any[];
 
-const looksLikeTeaserPayload = (item: any) => typeof item?.href === 'string' || typeof item?.startLabelDate === 'string';
+const looksLikeTeaserPayload = (item: any) =>
+  typeof item?.href === "string" || typeof item?.startLabelDate === "string";
 
 const normalizedItems = sourceItems.map((item: any, index: number) => {
   if (looksLikeTeaserPayload(item)) {
@@ -55,38 +62,73 @@ const normalizedItems = sourceItems.map((item: any, index: number) => {
     {
       ...item,
       priority: item?.priority ?? index < 5,
-      event_start_date: item?.event_start_date ?? item?.meta?.event_start_date ?? '',
-      event_end_date: item?.event_end_date ?? item?.meta?.event_end_date ?? '',
-      event_effective_end: item?.event_effective_end ?? item?.meta?.event_effective_end ?? '',
+      event_start_date:
+        item?.event_start_date ?? item?.meta?.event_start_date ?? "",
+      event_end_date: item?.event_end_date ?? item?.meta?.event_end_date ?? "",
+      event_effective_end:
+        item?.event_effective_end ?? item?.meta?.event_effective_end ?? "",
     },
     { hrefBase },
   );
 });
 
 const itemCount = normalizedItems.length;
-const displayCount = typeof totalResults === 'number' ? totalResults : itemCount;
-const resolvedCountText = typeof countText === 'string' && countText.trim() !== ''
-  ? countText
-  : `The current filters are displaying ${displayCount} ${displayCount === 1 ? 'event' : 'events'}.`;
+const displayCount =
+  typeof totalResults === "number" ? totalResults : itemCount;
+const resolvedCountText =
+  typeof countText === "string" && countText.trim() !== ""
+    ? countText
+    : `The current filters are displaying ${displayCount} ${displayCount === 1 ? "event" : "events"}.`;
 ---
 
-<event-listing id={mountId} class="event-listing" data-component="abcnorio/event-listing">
-  <link rel="stylesheet" href={eventTeaserStylesHref} />
+<event-listing
+  id={mountId}
+  class={`event-listing ${isSlider === true ? 'blaze-slider' : ''}`}
+  data-component="abcnorio/event-listing"
+  data-style-deps={
+    `${eventListingStylesHref}, ${eventTeaserStylesHref}`
+  }
+>
+  {showCount === true && (
   <p class="event-listing__count events__count">{resolvedCountText}</p>
+  )}
 
-  <section
+  {isSlider === true ? (
+    <div class="blaze-container">
+      <div class="blaze-track-container">
+
+        <section
+          id={teaserListId}
+          class={`teaser-list blaze-track`}
+          role="region"
+          aria-label={ariaLabel}
+          aria-busy={busy ? "true" : "false"}
+        >
+          {itemCount > 0 && normalizedItems.map((item) => <EventTeaser {...item} />)}
+        </section>
+
+      </div>
+
+
+      <button class="blaze-prev">previous</button>
+      <button class="blaze-next">next</button>
+      <div class="blaze-pagination"></div>
+    </div>
+  ):(
+      <section
     id={teaserListId}
-    class="teaser-list"
+    class={`teaser-list`}
     role="region"
     aria-label={ariaLabel}
-    aria-busy={busy ? 'true' : 'false'}
+    aria-busy={busy ? "true" : "false"}
   >
+    {itemCount > 0 && normalizedItems.map((item) => <EventTeaser {...item} />)}
+    </section>
 
-    {itemCount > 0 &&
-      normalizedItems.map((item) => <EventTeaser {...item} />)
-    }
-  </section>
-  <Pagination
+  )}
+
+  {showPagination === true && (
+    <Pagination
       id={paginationId}
       currentPage={page}
       totalPages={totalPages}
@@ -94,13 +136,14 @@ const resolvedCountText = typeof countText === 'string' && countText.trim() !== 
       hrefBase={hrefBase}
       hxTarget={`#${mountId}`}
       hxInclude={filtersFormSelector}
-  />
+    />
+  )}
 </event-listing>
 
 <script>
-  import './event-listing.js';
+  import "./event-listing.js";
 </script>
 
 <style lang="scss">
-  @use './event-listing.scss';
+  @use "./event-listing.scss";
 </style>

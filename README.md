@@ -48,6 +48,14 @@ Recommended boundary:
 - Keep presentational/default block routing in this package.
 - Keep site REST/query orchestration in consumer adapters.
 
+### Data Normalization Boundary
+
+- Keep raw WordPress REST fields as upstream source (`type`, `featured_media`, `_embedded`).
+- Normalize once at adapter/payload-builder boundary into canonical app shape:
+	- `post_type`
+	- `featured_image` object (`url`, `alt`, `width`, `height`) or `null`
+- UI components should consume canonical shape only and should not parse WP `_embedded` directly.
+
 ## Local Development
 
 - `npm run dev`

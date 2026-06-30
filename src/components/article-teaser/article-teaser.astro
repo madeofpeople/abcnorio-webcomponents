@@ -35,14 +35,15 @@ const excerpt = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
       )
     }
 
+    {
+      dateLabel && (
+        <time class="article-teaser__date" datetime={dateTime}>
+          {dateLabel}
+        </time>
+      )
+    }
+
     <div class="article-teaser__content">
-      {
-        dateLabel && (
-          <time class="article-teaser__date" datetime={dateTime}>
-            {dateLabel}
-          </time>
-        )
-      }
       <h3 class="article-teaser__title" set:html={title} />
       <div class="article-teaser__excerpt" set:html={excerpt} />
     </div>

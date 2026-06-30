@@ -1,0 +1,53 @@
+---
+import ArticleTeaser from '../article-teaser/article-teaser.astro';
+import { buildArticleTeaserPayload } from '../article-teaser/article-teaser-payload.js';
+
+interface Props {
+  articles?: any[];
+  id?: string;
+  class?: string;
+  ariaLabel?: string;
+  busy?: boolean;
+  hrefBase?: string;
+  showCount?: boolean;
+  totalResults?: number;
+}
+
+const {
+  articles = [],
+  id = 'articles__listing',
+  class: className,
+  ariaLabel = 'Article results',
+  busy = false,
+  hrefBase = '/articles',
+  showCount = false,
+  totalResults,
+} = Astro.props as Props;
+
+const displayCount = typeof totalResults === 'number' ? totalResults : articles.length;
+
+---
+<article-listing data-component="abcnorio/article-listing">
+  {showCount === true && (
+    <p class="article-listing__count">Displaying {displayCount} items.</p>
+  )}
+  <section
+    id={id}
+    class:list={['articles__listing', className]}
+    role="region"
+    aria-label={ariaLabel}
+    aria-busy={busy ? 'true' : 'false'}
+  >
+    {articles.map((result) => (
+      <ArticleTeaser {...buildArticleTeaserPayload(result, { hrefBase })} />
+    ))}
+  </section>
+</article-listing>
+
+<script>
+  import './article-listing.js';
+</script>
+
+<style lang="scss">
+  @use './article-listing.scss';
+</style>

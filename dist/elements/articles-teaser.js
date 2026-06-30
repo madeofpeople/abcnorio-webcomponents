@@ -1,1 +1,0 @@
-class e extends HTMLElement{connectedCallback(){this.dataset.upgraded!=="true"&&(this.dataset.upgraded="true",this.classList.add("is-upgraded"))}}customElements.get("articles-teaser")||customElements.define("articles-teaser",e);

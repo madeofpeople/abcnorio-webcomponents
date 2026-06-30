@@ -1,11 +1,11 @@
+@use "mixins/layout";
+
 .content-listing {
   display: block;
 }
 
 .content-listing__items {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  @include layout.card-grid();
 }
 
 .content-listing__count {

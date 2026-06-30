@@ -3,9 +3,9 @@
     display: block;
     position: relative;
     aspect-ratio: 3 / 4;
-    max-width: 400px;
-    max-height: 350px;
-    background-color: var(--color-event-teaser-bg, #ffbaba);
+    max-width: 345px;
+    max-height: 460px;
+    background-color: var(--color-event-teaser-bg);
     border: 2px solid transparent;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
     transition-property: box-shadow, background-color, border;
@@ -35,17 +35,18 @@
     }
 
     &__date {
-        display: inline;
         position: relative;
-        box-sizing: border-box;
-        max-width: max-content;
-        margin-bottom: 1rem;
         padding: 0.25rem 0.5rem;
-        transform: rotate3d(0, 0, 1, -15deg);
-        color: var(--color-event-teaser-bg, #ffbaba);
-        background-color: var(--color-text);
+        transform: rotate3d(0, 0, 1, -7deg);
         font-family: var(--font-impact-label-reversed), monospace;
         line-height: 1;
+        span {
+            display: table;
+            color: var(--color-event-teaser-bg);
+            background-color: var(--color-text);
+            border-left: 0.25rem var(--color-text) solid;
+            border-right: 0.25rem var(--color-text) solid;
+        }
     }
 
     &__title {
@@ -53,8 +54,8 @@
         display: block;
         width: border-box;
         position: relative;
-        color: var(--color-text);
-        background-color: var(--color-event-teaser-bg, #ffbaba);
+        color: var(--color-event-teaser-bg);
+        background-color:  var(--color-text);
         padding: 0.5rem 0 0.75rem 0.5rem;
         font-weight: 400;
         font-size: 0.875rem;
@@ -75,12 +76,14 @@
     &:focus,
     &:hover {
         .event-teaser__date {
-            color: var(--color-event-teaser-bg, #ffbaba);
-            background-color: var(--color-text);
+            span {
+                color: var(--color-event-teaser-bg);
+                background-color: var(--color-text);
+            }
         }
 
         .event-teaser__title {
-            color: var(--color-event-teaser-bg, #ffbaba);
+            color: var(--color-event-teaser-bg);
             background-color: var(--color-text);
         }
 

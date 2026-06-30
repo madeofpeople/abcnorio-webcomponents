@@ -2,6 +2,9 @@
 import EventTeaser from '../event-teaser/event-teaser.astro';
 import ArticleTeaser from '../article-teaser/article-teaser.astro';
 import { buildEventTeaserPayload } from '../event-teaser/event-teaser-payload.js';
+import { buildArticleTeaserPayload } from '../article-teaser/article-teaser-payload.js';
+import { isEvent, isArticle } from '../../util/normalize-post-type.js';
+import contentListingStylesHref from './content-listing.scss?url';
 import eventTeaserStylesHref from '../event-teaser/event-teaser.scss?url';
 import articleTeaserStylesHref from '../article-teaser/article-teaser.scss?url';
 
@@ -11,6 +14,7 @@ const {
   busy = false,
   items = [],
   totalResults,
+  showCount = false,
   mountId = 'content-listing',
   listId = 'content-listing-list',
   articleHrefBase = '/articles',
@@ -18,29 +22,9 @@ const {
 } = Astro.props;
 
 const sourceItems = Array.isArray(items) ? items : [];
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-function formatArticleDate(raw: string): { datetime: string; label: string } | null {
-  const value = String(raw || '').trim();
-  if (!value) return null;
-
-  const datePart = value.slice(0, 10);
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(datePart);
-  if (!match) return null;
-
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  if (!year || month < 1 || month > 12 || day < 1 || day > 31) return null;
-
-  return {
-    datetime: `${datePart}T00:00:00`,
-    label: `${months[month - 1]} ${day}, ${year}`,
-  };
-}
 
 const eventItems = sourceItems
-  .filter((item: any) => item?.post_type === 'event')
+  .filter((item: any) => isEvent(item))
   .map((item: any, index: number) => buildEventTeaserPayload(
     {
       ...item,
@@ -53,30 +37,23 @@ const eventItems = sourceItems
   ));
 
 const articleItems = sourceItems
-  .filter((item: any) => item?.post_type === 'article')
-  .map((item: any) => {
-    const slug = String(item?.slug || '').trim();
-    const rawDate = String(item?.acf?.item_date || item?.date || '').trim();
-    const date = formatArticleDate(rawDate);
-
-    return {
-      href: slug ? `${articleHrefBase}/${slug}` : articleHrefBase,
-      title: item?.title?.rendered || slug || 'Untitled article',
-      dateLabel: date?.label || '',
-      dateTime: date?.datetime || '',
-      featured_image: item?.featured_image ?? null,
-      placeholderText: 'Article teaser placeholder',
-    };
-  });
+  .filter((item: any) => isArticle(item))
+  .map((item: any) => buildArticleTeaserPayload(item, { hrefBase: articleHrefBase }));
 
 const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;
 ---
 
-<content-listing id={mountId} class:list={['content-listing', className]} data-component="abcnorio/content-listing">
-  <link rel="stylesheet" href={eventTeaserStylesHref} />
-  <link rel="stylesheet" href={articleTeaserStylesHref} />
+<content-listing
+  id={mountId}
+  class:list={['content-listing', className]}
+  data-component="abcnorio/content-listing"
+  data-style-deps={
+  `${contentListingStylesHref},${eventTeaserStylesHref},${articleTeaserStylesHref}`
+  }
+>
+{ showCount === true && (
   <p class="content-listing__count">Displaying {displayCount} items.</p>
-
+)}
   <section
     id={listId}
     class="content-listing__items"

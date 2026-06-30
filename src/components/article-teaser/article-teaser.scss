@@ -1,4 +1,5 @@
 @use "mixins/teasers";
+@use "@tokens/typography";
 
 .article-teaser {
   @include teasers.teaser();
@@ -6,21 +7,30 @@
   background-color: var(--color-grey-light);
 
   &__content {
+    box-sizing: border-box;
+    position: relative;
     padding: 1rem;
+    top: 9.25rem;
+    overflow: hidden;
   }
 
   &__date {
     line-height: 2;
     padding: 0.25rem 0.5rem;
+    position: absolute;
+    transform: none;
+    top: 0;
   }
 
   &__title {
-    display: relative;
+    display: absolute;
+    box-sizing: border-box;
     padding: 0.25rem 0.5rem;
-    margin-bottom: 1rem;
+    margin: 0 0 1rem 0;
     background-color: var(--color-text);
     color: var(--color-page-bg);
     font-weight: 900;
+    font-size: 1.25 * typography.$type-base * typography.$type-size-ratio px;
   }
 
   &__excerpt {
@@ -29,12 +39,14 @@
   }
 
   &__image {
+      position: absolute;
+      top: 0;
       object-fit: cover;
       object-position: top;
       opacity: 1;
       display: block;
       width: 100%;
-      height: 40%;
+      height: 12rem;
       mix-blend-mode: multiply;
     }
 

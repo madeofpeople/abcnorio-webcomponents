@@ -32,7 +32,7 @@ const imageProps = featured_image && typeof featured_image === 'object' ? featur
     <div class="event-teaser__content">
       {(startLabelDate || startLabelTime) && (
         <time class="event-teaser__date" datetime={startDateTime}>
-          <span>{startLabelDate} @ {startLabelTime}</span>
+          <span> {startLabelDate} </span><span> @ {startLabelTime}</span>
         </time>
       )}
 

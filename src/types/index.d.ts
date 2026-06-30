@@ -3,7 +3,11 @@ declare module 'abcnorio-webcomponents/article-teaser' {
   export default Component;
 }
 
-declare module 'abcnorio-webcomponents/articles-listing' {
+declare module 'abcnorio-webcomponents/article-teaser/payload' {
+  export function buildArticleTeaserPayload(attributes?: any, options?: any): any;
+}
+
+declare module 'abcnorio-webcomponents/article-listing' {
   const Component: any;
   export default Component;
 }
@@ -36,6 +40,21 @@ declare module 'abcnorio-webcomponents/event-listing' {
 declare module 'abcnorio-webcomponents/event-teaser' {
   const Component: any;
   export default Component;
+}
+
+declare module 'abcnorio-webcomponents/event-teaser/payload' {
+  export function buildEventTeaserPayload(attributes?: any, options?: any): any;
+}
+
+declare module 'abcnorio-webcomponents/util/resolve-featured-image' {
+  export function resolveFeaturedImage(source?: any, options?: any): any;
+}
+
+declare module 'abcnorio-webcomponents/util/normalize-post-type' {
+  export function normalizePostType(item?: any): any;
+  export function isEvent(item?: any): boolean;
+  export function isArticle(item?: any): boolean;
+  export function isCollective(item?: any): boolean;
 }
 
 declare module 'abcnorio-webcomponents/homepage-events-listing' {
@@ -98,7 +117,32 @@ declare module 'abcnorio-webcomponents/wp-blocks/group' {
   export default Component;
 }
 
+declare module 'abcnorio-webcomponents/wp-blocks/events-list' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/wp-blocks/collective-list' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/wp-blocks/content-list' {
+  const Component: any;
+  export default Component;
+}
+
 declare module 'abcnorio-webcomponents/wp-blocks/router' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/wp-blocks/wp-block-router' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/breadcrumbs' {
   const Component: any;
   export default Component;
 }

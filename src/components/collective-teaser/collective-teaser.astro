@@ -1,0 +1,50 @@
+---
+const {
+  class: className,
+  href = '#',
+  title = 'Untitled collective',
+  priority = false,
+  isPastCollective = false,
+  dateLabel = '',
+  timeLabel = '',
+  dateTime = '',
+  featured_image = null,
+} = Astro.props;
+
+const imageProps = featured_image && typeof featured_image === 'object' ? featured_image : null;
+---
+
+<collective-teaser class:list={['collective-teaser', className, { past: isPastCollective }]} data-component="abcnorio/collective-teaser">
+  <a href={href}>
+    {imageProps?.url && (
+      <img
+        class="collective-teaser__image"
+        src={imageProps.url}
+        alt={imageProps.alt || ''}
+        width={Number(imageProps.width || 290)}
+        height={Number(imageProps.height || 9999)}
+        decoding="async"
+        fetchpriority={priority ? 'high' : undefined}
+        loading={priority ? undefined : 'lazy'}
+      />
+    )}
+
+    <div class="collective-teaser__content">
+      {(dateLabel || timeLabel) && (
+        <time class="collective-teaser__date" datetime={dateTime}>
+          <span> {dateLabel} </span><span> @ {timeLabel}</span>
+        </time>
+      )}
+
+      <h3 class="collective-teaser__title" set:html={`${title} ` } />
+    </div>
+  </a>
+</collective-teaser>
+
+<script>
+  import './collective-teaser.js';
+</script>
+
+<style lang="scss">
+  @use './collective-teaser.scss';
+</style>

@@ -1,0 +1,66 @@
+---
+import CollectiveTeaser from '../collective-teaser/collective-teaser.astro';
+import { buildCollectiveTeaserPayload } from '../collective-teaser/collective-teaser-payload.js';
+import { isCollective } from '../../util/normalize-post-type.js';
+import contentListingStylesHref from './collective-listing.scss?url';
+import collectiveTeaserStylesHref from '../collective-teaser/collective-teaser.scss?url';
+
+const {
+  class: className,
+  ariaLabel = 'Content results',
+  busy = false,
+  items = [],
+  totalResults,
+  showCount = false,
+  mountId = 'collective-listing',
+  listId = 'collective-list',
+  collectiveHrefBase = '/collectives',
+} = Astro.props;
+
+const sourceItems = Array.isArray(items) ? items : [];
+
+const collectiveItems = sourceItems
+  .filter((item: any) => isCollective(item))
+  .map((item: any, index: number) => buildCollectiveTeaserPayload(
+    {
+      ...item,
+      priority: item?.priority ?? index < 5,
+      collective_start_date: item?.collective_start_date ?? item?.acf?.collective_start_date ?? '',
+      collective_end_date: item?.collective_end_date ?? item?.acf?.collective_end_date ?? '',
+      collective_effective_end: item?.collective_effective_end ?? item?.acf?.collective_effective_end ?? '',
+    },
+    { hrefBase: collectiveHrefBase },
+  ));
+
+const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;
+---
+
+<collective-listing
+  id={mountId}
+  class:list={['collective-listing', className]}
+  data-component="abcnorio/collective-listing"
+  data-style-deps={
+  `${contentListingStylesHref},${collectiveTeaserStylesHref}}`
+  }
+>
+{ showCount === true && (
+  <p class="collective-listing__count">Displaying {displayCount} items.</p>
+)}
+  <section
+    id={listId}
+    class="collective-listing__items"
+    role="region"
+    aria-label={ariaLabel}
+    aria-busy={busy ? 'true' : 'false'}
+  >
+    {collectiveItems.map((item: any) => <CollectiveTeaser class="collective-listing__item collective-listing__item--collective" {...item} />)}
+  </section>
+</collective-listing>
+
+<script>
+  import './collective-listing.js';
+</script>
+
+<style lang="scss">
+  @use './collective-listing.scss';
+</style>

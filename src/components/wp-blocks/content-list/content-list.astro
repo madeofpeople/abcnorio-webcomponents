@@ -1,0 +1,55 @@
+---
+/* this file adapts data from expecting API response to a WP block shape */
+import ContentListing from '../../content-listing/content-listing.astro';
+import { normalizePostType } from '../../../util/normalize-post-type.js';
+
+const {
+  attributes = {},
+  restPath = '',
+  articleHrefBase = '/articles',
+  eventHrefBase = '/events',
+} = Astro.props;
+
+const blockData = attributes?.data ?? attributes ?? {};
+
+function toList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((entry) => String(entry)).filter(Boolean);
+  }
+
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.values(value).map((entry) => String(entry)).filter(Boolean);
+  }
+
+  return [];
+}
+
+const postTypes = toList(blockData?.listing_post_types ?? blockData?.listingPostTypes);
+const tags = toList(blockData?.listing_tag_filter ?? blockData?.listingTagFilter);
+const count = Math.max(1, parseInt(String(blockData?.listing_count ?? blockData?.listingCount ?? '5'), 10) || 5);
+
+const params = new URLSearchParams();
+for (const postType of postTypes) params.append('post_types[]', postType);
+for (const tag of tags) params.append('tags[]', tag);
+params.set('count', String(count));
+
+const endpoint = restPath ? `${restPath}abcnorio/v1/content-listing${params.size ? `?${params.toString()}` : ''}` : '';
+const response = endpoint ? await fetch(endpoint).catch(() => null) : null;
+const rawItems = response?.ok ? await response.json() : [];
+
+const items = Array.isArray(rawItems)
+  ? rawItems.map((item) => normalizePostType(item))
+  : [];
+---
+<ContentListing
+  items={items}
+  articleHrefBase={articleHrefBase}
+  eventHrefBase={eventHrefBase}
+/>

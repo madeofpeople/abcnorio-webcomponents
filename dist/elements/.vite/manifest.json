@@ -5,22 +5,28 @@
     "src": "src/components/add-to-calendar/add-to-calendar.js",
     "isEntry": true
   },
+  "src/components/article-listing/article-listing.js": {
+    "file": "article-listing.js",
+    "name": "article-listing",
+    "src": "src/components/article-listing/article-listing.js",
+    "isEntry": true
+  },
   "src/components/article-teaser/article-teaser.js": {
     "file": "article-teaser.js",
     "name": "article-teaser",
     "src": "src/components/article-teaser/article-teaser.js",
     "isEntry": true
   },
-  "src/components/articles-listing/articles-listing.js": {
-    "file": "articles-listing.js",
-    "name": "articles-listing",
-    "src": "src/components/articles-listing/articles-listing.js",
+  "src/components/collective-listing/collective-listing.js": {
+    "file": "collective-listing.js",
+    "name": "collective-listing",
+    "src": "src/components/collective-listing/collective-listing.js",
     "isEntry": true
   },
-  "src/components/articles-teaser/articles-teaser.js": {
-    "file": "articles-teaser.js",
-    "name": "articles-teaser",
-    "src": "src/components/articles-teaser/articles-teaser.js",
+  "src/components/collective-teaser/collective-teaser.js": {
+    "file": "collective-teaser.js",
+    "name": "collective-teaser",
+    "src": "src/components/collective-teaser/collective-teaser.js",
     "isEntry": true
   },
   "src/components/content-listing/content-listing.js": {

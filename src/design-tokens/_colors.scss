@@ -5,6 +5,7 @@ $c_accent-secondary: #009a0a;
 $c_subnav_link:  color-mix(in oklch, $c_link, black 25%);
 $c_panel: #fffef3;
 $c_ui_panel: #eee;
+$c_teaser__bg: #ffbaba;
 
 :root {
 
@@ -26,5 +27,5 @@ $c_ui_panel: #eee;
     --color-grey-dark: $c_text;
     --color-grey-mid: color-mix(in oklch, var(--color-text), white 20%);
     --color-grey-light: color-mix(in oklch, var(--color-text), white 85%);
-
+    --color-event-teaser-bg: #{$c_teaser__bg}
 }

@@ -1,4 +1,4 @@
-export class ArticlesListing extends HTMLElement {
+export class CollectiveListing extends HTMLElement {
   connectedCallback() {
     if (this.dataset.upgraded === 'true') {
       return;
@@ -9,6 +9,6 @@ export class ArticlesListing extends HTMLElement {
   }
 }
 
-if (!customElements.get('articles-listing')) {
-  customElements.define('articles-listing', ArticlesListing);
+if (!customElements.get('collective-listing')) {
+  customElements.define('collective-listing', CollectiveListing);
 }

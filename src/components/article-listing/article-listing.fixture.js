@@ -1,6 +1,9 @@
 export const metadata = {
   deps: {
-    css: [],
+    css: [
+      'styles/event-listing.css',
+      '/styles/event-teaser.css',
+    ],
     js: [],
   },
 };
@@ -11,7 +14,7 @@ export default {
       articles: [
         {
           slug: 'fixture-article-listing-item',
-          title: { rendered: 'Fixture listing article' },
+          title: { rendered: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.' },
           acf: { item_date: '2026-06-15' },
           featured_image: {
             url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=900&q=80',

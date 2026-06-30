@@ -23,7 +23,8 @@ export default defineConfig({
         },
         resolve: {
             alias: {
-                '@tokens': `${process.cwd()}/src/design-tokens`
+                '@tokens': `${process.cwd()}/src/design-tokens`,
+                '@util': `${process.cwd()/src/util}`
             }
         },
         build: {

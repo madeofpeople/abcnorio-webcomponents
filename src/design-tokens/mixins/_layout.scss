@@ -60,3 +60,57 @@
     }
   }
 }
+
+@mixin card-grid() {
+  @include max-width();
+  display: grid;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+
+  .events__count {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+
+  @media (min-width: breakpoints.get(sm)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: breakpoints.get(md)) {
+    gap: 2rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: breakpoints.get(lg)) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @media (min-width: breakpoints.get(xl)) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@mixin collective-grid() {
+  @include max-width();
+  display: grid;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+
+  .events__count {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+
+  @media (min-width: breakpoints.get(sm)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: breakpoints.get(md)) {
+    gap: 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

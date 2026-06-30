@@ -1,0 +1,97 @@
+---
+/* this file adapts data from expecting API response to a WP block shape */
+import CollectiveListing from '../../collective-listing/collective-listing.astro';
+import { normalizePostType } from '../../../util/normalize-post-type.js';
+
+const {
+  attributes = {},
+  restPath = '',
+  hrefBase = '/collectives',
+} = Astro.props;
+
+const blockData = attributes?.data ?? attributes ?? {};
+
+function toList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((entry) => String(entry).trim()).filter(Boolean);
+  }
+
+  if (typeof value === 'string') {
+    return value.split(',').map((entry) => entry.trim()).filter(Boolean);
+  }
+
+  return [];
+}
+
+function normalizeSlug(value: unknown): string {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+const sortOrderSlugs = toList(blockData?.sortOrderSlugs)
+  .map(normalizeSlug)
+  .filter(Boolean);
+
+const sortOrderSet = new Set(sortOrderSlugs);
+
+const sortOrder = String(blockData?.order || 'desc').toLowerCase() === 'asc' ? 'asc' : 'desc';
+
+const params = new URLSearchParams({
+  per_page: '100',
+  orderby: 'date',
+  order: sortOrder,
+  _embed: 'wp:featuredmedia',
+});
+
+const endpoint = restPath ? `${restPath}collectives?${params.toString()}` : '';
+
+const response = endpoint ? await fetch(endpoint).catch(() => null) : null;
+const rawItems = response?.ok ? await response.json() : [];
+
+const normalizedItems = Array.isArray(rawItems)
+  ? rawItems.map((item: any) => normalizePostType(item))
+  : [];
+
+const items = (() => {
+  if (!Array.isArray(normalizedItems)) {
+    return [];
+  }
+
+  if (sortOrderSlugs.length === 0) {
+    return normalizedItems;
+  }
+
+  const normalizedObjectItems = normalizedItems.filter((item) => item && typeof item === 'object') as Record<string, unknown>[];
+  const bySlug = new Map<string, Record<string, unknown>>();
+
+  for (const item of normalizedObjectItems) {
+    const slug = normalizeSlug(item?.slug);
+    if (slug === '' || bySlug.has(slug)) {
+      continue;
+    }
+
+    bySlug.set(slug, item);
+  }
+
+  const prioritized = [];
+  for (const slug of sortOrderSlugs) {
+    const item = bySlug.get(slug);
+    if (item) {
+      prioritized.push(item);
+    }
+  }
+
+  const remaining = normalizedObjectItems.filter((item) => !sortOrderSet.has(normalizeSlug(item?.slug)));
+  return [...prioritized, ...remaining];
+})();
+---
+
+<CollectiveListing
+  items={items}
+  collectiveHrefBase={hrefBase}
+/>

@@ -1,4 +1,5 @@
 ---
+/* this file adapts data from expecting API response to a WP block shape */
 import EventListing from '../../event-listing/event-listing.astro';
 
 const {
@@ -6,6 +7,7 @@ const {
   restPath = '',
   hrefBase = '/events',
   timezone = 'America/New_York',
+  isSlider,
 } = Astro.props;
 
 const itemCount = Math.max(1, Number.parseInt(String(attributes?.itemCount ?? 6), 10) || 6);
@@ -49,7 +51,9 @@ const totalPages = Number.parseInt(response?.headers?.get('X-WP-TotalPages') || 
 <EventListing
   items={items}
   page={1}
+  isSlider={isSlider}
   totalResults={totalResults}
   totalPages={totalPages}
+  showCount={true}
   hrefBase={hrefBase}
 />

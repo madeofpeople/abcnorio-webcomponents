@@ -1,4 +1,5 @@
 import { formatEventDate } from '../../util/dates.js';
+import { resolveFeaturedImage } from '../../util/resolve-featured-image.js';
 
 const normalizeHref = (basePath, slug) => {
   const [pathPart, queryPart = ''] = String(basePath).split('?');
@@ -17,7 +18,6 @@ export function buildEventTeaserPayload(attributes = {}, options = {}) {
     event_start_date: startRaw = '',
     event_end_date: endRaw = '',
     event_effective_end: effectiveEndRaw = '',
-    featured_image: featuredImage = null,
     priority = false,
   } = attributes;
   const hrefBase = options.hrefBase || '/events';
@@ -42,13 +42,10 @@ export function buildEventTeaserPayload(attributes = {}, options = {}) {
     startLabelDate: start ? start.label_date : '',
     startLabelTime: start ? start.label_time : '',
     startDateTime: start ? start.datetime : startRaw,
-    featured_image: featuredImage && featuredImage.url
-      ? {
-          url: featuredImage.url,
-          alt: featuredImage.alt || '',
-          width: featuredImage.width || 290,
-          height: featuredImage.height || 9999,
-        }
-      : null,
+    featured_image: resolveFeaturedImage(attributes, {
+      size: 'abcnorio-card',
+      defaultWidth: 290,
+      defaultHeight: 9999,
+    }),
   };
 }

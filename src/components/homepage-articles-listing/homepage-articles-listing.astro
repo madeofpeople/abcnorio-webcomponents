@@ -1,5 +1,6 @@
 ---
 import ArticleTeaser from '../article-teaser/article-teaser.astro';
+import { buildArticleTeaserPayload } from '../article-teaser/article-teaser-payload.js';
 import articleTeaserStylesHref from '../article-teaser/article-teaser.scss?url';
 
 interface Props {
@@ -17,48 +18,6 @@ const {
 } = Astro.props as Props;
 
 const hasValue = (value: any) => value !== null && value !== undefined && String(value).trim() !== '';
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-function formatArticleDate(raw: string): { datetime: string; label: string } | null {
-  const value = String(raw || '').trim();
-  if (!value) return null;
-
-  const datePart = value.slice(0, 10);
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(datePart);
-  if (!match) return null;
-
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  if (!year || month < 1 || month > 12 || day < 1 || day > 31) return null;
-
-  return {
-    datetime: `${datePart}T00:00:00`,
-    label: `${months[month - 1]} ${day}, ${year}`,
-  };
-}
-
-function toArticleTeaserProps(item: any, baseHref: string) {
-  const dateRaw = item?.acf?.item_date ?? item?.date?.slice(0, 10) ?? '';
-  const date = formatArticleDate(dateRaw);
-  const slug = item?.slug || '';
-  const featuredImage = item?._embedded?.['wp:featuredmedia']?.[0];
-  const cardSize = featuredImage?.media_details?.sizes?.['abcnorio-card'];
-
-  return {
-    href: slug ? `${baseHref}/${slug}` : baseHref,
-    title: item?.title?.rendered || slug || 'Untitled',
-    dateLabel: date?.label || '',
-    dateTime: date?.datetime || '',
-    excerpt: item?.excerpt,
-    featured_image: {
-      url: item?.featured_image?.url ?? cardSize?.source_url ?? featuredImage?.source_url ?? featuredImage?.url ?? '',
-      alt: item?.featured_image?.alt ?? featuredImage?.alt_text ?? '',
-      width: Number(item?.featured_image?.width || cardSize?.width || 900),
-      height: Number(item?.featured_image?.height || cardSize?.height || 600),
-    },
-  };
-}
 
 let listing = Array.isArray(items)
   ? items.filter((item: any) => hasValue(item?.acf?.item_date) || hasValue(item?.date))
@@ -70,7 +29,7 @@ listing = listing.slice(0, limit);
   <link rel="stylesheet" href={articleTeaserStylesHref} />
   <section class="listing">
     {listing.map((item: any) => (
-      <ArticleTeaser {...toArticleTeaserProps(item, hrefBase)} />
+      <ArticleTeaser {...buildArticleTeaserPayload(item, { hrefBase })} />
     ))}
   </section>
   {showViewAllLink && <a href={hrefBase} class="view-all-link">View all articles</a>}

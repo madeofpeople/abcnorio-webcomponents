@@ -7,8 +7,12 @@ const {
   url = '',
 } = Astro.props;
 
+const stripHTML = (str: string) => {
+  return str.replace(/<\/?[^>]+(>|$)/g, "");
+}
+
 const normalizedUrl = typeof url === 'string' ? url : String(url ?? '');
-const shareText = [title, excerpt].filter(Boolean).join('\n\n');
+const shareText = [title, stripHTML(excerpt)].filter(Boolean).join('\n\n');
 
 const blueskyHref = `https://bsky.app/intent/compose?text=${encodeURIComponent(`${shareText}\n\n${normalizedUrl}`)}`;
 const facebookHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(normalizedUrl)}`;

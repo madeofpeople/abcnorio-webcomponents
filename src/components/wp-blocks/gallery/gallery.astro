@@ -1,5 +1,14 @@
 ---
-const { innerBlocks = [], Block } = Astro.props;
+const {
+  innerBlocks = [],
+  Block,
+  restPath,
+  cmsUrl,
+  registry,
+  embedRegistry,
+  showDebug,
+} = Astro.props;
+const RecursiveBlock = Block || null;
 ---
 <style>
   .gallery {
@@ -27,10 +36,19 @@ const { innerBlocks = [], Block } = Astro.props;
 </style>
 <section class="gallery">
   <div class="images">
-    {innerBlocks.length > 0 && innerBlocks.map((block: any) => {
+    {RecursiveBlock && innerBlocks.length > 0 && innerBlocks.map((block: any) => {
       block.attributes.loading = 'lazy';
       return (
-        <Block component={block.name} attributes={block.attributes} innerBlocks={block.innerBlocks || null} />
+        <RecursiveBlock
+          component={block.name}
+          attributes={block.attributes}
+          innerBlocks={block.innerBlocks || null}
+          restPath={restPath}
+          cmsUrl={cmsUrl}
+          registry={registry}
+          embedRegistry={embedRegistry}
+          showDebug={showDebug}
+        />
       );
     })}
   </div>
