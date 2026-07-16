@@ -26,6 +26,6 @@ $c_teaser__bg: #ffbaba;
     --color-ui-panel: #{$c_ui_panel};
     --color-grey-dark: $c_text;
     --color-grey-mid: color-mix(in oklch, var(--color-text), white 20%);
-    --color-grey-light: color-mix(in oklch, var(--color-text), white 85%);
+    --color-grey--light: color-mix(in oklch, var(--color-text), white 85%);
     --color-event-teaser-bg: #{$c_teaser__bg}
 }

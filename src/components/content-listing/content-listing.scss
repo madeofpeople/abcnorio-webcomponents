@@ -2,10 +2,12 @@
 
 .content-listing {
   display: block;
-}
 
-.content-listing__items {
-  @include layout.card-grid();
+   &.card-grid {   
+    .teaser-list {
+      @include layout.card-grid();
+    }
+  }
 }
 
 .content-listing__count {

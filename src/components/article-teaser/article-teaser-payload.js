@@ -6,7 +6,10 @@ function formatArticleDate(raw) {
   const value = String(raw || '').trim();
   if (!value) return null;
 
-  const datePart = value.slice(0, 10);
+  const ymdCompact = /^(\d{4})(\d{2})(\d{2})$/.exec(value);
+  const datePart = ymdCompact
+    ? `${ymdCompact[1]}-${ymdCompact[2]}-${ymdCompact[3]}`
+    : value.slice(0, 10);
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(datePart);
   if (!match) return null;
 
@@ -31,7 +34,12 @@ const normalizeHref = (basePath, slug) => {
 export function buildArticleTeaserPayload(attributes = {}, options = {}) {
   const slug = String(attributes?.slug || '').trim();
   const title = attributes?.title?.rendered || slug || 'Untitled article';
-  const dateRaw = String(attributes?.acf?.item_date || attributes?.date || '').trim();
+  const dateRaw = String(
+    attributes?.article_date
+    || attributes?.acf?.article_date
+    || attributes?.date
+    || ''
+  ).trim();
   const date = formatArticleDate(dateRaw);
   const hrefBase = options.hrefBase || '/articles';
 

@@ -2,34 +2,30 @@
 @use '../button/button';
 
 .add-to-calendar {
-  display: inline-block;
+  display: block;
   position: relative;
   margin-bottom: 1rem;
-  width: 100%;
-
-  button {
-    display: block;
-    width: 100%;
-    margin-bottom: 0;
-    text-align: left;
-  }
 
   > button {
     margin-top: 1rem;
   }
 
   .atc-drawer {
+    position: absolute;
+    z-index: 55;
     overflow: hidden;
     max-height: 0;
     box-sizing: border-box;
     transition-property: max-height, padding-top, padding-bottom;
-    transition-duration: 0.3s;
+    transition-duration: 0.175s;
     transition-timing-function: ease-in-out;
     background-color: var(--color-ui-panel);
     padding: 0 1rem;
-
-    button {
-      margin-bottom: 0.125rem;
+    
+    a {
+      display: inline-block;
+      margin-right: 1rem;
+      cursor: pointer;
     }
 
     &.active {

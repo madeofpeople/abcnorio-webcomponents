@@ -1,44 +1,66 @@
 ---
 import ArticleTeaser from '../article-teaser/article-teaser.astro';
 import { buildArticleTeaserPayload } from '../article-teaser/article-teaser-payload.js';
+import {
+  ARTICLE_LISTING_DEFAULTS,
+  ARTICLE_LISTING_KEY,
+} from './article-listing.metadata.js';
+import articleListingStylesHref from './article-listing.scss?url';
+import articleTeaserStylesHref from '../article-teaser/article-teaser.scss?url';
 
 interface Props {
+  items?: any[];
   articles?: any[];
-  id?: string;
+  mountId?: string;
+  listId?: string;
   class?: string;
   ariaLabel?: string;
   busy?: boolean;
   hrefBase?: string;
   showCount?: boolean;
   totalResults?: number;
+  countText?: string;
 }
 
 const {
+  items,
   articles = [],
-  id = 'articles__listing',
+  mountId = ARTICLE_LISTING_DEFAULTS.mountId,
+  listId = ARTICLE_LISTING_DEFAULTS.listId,
   class: className,
-  ariaLabel = 'Article results',
+  ariaLabel = ARTICLE_LISTING_DEFAULTS.ariaLabel,
   busy = false,
-  hrefBase = '/articles',
+  hrefBase = ARTICLE_LISTING_DEFAULTS.hrefBase,
   showCount = false,
   totalResults,
+  countText,
 } = Astro.props as Props;
 
-const displayCount = typeof totalResults === 'number' ? totalResults : articles.length;
+const sourceItems = Array.isArray(items) ? items : articles;
+const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;
+const resolvedCountText =
+  typeof countText === 'string' && countText.trim() !== ''
+    ? countText
+    : `The current filters are displaying ${displayCount} ${displayCount === 1 ? 'article' : 'articles'}.`;
 
 ---
-<article-listing data-component="abcnorio/article-listing">
+<article-listing
+  id={mountId}
+  class:list={['article-listing', className]}
+  data-component={ARTICLE_LISTING_KEY}
+  data-style-deps={`${articleListingStylesHref},${articleTeaserStylesHref}`}
+>
   {showCount === true && (
-    <p class="article-listing__count">Displaying {displayCount} items.</p>
+    <p class="article-listing__count">{resolvedCountText}</p>
   )}
   <section
-    id={id}
-    class:list={['articles__listing', className]}
+    id={listId}
+    class="teaser-list"
     role="region"
     aria-label={ariaLabel}
     aria-busy={busy ? 'true' : 'false'}
   >
-    {articles.map((result) => (
+    {sourceItems.map((result) => (
       <ArticleTeaser {...buildArticleTeaserPayload(result, { hrefBase })} />
     ))}
   </section>

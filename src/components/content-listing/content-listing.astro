@@ -4,21 +4,27 @@ import ArticleTeaser from '../article-teaser/article-teaser.astro';
 import { buildEventTeaserPayload } from '../event-teaser/event-teaser-payload.js';
 import { buildArticleTeaserPayload } from '../article-teaser/article-teaser-payload.js';
 import { isEvent, isArticle } from '../../util/normalize-post-type.js';
+import {
+  CONTENT_LISTING_DEFAULTS,
+  CONTENT_LISTING_KEY,
+} from './content-listing.metadata.js';
 import contentListingStylesHref from './content-listing.scss?url';
 import eventTeaserStylesHref from '../event-teaser/event-teaser.scss?url';
 import articleTeaserStylesHref from '../article-teaser/article-teaser.scss?url';
+import 'blaze-slider/dist/blaze.css';
 
 const {
   class: className,
-  ariaLabel = 'Content results',
+  ariaLabel = CONTENT_LISTING_DEFAULTS.ariaLabel,
   busy = false,
   items = [],
   totalResults,
+  isSlider = CONTENT_LISTING_DEFAULTS.isSlider,
   showCount = false,
-  mountId = 'content-listing',
-  listId = 'content-listing-list',
-  articleHrefBase = '/articles',
-  eventHrefBase = '/events',
+  mountId = CONTENT_LISTING_DEFAULTS.mountId,
+  listId = CONTENT_LISTING_DEFAULTS.listId,
+  articleHrefBase = CONTENT_LISTING_DEFAULTS.articleHrefBase,
+  eventHrefBase = CONTENT_LISTING_DEFAULTS.eventHrefBase,
 } = Astro.props;
 
 const sourceItems = Array.isArray(items) ? items : [];
@@ -45,8 +51,8 @@ const displayCount = typeof totalResults === 'number' ? totalResults : sourceIte
 
 <content-listing
   id={mountId}
-  class:list={['content-listing', className]}
-  data-component="abcnorio/content-listing"
+  class:list={['content-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
+  data-component={CONTENT_LISTING_KEY}
   data-style-deps={
   `${contentListingStylesHref},${eventTeaserStylesHref},${articleTeaserStylesHref}`
   }
@@ -54,16 +60,36 @@ const displayCount = typeof totalResults === 'number' ? totalResults : sourceIte
 { showCount === true && (
   <p class="content-listing__count">Displaying {displayCount} items.</p>
 )}
-  <section
-    id={listId}
-    class="content-listing__items"
-    role="region"
-    aria-label={ariaLabel}
-    aria-busy={busy ? 'true' : 'false'}
-  >
-    {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
-    {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
-  </section>
+  {isSlider === true ? (
+    <div class="blaze-container">
+      <div class="blaze-track-container">
+        <section
+          id={listId}
+          class={`teaser-list blaze-track`}
+          role="region"
+          aria-label={ariaLabel}
+          aria-busy={busy ? 'true' : 'false'}
+        >
+          {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
+          {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
+        </section>
+      </div>
+      <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
+      <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
+      <div class="blaze-pagination"></div>
+    </div>
+  ) : (
+    <section
+      id={listId}
+      class="teaser-list"
+      role="region"
+      aria-label={ariaLabel}
+      aria-busy={busy ? 'true' : 'false'}
+    >
+      {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
+      {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
+    </section>
+  )}
 </content-listing>
 
 <script>

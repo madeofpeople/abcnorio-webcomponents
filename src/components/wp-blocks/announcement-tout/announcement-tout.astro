@@ -1,0 +1,19 @@
+---
+import '../_wp-blocks.scss';
+import AnnouncementTout from '../../announcement-tout/announcement-tout.astro';
+
+const {
+  attributes = {},
+} = Astro.props;
+
+const blockData = attributes?.data ?? attributes ?? {};
+---
+
+<AnnouncementTout
+  class={blockData?.className}
+  toast={String(blockData?.toast || 'Toast')}
+  title={String(blockData?.title || 'Announcement Title')}
+  details={String(blockData?.details || 'Add details here.')}
+  buttonLabel={String(blockData?.buttonLabel || 'Register Here')}
+  buttonUrl={String(blockData?.buttonUrl || '#')}
+/>

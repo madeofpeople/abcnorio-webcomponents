@@ -1,0 +1,28 @@
+@use '@tokens/breakpoints';
+
+.hero {
+	background-image: var(--cover-bg-xs, none);
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+    min-height: 25rem;
+    margin-bottom: 3rem;
+
+    @media (min-width: breakpoints.get(sm)) {
+        & {
+            background-image: var(--cover-bg-sm, var(--cover-bg-xs, none));
+        }
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+        & {
+            background-image: var(--cover-bg-md, var(--cover-bg-sm, var(--cover-bg-xs, none)));
+        }
+    }
+
+    @media (min-width: breakpoints.get(lg)) {
+        & {
+            background-image: var(--cover-bg-lg, var(--cover-bg-md, var(--cover-bg-sm, var(--cover-bg-xs, none))));
+        }
+    }
+}

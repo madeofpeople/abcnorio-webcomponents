@@ -1,0 +1,51 @@
+.announcement-tout {
+  margin-bottom: 2rem;
+  background: var(--color-text);
+  color: var(--color-page-bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 2rem;
+  gap: 1rem;
+
+  .announcement-tout__toast {
+    font-family: var(--font-impact-label-reversed), monospace;
+    color: #fff;
+    font-size: 1.5rem;
+    background-color: var(--color-link);
+    font-weight: 400;
+    display: inline;
+    margin: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    width: fit-content;
+    position: absolute;
+    top: -1.2rem;
+    left: 1.75rem;
+  }
+
+  .announcement-tout__title {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  &__content {
+    display: flex;
+    column-gap: 2rem;
+    flex-direction: row;
+  }
+
+  &__details {
+    margin: 0 0 1rem 0;
+  }
+
+  .button {
+    display: inline-block;
+  }
+
+  @media screen and (min-width: 720px) {
+    .announcement-tout {
+      padding: 2.5rem;
+    }
+  }
+}

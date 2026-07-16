@@ -1,26 +1,23 @@
 ---
 const {
+  component: _component,
+  attributes: _attributes,
   innerBlocks = [],
-  Block,
-  restPath,
-  cmsUrl,
-  registry,
-  embedRegistry,
-  showDebug,
+  ...routerProps
 } = Astro.props;
-const RecursiveBlock = Block || null;
+const RecursiveBlock = routerProps.Block || null;
+const recursiveProps = {
+  ...routerProps,
+  Block: RecursiveBlock,
+};
 ---
 <blockquote class="quote">
   {RecursiveBlock && innerBlocks.length > 0 && innerBlocks.map((innerBlock: any) => (
     <RecursiveBlock
+      {...recursiveProps}
       component={innerBlock.name}
       attributes={innerBlock.attributes}
       innerBlocks={innerBlock.innerBlocks || null}
-      restPath={restPath}
-      cmsUrl={cmsUrl}
-      registry={registry}
-      embedRegistry={embedRegistry}
-      showDebug={showDebug}
     />
   ))}
 </blockquote>

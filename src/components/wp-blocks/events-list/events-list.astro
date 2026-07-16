@@ -10,6 +10,11 @@ const {
   isSlider,
 } = Astro.props;
 
+const resolvedIsSlider =
+  typeof isSlider === 'boolean'
+    ? isSlider
+    : String(attributes?.variant || 'grid').toLowerCase() === 'slider';
+
 const itemCount = Math.max(1, Number.parseInt(String(attributes?.itemCount ?? 6), 10) || 6);
 const sortOrder = String(attributes?.order || 'desc').toLowerCase() === 'asc' ? 'asc' : 'desc';
 const dateFilter = String(attributes?.dateFilter || 'upcoming').toLowerCase();
@@ -51,7 +56,7 @@ const totalPages = Number.parseInt(response?.headers?.get('X-WP-TotalPages') || 
 <EventListing
   items={items}
   page={1}
-  isSlider={isSlider}
+  isSlider={resolvedIsSlider}
   totalResults={totalResults}
   totalPages={totalPages}
   showCount={true}

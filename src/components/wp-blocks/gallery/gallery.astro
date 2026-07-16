@@ -1,14 +1,15 @@
 ---
 const {
+  component: _component,
+  attributes: _attributes,
   innerBlocks = [],
-  Block,
-  restPath,
-  cmsUrl,
-  registry,
-  embedRegistry,
-  showDebug,
+  ...routerProps
 } = Astro.props;
-const RecursiveBlock = Block || null;
+const RecursiveBlock = routerProps.Block || null;
+const recursiveProps = {
+  ...routerProps,
+  Block: RecursiveBlock,
+};
 ---
 <style>
   .gallery {
@@ -40,14 +41,10 @@ const RecursiveBlock = Block || null;
       block.attributes.loading = 'lazy';
       return (
         <RecursiveBlock
+          {...recursiveProps}
           component={block.name}
           attributes={block.attributes}
           innerBlocks={block.innerBlocks || null}
-          restPath={restPath}
-          cmsUrl={cmsUrl}
-          registry={registry}
-          embedRegistry={embedRegistry}
-          showDebug={showDebug}
         />
       );
     })}

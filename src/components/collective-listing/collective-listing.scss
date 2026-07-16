@@ -7,11 +7,3 @@
 .collective-listing__items {
   @include layout.collective-grid();
 }
-
-.collective-listing__count {
-  margin: 0 0 1rem;
-}
-
-.collective-listing__item {
-  min-width: 0;
-}

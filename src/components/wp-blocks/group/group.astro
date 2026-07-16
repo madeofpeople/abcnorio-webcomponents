@@ -2,30 +2,26 @@
 import '../_wp-blocks.scss';
 
 const {
+  component: _component,
   attributes,
   innerBlocks = [],
-  Block,
-  restPath,
-  cmsUrl,
-  registry,
-  embedRegistry,
-  showDebug,
+  ...routerProps
 } = Astro.props;
 const Tag = attributes?.tagName || 'div';
-const RecursiveBlock = Block || null;
+const RecursiveBlock = routerProps.Block || null;
+const recursiveProps = {
+  ...routerProps,
+  Block: RecursiveBlock,
+};
 ---
 
 <Tag class:list={['wp-block-group', attributes?.className]}>
   {RecursiveBlock && innerBlocks.map((block: any) => (
     <RecursiveBlock
+      {...recursiveProps}
       component={block.name}
       attributes={block.attributes}
       innerBlocks={block.innerBlocks || null}
-      restPath={restPath}
-      cmsUrl={cmsUrl}
-      registry={registry}
-      embedRegistry={embedRegistry}
-      showDebug={showDebug}
     />
   ))}
 </Tag>

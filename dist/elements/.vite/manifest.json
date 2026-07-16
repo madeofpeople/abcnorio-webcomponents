@@ -1,9 +1,20 @@
 {
+  "_breakpoints-C89McZIt.js": {
+    "file": "chunks/breakpoints-C89McZIt.js",
+    "name": "breakpoints"
+  },
+  "_drawer-DxFq_Taj.js": {
+    "file": "chunks/drawer-DxFq_Taj.js",
+    "name": "drawer"
+  },
   "src/components/add-to-calendar/add-to-calendar.js": {
     "file": "add-to-calendar.js",
     "name": "add-to-calendar",
     "src": "src/components/add-to-calendar/add-to-calendar.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_drawer-DxFq_Taj.js"
+    ]
   },
   "src/components/article-listing/article-listing.js": {
     "file": "article-listing.js",
@@ -33,30 +44,24 @@
     "file": "content-listing.js",
     "name": "content-listing",
     "src": "src/components/content-listing/content-listing.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_breakpoints-C89McZIt.js"
+    ]
   },
   "src/components/event-listing/event-listing.js": {
     "file": "event-listing.js",
     "name": "event-listing",
     "src": "src/components/event-listing/event-listing.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_breakpoints-C89McZIt.js"
+    ]
   },
   "src/components/event-teaser/event-teaser.js": {
     "file": "event-teaser.js",
     "name": "event-teaser",
     "src": "src/components/event-teaser/event-teaser.js",
-    "isEntry": true
-  },
-  "src/components/homepage-articles-listing/homepage-articles-listing.js": {
-    "file": "homepage-articles-listing.js",
-    "name": "homepage-articles-listing",
-    "src": "src/components/homepage-articles-listing/homepage-articles-listing.js",
-    "isEntry": true
-  },
-  "src/components/homepage-events-listing/homepage-events-listing.js": {
-    "file": "homepage-events-listing.js",
-    "name": "homepage-events-listing",
-    "src": "src/components/homepage-events-listing/homepage-events-listing.js",
     "isEntry": true
   },
   "src/components/segmented-control/segmented-control.js": {
@@ -69,6 +74,21 @@
     "file": "social-share.js",
     "name": "social-share",
     "src": "src/components/social-share/social-share.js",
+    "isEntry": true,
+    "imports": [
+      "_drawer-DxFq_Taj.js"
+    ]
+  },
+  "src/components/taxonomy-links/taxonomy-links.js": {
+    "file": "taxonomy-links.js",
+    "name": "taxonomy-links",
+    "src": "src/components/taxonomy-links/taxonomy-links.js",
+    "isEntry": true
+  },
+  "src/components/wp-blocks/cover/cover.js": {
+    "file": "wp-blocks/cover.js",
+    "name": "wp-blocks/cover",
+    "src": "src/components/wp-blocks/cover/cover.js",
     "isEntry": true
   }
 }

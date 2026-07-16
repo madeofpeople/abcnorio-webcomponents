@@ -1,4 +1,5 @@
 import { downloadICS, generateGoogleLink, generateOutlookLink } from './utils/generate-links.js';
+import { bindDrawer } from '../../util/drawer.js';
 
 let drawerId = 0;
 
@@ -24,16 +25,11 @@ export class AddToCalendarButton extends HTMLElement {
     }
 
     actuator.setAttribute('aria-controls', drawer.id);
-    actuator.setAttribute('aria-expanded', 'false');
-    drawer.hidden = true;
-
-    const toggleDrawer = () => {
-      const isActive = drawer.classList.toggle('active');
-      drawer.hidden = !isActive;
-      actuator.setAttribute('aria-expanded', String(isActive));
-    };
-
-    actuator.addEventListener('click', toggleDrawer);
+    this.cleanupDrawer = bindDrawer({
+      root: this,
+      actuator,
+      drawer,
+    });
 
     googleButton.addEventListener('click', (event) => {
       event.preventDefault();
@@ -53,6 +49,12 @@ export class AddToCalendarButton extends HTMLElement {
     });
 
     this.dataset.atcBound = 'true';
+  }
+
+  disconnectedCallback() {
+    this.cleanupDrawer?.();
+    this.cleanupDrawer = undefined;
+    this.dataset.atcBound = 'false';
   }
 }
 

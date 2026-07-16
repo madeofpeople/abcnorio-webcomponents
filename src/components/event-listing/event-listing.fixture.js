@@ -1,13 +1,7 @@
 import { buildEventTeaserPayload } from '../event-teaser/event-teaser-payload.js';
+import { EVENT_LISTING_FIXTURE_METADATA } from './event-listing.metadata.js';
 
-export const metadata = {
-  deps: {
-    css: [
-      'styles/event-teaser.css',
-    ],
-    js: [],
-  },
-};
+export const metadata = EVENT_LISTING_FIXTURE_METADATA;
 
 const defaultItems = [
   buildEventTeaserPayload(
@@ -79,6 +73,7 @@ export default {
   default: {
     props: {
       items: defaultItems,
+      isSlider: false,
     },
   },
   empty: {

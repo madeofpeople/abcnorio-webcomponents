@@ -1,4 +1,5 @@
 @use "breakpoints";
+@use "mixins/visibility";
 @use "mixins/layout";
 
 $event-teaser-out-duration: 0.2s;
@@ -6,35 +7,37 @@ $event-teaser-in-duration: 0.2s;
 $stagger-count: 22;
 $stagger-step: 23ms;
 
-@keyframes event-teaser-in {
-  from {
-    opacity: 0;
-    transform: translate3d(40rem, 0, 0);
-    filter: blur(0.35rem);
+:global {
+  @keyframes event-teaser-in {
+    from {
+      opacity: 0;
+      transform: translate3d(40rem, 0, 0);
+      filter: blur(0.35rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0rem, 0, 0);
+      filter: blur(0);
+    }
   }
 
-  to {
-    opacity: 1;
-    transform: translate3d(0rem, 0, 0);
-    filter: blur(0);
+  @keyframes event-teaser-out {
+    from {
+      opacity: 1;
+      transform: translate3d(0rem, 0, 0);
+      filter: blur(0);
+    }
+
+    to {
+      opacity: 0;
+      transform: translate3d(-40rem, 0, 0);
+      filter: blur(0.35rem);
+    }
   }
 }
 
-@keyframes event-teaser-out {
-  from {
-    opacity: 1;
-    transform: translate3d(0rem, 0, 0);
-    filter: blur(0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translate3d(-40rem, 0, 0);
-    filter: blur(0.35rem);
-  }
-}
-
-:global(event-listing[data-component="abcnorio/event-listing"] .teaser) {
+:global(event-listing[data-component="abcnorio/event-listing"] event-teaser) {
   position: relative;
   overflow: hidden;
   opacity: 1;
@@ -47,7 +50,7 @@ $stagger-step: 23ms;
 }
 
 :global(event-listing[data-component="abcnorio/event-listing"]) {
-  &.htmx-swapping .teaser {
+  &.htmx-swapping event-teaser {
     @for $i from 1 through $stagger-count {
       &:nth-child(#{$i}) {
         animation-delay: ($i - 1) * $stagger-step;
@@ -55,7 +58,7 @@ $stagger-step: 23ms;
     }
   }
 
-  &.htmx-added .teaser {
+  &.htmx-added event-teaser {
     @for $i from 1 through $stagger-count {
       &:nth-child(#{$i}) {
         animation-delay: $event-teaser-out-duration + (($i - 1) * $stagger-step);
@@ -64,30 +67,84 @@ $stagger-step: 23ms;
   }
 }
 
-:global(event-listing[data-component="abcnorio/event-listing"].htmx-swapping .teaser) {
+:global(event-listing[data-component="abcnorio/event-listing"].htmx-swapping event-teaser) {
   animation: event-teaser-out $event-teaser-out-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-:global(event-listing[data-component="abcnorio/event-listing"].htmx-added .teaser) {
+:global(event-listing[data-component="abcnorio/event-listing"].htmx-added event-teaser) {
   animation: event-teaser-in $event-teaser-in-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-.teaser-list {
-
-//  @include layout.card-grid();
-
-  p {
-    hyphens: auto;
-    white-space: wrap;
+.event-listing {
+  &.card-grid {
+    .teaser-list {
+      @include layout.card-grid();
+    }
   }
 
-  .events__count {
-    grid-column: 1 / -1;
-    font-size: 0.875rem;
-    color: var(--color-text);
-    margin: 0;
+  .teaser-list {
+    p {
+      hyphens: auto;
+      white-space: wrap;
+    }
+
+    .events__count {
+      grid-column: 1 / -1;
+      font-size: 0.875rem;
+      color: var(--color-text);
+      margin: 0;
+    }
   }
 
+  .blaze-prev,
+  .blaze-next {
+    position: absolute;
+    top: 40%;
+    background-color: var(--color-link);
+    color: var(--color-page-bg);
+    width: 2rem;
+    height: 2rem;
+    text-decoration: none;
+    display: inline-block;
+    span {
+      @include visibility.sr-only;
+    }
+    &::after {
+      display: block;
+      width: 2rem;
+      height: 2rem;
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: 0.875;
+      text-align: center;
+    }
+  }
+
+  .blaze-prev:hover,
+  .blaze-prev:focus,
+  .blaze-next:hover,
+  .blaze-next:focus {
+    background-color: var(--color-text);
+    box-shadow: 1px 1px 4px #00000066; 
+  }
+
+  .blaze-prev {
+    left: -0.75rem;
+    &::after {
+      content: '‹';
+    }
+    &:hover {
+      left: -1rem;
+    }
+  }
+
+  .blaze-next {
+    right: -0.75rem;
+    &::after {
+      content: '›';
+    }
+    &:hover {
+      right: -1rem;
+    }
+  }
 }
-
-

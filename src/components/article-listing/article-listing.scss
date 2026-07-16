@@ -1,3 +1,78 @@
-article-listing {
-  display: block;
+@use "mixins/layout";
+
+$article-teaser-out-duration: 0.2s;
+$article-teaser-in-duration: 0.2s;
+$stagger-count: 22;
+$stagger-step: 23ms;
+
+:global {
+  @keyframes article-teaser-in {
+    from {
+      opacity: 0;
+      transform: translate3d(40rem, 0, 0);
+      filter: blur(0.35rem);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0rem, 0, 0);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes article-teaser-out {
+    from {
+      opacity: 1;
+      transform: translate3d(0rem, 0, 0);
+      filter: blur(0);
+    }
+    to {
+      opacity: 0;
+      transform: translate3d(-40rem, 0, 0);
+      filter: blur(0.35rem);
+    }
+  }
+}
+
+:global(article-listing[data-component="abcnorio/article-listing"] article-teaser) {
+  position: relative;
+  overflow: hidden;
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0);
+  transition-property: transform, opacity, filter;
+  transition-duration: $article-teaser-out-duration;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0ms;
+}
+
+:global(article-listing[data-component="abcnorio/article-listing"]) {
+  &.htmx-swapping article-teaser {
+    @for $i from 1 through $stagger-count {
+      &:nth-child(#{$i}) {
+        animation-delay: ($i - 1) * $stagger-step;
+      }
+    }
+  }
+
+  &.htmx-added article-teaser {
+    @for $i from 1 through $stagger-count {
+      &:nth-child(#{$i}) {
+        animation-delay: $article-teaser-out-duration + (($i - 1) * $stagger-step);
+      }
+    }
+  }
+}
+
+:global(article-listing[data-component="abcnorio/article-listing"].htmx-swapping article-teaser) {
+  animation: article-teaser-out $article-teaser-out-duration cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+:global(article-listing[data-component="abcnorio/article-listing"].htmx-added article-teaser) {
+  animation: article-teaser-in $article-teaser-in-duration cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.article-listing {
+  .teaser-list {
+    @include layout.card-grid();
+  }
 }

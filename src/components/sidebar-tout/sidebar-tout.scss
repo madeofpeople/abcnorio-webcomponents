@@ -1,0 +1,41 @@
+.sidebar-cta {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.sidebar-tout__figure {
+  margin: 0;
+  max-width: 100%;
+}
+
+.sidebar-tout__image {
+  border: 2px #0af solid;
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.sidebar-tout__content {
+  display: grid;
+  gap: 1rem;
+}
+
+.sidebar-tout__title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.sidebar-tout__details {
+  margin: 0;
+}
+
+.sidebar-tout__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sidebar-tout__button {
+  display: inline-block;
+}
+

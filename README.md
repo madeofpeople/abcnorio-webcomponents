@@ -31,22 +31,29 @@ Use `npm run build` as the canonical artifact build command for ingestion.
 - Runtime shared CSS remains available at [dist/styles/components.css](dist/styles/components.css) when emitted.
 - Consumers should ingest from package dist and should not execute package-internal build utilities.
 
-### WP Block Router Export
+### WP Block Ingestion Contract
+
+Canonical export surface:
+
+- `abcnorio-webcomponents/wp-blocks/block-registry`
+- `BLOCK_KEYS` (canonical block key constants)
+- `BLOCK_REGISTRY` (canonical routed block map)
+- `EMBED_PROVIDER_REGISTRY` (canonical embed provider map)
+
+Consumer usage contract:
+
+- Import `BLOCK_REGISTRY` once per page and pass it into `WpBlockRouter`.
+- Use `BLOCK_KEYS` for key comparisons in consumer logic.
+- Do not assemble page-local registry maps for routed blocks.
+
+Router export and props:
 
 - Shared router export: `abcnorio-webcomponents/wp-blocks/router`
-- Core block renderers remain package-owned under `abcnorio-webcomponents/wp-blocks/*`.
-- Consumers can pass a `registry` override map for site-specific blocks without forking core block routing.
-
-Expected router props:
-
-- `component`, `attributes`, `innerBlocks`, `Block`
-- Optional site runtime props: `restPath`, `cmsUrl`
+- Expected props: `component`, `attributes`, `innerBlocks`, `Block`
+- Optional runtime props: `restPath`, `cmsUrl`
 - Optional override maps: `registry`, `embedRegistry`
 
-Recommended boundary:
-
-- Keep presentational/default block routing in this package.
-- Keep site REST/query orchestration in consumer adapters.
+Use `BLOCK_KEYS` and `BLOCK_REGISTRY` for all block lookup logic.
 
 ### Data Normalization Boundary
 

@@ -1,3 +1,5 @@
+import { bindDrawer } from '../../util/drawer.js';
+
 export class SocialShare extends HTMLElement {
   connectedCallback() {
     if (this.dataset.upgraded === 'true') {
@@ -13,18 +15,17 @@ export class SocialShare extends HTMLElement {
       return;
     }
 
-    actuator.addEventListener('click', (event) => {
-      event.preventDefault();
-      const isActive = drawer.classList.contains('active');
-
-      if (isActive) {
-        drawer.classList.remove('active');
-        actuator.setAttribute('aria-expanded', 'false');
-      } else {
-        drawer.classList.add('active');
-        actuator.setAttribute('aria-expanded', 'true');
-      }
+    this.cleanupDrawer = bindDrawer({
+      root: this,
+      actuator,
+      drawer,
     });
+  }
+
+  disconnectedCallback() {
+    this.cleanupDrawer?.();
+    this.cleanupDrawer = undefined;
+    this.dataset.upgraded = 'false';
   }
 }
 

@@ -27,6 +27,11 @@ if (Object.keys(input).length === 0) {
 }
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@util': path.resolve('./src/util'),
+    },
+  },
   build: {
     outDir: 'dist/elements',
     emptyOutDir: false,

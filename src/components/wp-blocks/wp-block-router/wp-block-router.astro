@@ -1,49 +1,22 @@
 ---
 import { Debug } from 'astro:components';
-
-import ParagraphBlock from '../paragraph/paragraph.astro';
-import Heading from '../heading/heading.astro';
-import Image from '../image/image.astro';
-import Quote from '../quote/quote.astro';
-import List from '../list/list.astro';
-import ListItem from '../list-item/list-item.astro';
-import Gallery from '../gallery/gallery.astro';
-import YouTube from '../youtube/youtube.astro';
-import Matterport from '../matterport/matterport.astro';
-import Buttons from '../buttons/buttons.astro';
-import Group from '../group/group.astro';
+import { BLOCK_REGISTRY, EMBED_PROVIDER_REGISTRY } from '../block-registry.js';
 
 const {
   component,
   attributes,
   innerBlocks,
-  isSlider,
-  Block,
-  restPath,
-  cmsUrl,
   registry = {},
   embedRegistry = {},
   showDebug = true,
+  ...routerProps
 } = Astro.props;
 
-const RecursiveBlock = Block || Astro.self;
+const RecursiveBlock = routerProps.Block || Astro.self;
 
-const baseRegistry = {
-  'core/paragraph': ParagraphBlock,
-  'core/heading': Heading,
-  'core/image': Image,
-  'core/quote': Quote,
-  'core/list': List,
-  'core/list-item': ListItem,
-  'core/gallery': Gallery,
-  'core/buttons': Buttons,
-  'core/group': Group,
-};
+const baseRegistry = BLOCK_REGISTRY;
 
-const baseEmbedRegistry = {
-  youtube: YouTube,
-  matterport: Matterport,
-};
+const baseEmbedRegistry = EMBED_PROVIDER_REGISTRY;
 
 const mergedRegistry = {
   ...baseRegistry,
@@ -64,6 +37,14 @@ if (component === 'core/embed' && providerName) {
 }
 
 const shouldRenderDebug = !Component && showDebug;
+
+const passThroughProps = {
+  ...routerProps,
+  Block: RecursiveBlock,
+  registry,
+  embedRegistry,
+  showDebug,
+};
 ---
 
 {Component && (
@@ -71,13 +52,7 @@ const shouldRenderDebug = !Component && showDebug;
     attributes={attributes}
     component={component}
     innerBlocks={innerBlocks || null}
-    Block={RecursiveBlock}
-    isSlider={isSlider}
-    restPath={restPath}
-    cmsUrl={cmsUrl}
-    registry={registry}
-    embedRegistry={embedRegistry}
-    showDebug={showDebug}
+    {...passThroughProps}
   />
 )}
 

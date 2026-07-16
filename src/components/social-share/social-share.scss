@@ -1,6 +1,7 @@
 @use '../button/button';
 
 social-share {
+  position: relative;
   display: block;
 
   .social-links {
@@ -11,19 +12,28 @@ social-share {
     }
 
     .social-links__list {
+      position: absolute;
+      z-index: 55;
       overflow: hidden;
       max-height: 0;
       box-sizing: border-box;
       transition-property: max-height, padding-top, padding-bottom;
-      transition-duration: 0.3s;
+      transition-duration: 0.175s;
       transition-timing-function: ease-in-out;
       background-color: var(--color-ui-panel);
       padding: 0 1rem;
 
       ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
         display: flex;
         flex-direction: row;
         gap: 0.5rem;
+        li {
+          margin: 0;
+          line-height: 2;
+        }
       }
 
       &.active {

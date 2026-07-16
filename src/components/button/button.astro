@@ -1,5 +1,6 @@
 ---
 const {
+  tag,
   href,
   target,
   rel,
@@ -9,9 +10,10 @@ const {
 } = Astro.props;
 
 const classes = ['button', className];
+const renderAsLink = tag === 'link' || Boolean(href);
 ---
 
-{href ? (
+{renderAsLink ? (
   <a class:list={classes} href={href} target={target} rel={rel} {...rest}>
     <slot />
   </a>

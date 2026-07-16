@@ -1,0 +1,20 @@
+---
+import '../_wp-blocks.scss';
+import SidebarTout from '../../sidebar-tout/sidebar-tout.astro';
+
+const {
+  attributes = {},
+} = Astro.props;
+
+const blockData = attributes?.data ?? attributes ?? {};
+---
+
+<SidebarTout
+  class={blockData?.className}
+  title={String(blockData?.title || 'Announcement Title')}
+  details={String(blockData?.details || 'Add details here.')}
+  buttonLabel={String(blockData?.buttonLabel || 'Register Here')}
+  buttonUrl={String(blockData?.buttonUrl || '#')}
+  imageUrl={String(blockData?.imageUrl || 'https://ucarecdn.com/05f649bf-b70b-4cf8-90f7-2588ce404a08/-/resize/680x/')}
+  imageAlt={String(blockData?.imageAlt || 'Description of the image')}
+/>

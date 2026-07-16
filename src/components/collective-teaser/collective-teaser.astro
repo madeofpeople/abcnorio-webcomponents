@@ -4,17 +4,14 @@ const {
   href = '#',
   title = 'Untitled collective',
   priority = false,
-  isPastCollective = false,
-  dateLabel = '',
-  timeLabel = '',
-  dateTime = '',
+  excerpt,
   featured_image = null,
 } = Astro.props;
 
 const imageProps = featured_image && typeof featured_image === 'object' ? featured_image : null;
 ---
 
-<collective-teaser class:list={['collective-teaser', className, { past: isPastCollective }]} data-component="abcnorio/collective-teaser">
+<collective-teaser class:list={['collective-teaser', className]} data-component="abcnorio/collective-teaser">
   <a href={href}>
     {imageProps?.url && (
       <img
@@ -30,13 +27,8 @@ const imageProps = featured_image && typeof featured_image === 'object' ? featur
     )}
 
     <div class="collective-teaser__content">
-      {(dateLabel || timeLabel) && (
-        <time class="collective-teaser__date" datetime={dateTime}>
-          <span> {dateLabel} </span><span> @ {timeLabel}</span>
-        </time>
-      )}
-
       <h3 class="collective-teaser__title" set:html={`${title} ` } />
+      <div class="collective-teaser__excerpt" set:html={excerpt} />
     </div>
   </a>
 </collective-teaser>

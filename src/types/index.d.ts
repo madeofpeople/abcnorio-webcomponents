@@ -12,11 +12,6 @@ declare module 'abcnorio-webcomponents/article-listing' {
   export default Component;
 }
 
-declare module 'abcnorio-webcomponents/homepage-articles-listing' {
-  const Component: any;
-  export default Component;
-}
-
 declare module 'abcnorio-webcomponents/segmented-control' {
   const Component: any;
   export default Component;

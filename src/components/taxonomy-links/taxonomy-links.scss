@@ -1,0 +1,28 @@
+/* Component styles */
+.taxonomy-links {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--color-panel-bg);
+    padding: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    gap: 0.5rem;
+
+    a {
+        font-family: var(--font-impact-label-reversed);
+        background-color: var(--color-text);
+        display: inline-block;
+        line-height: 1;
+        color: #dedede;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.125rem;
+        font-size: 0.875rem;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-link);
+        }
+    }
+}

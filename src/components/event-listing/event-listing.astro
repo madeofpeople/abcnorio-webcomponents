@@ -2,6 +2,10 @@
 import EventTeaser from "../event-teaser/event-teaser.astro";
 import Pagination from "../pagination/pagination.astro";
 import { buildEventTeaserPayload } from "../event-teaser/event-teaser-payload.js";
+import {
+  EVENT_LISTING_DEFAULTS,
+  EVENT_LISTING_KEY,
+} from "./event-listing.metadata.js";
 import eventTeaserStylesHref from "../event-teaser/event-teaser.scss?url";
 import eventListingStylesHref from "../event-listing/event-listing.scss?url";
 import 'blaze-slider/dist/blaze.css';
@@ -20,6 +24,7 @@ interface EventTeaserItem {
   totalResults?: number;
   totalPages?: number;
   isSlider?: boolean;
+  showAllLink?: boolean;
 
   featured_image?: {
     url?: string;
@@ -31,7 +36,7 @@ interface EventTeaserItem {
 
 const {
   class: className,
-  ariaLabel = "Event results",
+  ariaLabel = EVENT_LISTING_DEFAULTS.ariaLabel,
   busy = false,
   items = [],
   totalResults,
@@ -39,12 +44,13 @@ const {
   isSlider = false,
   showCount = false,
   showPagination = false,
+  showAllLink = true,
   page,
-  hrefBase = "/events",
-  mountId = "events-listing",
-  teaserListId = "teaser-list",
-  paginationId = "pagination",
-  filtersFormSelector = "#event-filters-form",
+  hrefBase = EVENT_LISTING_DEFAULTS.hrefBase,
+  mountId = EVENT_LISTING_DEFAULTS.mountId,
+  teaserListId = EVENT_LISTING_DEFAULTS.teaserListId,
+  paginationId = EVENT_LISTING_DEFAULTS.paginationId,
+  filtersFormSelector = EVENT_LISTING_DEFAULTS.filtersFormSelector,
   countText,
 } = Astro.props;
 
@@ -83,10 +89,10 @@ const resolvedCountText =
 
 <event-listing
   id={mountId}
-  class={`event-listing ${isSlider === true ? 'blaze-slider' : ''}`}
-  data-component="abcnorio/event-listing"
+  class:list={['event-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
+  data-component={EVENT_LISTING_KEY}
   data-style-deps={
-    `${eventListingStylesHref}, ${eventTeaserStylesHref}`
+    `${eventListingStylesHref},${eventTeaserStylesHref}`
   }
 >
   {showCount === true && (
@@ -109,9 +115,8 @@ const resolvedCountText =
 
       </div>
 
-
-      <button class="blaze-prev">previous</button>
-      <button class="blaze-next">next</button>
+      <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
+      <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
       <div class="blaze-pagination"></div>
     </div>
   ):(
@@ -137,6 +142,10 @@ const resolvedCountText =
       hxTarget={`#${mountId}`}
       hxInclude={filtersFormSelector}
     />
+  )}
+
+  {showAllLink === true && (
+    <a href="/events" class="show-all button">View all</a>
   )}
 </event-listing>
 

@@ -1,40 +1,46 @@
 .button {
     border-radius: 0;
-    outline: none;
-    border: 2px transparent solid;
-    background-color: var(--color-accent);
-    color: white;
+    border: 1px var(--color-link) solid;
+    color: var(--color-link);
+    background-color: var(--page-bg);
     display: inline-block;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     vertical-align: bottom;
     cursor: pointer;
     font-family: var(--font-impact-label-reversed), monospace;
-    font-size: 1.2rem;
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: 1.25;
     text-decoration: none;
+
+    &:focus,
+    &:hover {
+        background-color: var(--color-link);
+        border-color: var(--color-page-bg);
+        color: var(--color-page-bg);
+    }
+
+    &.reversed {
+        background-color: var(--color-link);
+        color: var(--color-page-bg);
+
+        &:focus,
+        &:hover {
+            background-color: var(--color-page-bg);
+            border-color: var(--color-link);
+            color: var(--color-link);
+        }
+
+    }
+
+    svg {
+        display: inline-block;
+        padding-top: 0;
+        width: 16px;
+        height: 16px;
+        vertical-align: top;
+    }
+
+
 }
 
-.button svg {
-    display: inline-block;
-    padding-top: 0.125rem;
-    vertical-align: top;
-}
 
-.button.secondary {
-    background-color: var(--color-accent-secondary);
-    border-color: var(--color-accent-secondary);
-    color: var(--color-page-bg);
-}
-
-.button.alt {
-    background-color: var(--color-grey-mid);
-    border-color: var(--color-grey-mid);
-    color: var(--color-page-bg);
-}
-
-.button:focus,
-.button:hover {
-    border-color: var(--color-link);
-    background-color: var(--color-page-bg);
-    color: var(--color-link);
-}

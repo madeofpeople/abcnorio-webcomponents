@@ -20,6 +20,10 @@
     position: absolute;
     transform: none;
     top: 0;
+    span {
+      background-color: #0af;
+      color: #fff;
+    }
   }
 
   &__title {

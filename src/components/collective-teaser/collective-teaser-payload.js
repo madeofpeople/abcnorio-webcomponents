@@ -16,8 +16,12 @@ export function buildCollectiveTeaserPayload(attributes = {}, options = {}) {
   } = attributes;
 
   const hrefBase = options.hrefBase || '/collectives';
-  const title = titleSource.rendered || slug || 'Untitled collective';
-  const excerpt = excerptSource.rendered || '';
+  const title = (
+    (typeof titleSource === 'string' ? titleSource : titleSource?.rendered)
+    || slug
+    || 'Untitled collective'
+  );
+  const excerpt = (typeof excerptSource === 'string' ? excerptSource : excerptSource?.rendered) || '';
 
   return {
     href: normalizeHref(hrefBase, slug),

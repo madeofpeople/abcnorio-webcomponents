@@ -1,0 +1,31 @@
+---
+import { ANNOUNCEMENT_TOUT_TAG } from "./announcement-tout.metadata.js";
+import Button from "../button/button.astro";
+
+const {
+  class: className,
+  toast = "Announcement Toast",
+  title = "Announcement Title",
+  details = "Add details here.",
+  buttonLabel = "Register Here",
+  buttonUrl = "#",
+} = Astro.props;
+---
+
+<section
+  class:list={["announcement-tout", className]}
+  data-component={ANNOUNCEMENT_TOUT_TAG}
+>
+  {toast && <h2 class="announcement-tout__toast">{toast}</h2>}
+  {title && <h3 class="announcement-tout__title">{title}</h3>}
+  <div class="announcement-tout__content">
+    <div class="announcement-tout__details">{details}</div>
+    <div class="announcement-tout__actions">
+      <Button class="reversed" href={buttonUrl}>{buttonLabel}</Button>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  @use "./announcement-tout.scss";
+</style>

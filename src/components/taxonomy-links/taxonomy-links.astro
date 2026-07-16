@@ -1,0 +1,25 @@
+---
+import { Debug } from 'astro:components';
+
+const {
+  terms,
+  urlBase,
+} = Astro.props;
+---
+
+{ terms.length > 0 && (
+    <div class="taxonomy-links">
+        {terms.map((term) => (
+          <a href={`${urlBase}${term.slug}/`}>{term.name}</a>
+        ))}
+    </div>
+  )
+}
+
+<script>
+  import './taxonomy-links.js';
+</script>
+
+<style lang="scss">
+  @use './taxonomy-links.scss';
+</style>

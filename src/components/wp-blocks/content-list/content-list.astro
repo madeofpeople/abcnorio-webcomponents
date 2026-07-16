@@ -6,11 +6,17 @@ import { normalizePostType } from '../../../util/normalize-post-type.js';
 const {
   attributes = {},
   restPath = '',
+  cmsUrl = '',
   articleHrefBase = '/articles',
   eventHrefBase = '/events',
+  isSlider,
 } = Astro.props;
 
 const blockData = attributes?.data ?? attributes ?? {};
+const resolvedIsSlider =
+  typeof isSlider === 'boolean'
+    ? isSlider
+    : String(blockData?.variant || 'grid').toLowerCase() === 'slider';
 
 function toList(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -36,11 +42,12 @@ const tags = toList(blockData?.listing_tag_filter ?? blockData?.listingTagFilter
 const count = Math.max(1, parseInt(String(blockData?.listing_count ?? blockData?.listingCount ?? '5'), 10) || 5);
 
 const params = new URLSearchParams();
-for (const postType of postTypes) params.append('post_types[]', postType);
-for (const tag of tags) params.append('tags[]', tag);
+if (postTypes.length > 0) params.set('post_types', postTypes.join(','));
+if (tags.length > 0) params.set('tags', tags.join(','));
 params.set('count', String(count));
 
-const endpoint = restPath ? `${restPath}abcnorio/v1/content-listing${params.size ? `?${params.toString()}` : ''}` : '';
+const apiRoot = cmsUrl ? `${String(cmsUrl).replace(/\/$/, '')}/wp-json/` : '';
+const endpoint = apiRoot ? `${apiRoot}abcnorio/v1/content-listing${params.size ? `?${params.toString()}` : ''}` : '';
 const response = endpoint ? await fetch(endpoint).catch(() => null) : null;
 const rawItems = response?.ok ? await response.json() : [];
 
@@ -50,6 +57,7 @@ const items = Array.isArray(rawItems)
 ---
 <ContentListing
   items={items}
+  isSlider={resolvedIsSlider}
   articleHrefBase={articleHrefBase}
   eventHrefBase={eventHrefBase}
 />

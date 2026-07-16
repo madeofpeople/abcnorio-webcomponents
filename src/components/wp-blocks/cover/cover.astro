@@ -1,0 +1,78 @@
+---
+import '../_wp-blocks.scss';
+import './cover.scss';
+
+const {
+  component: _component,
+  srcset,
+  attributes,
+  innerBlocks = [],
+  ...routerProps
+} = Astro.props;
+
+const RecursiveBlock = routerProps.Block || null;
+const recursiveProps = {
+  ...routerProps,
+  Block: RecursiveBlock,
+};
+
+const sizesData = attributes?.sizes_data || {};
+
+const getSizeUrl = (...keys: string[]) => {
+  for (const key of keys) {
+    const candidate = sizesData?.[key];
+
+    if (!candidate) {
+      continue;
+    }
+
+    if (typeof candidate === 'string') {
+      return candidate;
+    }
+
+    if (typeof candidate === 'object') {
+      if (candidate.source_url) {
+        return candidate.source_url;
+      }
+      if (candidate.url) {
+        return candidate.url;
+      }
+      if (candidate.src) {
+        return candidate.src;
+      }
+    }
+  }
+  return '';
+};
+
+const defaultBg = getSizeUrl('full', 'large', 'medium', 'small', 'thumbnail') || srcset?.[0] || '';
+const bgXs = getSizeUrl('thumbnail', 'small', 'medium') || defaultBg;
+const bgSm = getSizeUrl('medium') || bgXs;
+const bgMd = getSizeUrl('large') || bgSm;
+const bgLg = getSizeUrl('full') || bgMd;
+
+const toCssBackground = (url: string) => (url ? `url("${url}")` : 'none');
+
+---
+<div
+  class="hero"
+  style={{
+    '--cover-bg-xs': toCssBackground(bgXs),
+    '--cover-bg-sm': toCssBackground(bgSm),
+    '--cover-bg-md': toCssBackground(bgMd),
+    '--cover-bg-lg': toCssBackground(bgLg),
+  }}
+>
+    {RecursiveBlock && innerBlocks.map((block: any) => (
+     <RecursiveBlock
+      {...recursiveProps}
+      component={block.name}
+      attributes={block.attributes}
+      innerBlocks={block.innerBlocks || null}
+    />
+  ))}
+</div>
+
+<script>
+  import './cover.js';
+</script>

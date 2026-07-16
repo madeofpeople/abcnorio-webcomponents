@@ -1,4 +1,60 @@
 /* Component styles */
 .collective-teaser {
-    border: 5px #0af solid;
+
+    background-color: #eee;
+    max-height: 360px;
+    overflow: hidden;
+
+    a {
+        text-decoration: none;
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    &__image {
+        position: relative;
+        display: block;
+        width: 50%;
+        object-fit: cover;
+        width: 338px;
+        height: 238px;
+    }
+
+    &__content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        line-height: 1;
+    }
+
+    &__title {
+        padding: 0.25rem 0.5rem;
+        position: relative;
+        width: 11rem;
+        top: 1rem;
+        left: 30%;
+        display: inline-block;
+        background-color: var(--color-accent-secondary);
+        color: var(--color-page-bg);
+        font-family: var(--font-impact-label-reversed), monospace;
+
+    }
+
+    &__excerpt {
+        position: absolute;
+        padding: 0.5rem 0.75rem;
+        color: var(--color-page-bg);
+        background-color: var(--color-text);
+        top: 5rem;
+        width: calc( 70% - 3rem);
+        left: 30%;
+        p {
+            margin: 0;
+            padding: 0;
+        }
+    }
 }

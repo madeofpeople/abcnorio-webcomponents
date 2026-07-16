@@ -1,0 +1,31 @@
+---
+import { SIDEBAR_TOUT_TAG } from './sidebar-tout.metadata.js';
+
+const {
+  class: className,
+  title = 'Announcement Title',
+  details = 'Add details here.',
+  buttonLabel = 'Register Here',
+  buttonUrl = '#',
+  imageUrl = 'https://ucarecdn.com/05f649bf-b70b-4cf8-90f7-2588ce404a08/-/resize/680x/',
+  imageAlt = 'Description of the image',
+} = Astro.props;
+---
+
+<aside class:list={['sidebar-tout', className]} data-component={SIDEBAR_TOUT_TAG}>
+  <figure class="sidebar-tout__figure">
+    <img class="sidebar-tout__image" src={imageUrl} alt={imageAlt} loading="lazy" decoding="async" />
+  </figure>
+
+  <div class="sidebar-tout__content">
+    <h2 class="sidebar-tout__title">{title}</h2>
+    <p class="sidebar-tout__details">{details}</p>
+    <div class="sidebar-tout__actions">
+      <a class="button sidebar-tout__button" href={buttonUrl}>{buttonLabel}</a>
+    </div>
+  </div>
+</aside>
+
+<style lang="scss">
+  @use './sidebar-tout.scss';
+</style>

@@ -6,10 +6,10 @@ const {
   dateLabel = '',
   dateTime = '',
   featured_image = null,
+  excerpt,
 } = Astro.props;
 
 const imageProps = featured_image && typeof featured_image === 'object' ? featured_image : null;
-const excerpt = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
 ---
 
 <article-teaser
@@ -45,7 +45,7 @@ const excerpt = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
 
     <div class="article-teaser__content">
       <h3 class="article-teaser__title" set:html={title} />
-      <div class="article-teaser__excerpt" set:html={excerpt} />
+      <div class="article-teaser__excerpt" set:html={excerpt.rendered} />
     </div>
   </a>
 </article-teaser>
