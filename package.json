@@ -79,6 +79,7 @@
   },
   "scripts": {
     "sync:fonts": "bash scripts/sync-font-assets.sh",
+    "sync:types": "node scripts/sync-types.mjs",
     "predev": "npm run sync:fonts",
     "dev": "astro dev",
     "predocker-dev": "npm run sync:fonts",

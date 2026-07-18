@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 COMPONENTS_DIR="$ROOT_DIR/src/components"
 PACKAGE_JSON_PATH="$ROOT_DIR/package.json"
 BLOCK_REGISTRY_PATH="$ROOT_DIR/src/components/wp-blocks/block-registry.js"
+TYPES_INDEX_PATH="$ROOT_DIR/src/types/index.d.ts"
 
 usage() {
   echo "Usage: just create-webcomponent component-name [--scope components|wp-blocks] [--wp-block namespace/block]" >&2
@@ -146,10 +147,11 @@ export default {
 };
 EOF
 
-PACKAGE_JSON_PATH="$PACKAGE_JSON_PATH" SCOPE="$SCOPE" COMPONENT_NAME="$COMPONENT_NAME" node --input-type=module <<'EOF'
+PACKAGE_JSON_PATH="$PACKAGE_JSON_PATH" TYPES_INDEX_PATH="$TYPES_INDEX_PATH" SCOPE="$SCOPE" COMPONENT_NAME="$COMPONENT_NAME" node --input-type=module <<'EOF'
 import fs from 'node:fs';
 
 const packageJsonPath = process.env.PACKAGE_JSON_PATH;
+const typesIndexPath = process.env.TYPES_INDEX_PATH;
 const scope = process.env.SCOPE;
 const componentName = process.env.COMPONENT_NAME;
 
@@ -176,6 +178,8 @@ packageJson.exports = exportsMap;
 
 fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 EOF
+
+npm run sync:types
 
 if [[ "$SCOPE" == "wp-blocks" ]]; then
   BLOCK_REGISTRY_PATH="$BLOCK_REGISTRY_PATH" COMPONENT_NAME="$COMPONENT_NAME" WP_BLOCK_NAME="$WP_BLOCK_NAME" node --input-type=module <<'EOF'
