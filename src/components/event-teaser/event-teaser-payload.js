@@ -12,6 +12,7 @@ export { formatEventDate };
 
 export function buildEventTeaserPayload(attributes = {}, options = {}) {
   const {
+    cmsUrl = '',
     slug = '',
     title: titleSource = {},
     excerpt: excerptSource = {},
@@ -46,6 +47,7 @@ export function buildEventTeaserPayload(attributes = {}, options = {}) {
       size: 'abcnorio-card',
       defaultWidth: 290,
       defaultHeight: 9999,
+      cmsUrl,
     }),
   };
 }

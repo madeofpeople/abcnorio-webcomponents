@@ -79,7 +79,13 @@ const collectFixtureModuleEntries = (rootDir, prefix = '') => {
 
 const componentIdFromFixtureModulePath = (fixtureModulePath) => {
   const noExt = fixtureModulePath.replace(/\.fixture\.js$/, '');
-  return noExt.includes('/') ? noExt.split('/')[0] : noExt;
+  const segments = noExt.split('/');
+
+  if (segments[0] === 'wp-blocks' && segments.length > 1) {
+    return segments[1];
+  }
+
+  return segments[0];
 };
 
 const normalizeDeclaredDepsList = (value, label) => {
@@ -217,7 +223,13 @@ const collectFixtureEntries = (rootDir, prefix = '') => {
 
 const componentIdFromFixturePath = (fixturePath) => {
   const noExt = fixturePath.replace(/\.html$/, '');
-  return noExt.includes('/') ? noExt.split('/')[0] : noExt;
+  const segments = noExt.split('/');
+
+  if (segments[0] === 'wp-blocks' && segments.length > 1) {
+    return segments[1];
+  }
+
+  return segments[0];
 };
 
 const loadElementSourceMap = () => {

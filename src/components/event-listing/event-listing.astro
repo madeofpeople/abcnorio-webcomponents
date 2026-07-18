@@ -2,6 +2,7 @@
 import EventTeaser from "../event-teaser/event-teaser.astro";
 import Pagination from "../pagination/pagination.astro";
 import { buildEventTeaserPayload } from "../event-teaser/event-teaser-payload.js";
+import { resolveFeaturedImage } from "../../util/resolve-featured-image.js";
 import {
   EVENT_LISTING_DEFAULTS,
   EVENT_LISTING_KEY,
@@ -9,6 +10,14 @@ import {
 import eventTeaserStylesHref from "../event-teaser/event-teaser.scss?url";
 import eventListingStylesHref from "../event-listing/event-listing.scss?url";
 import 'blaze-slider/dist/blaze.css';
+
+const env = import.meta.env || {};
+const mode = process.env.MODE || 'development';
+const defaultCmsUrl = (
+  mode === 'production' || mode === 'staging' || mode === 'preview'
+    ? env.STAGING_CMS
+    : env.DEV_CMS
+) || '';
 
 interface EventTeaserItem {
   href?: string;
@@ -47,6 +56,7 @@ const {
   showAllLink = true,
   page,
   hrefBase = EVENT_LISTING_DEFAULTS.hrefBase,
+  cmsUrl = defaultCmsUrl,
   mountId = EVENT_LISTING_DEFAULTS.mountId,
   teaserListId = EVENT_LISTING_DEFAULTS.teaserListId,
   paginationId = EVENT_LISTING_DEFAULTS.paginationId,
@@ -61,7 +71,20 @@ const looksLikeTeaserPayload = (item: any) =>
 
 const normalizedItems = sourceItems.map((item: any, index: number) => {
   if (looksLikeTeaserPayload(item)) {
-    return item as EventTeaserItem;
+    const normalizedFeaturedImage = resolveFeaturedImage(
+      { featured_image: item?.featured_image ?? null },
+      {
+        size: 'abcnorio-card',
+        defaultWidth: 290,
+        defaultHeight: 9999,
+        cmsUrl,
+      },
+    );
+
+    return {
+      ...(item as EventTeaserItem),
+      featured_image: normalizedFeaturedImage || item?.featured_image || null,
+    } as EventTeaserItem;
   }
 
   return buildEventTeaserPayload(
@@ -74,7 +97,7 @@ const normalizedItems = sourceItems.map((item: any, index: number) => {
       event_effective_end:
         item?.event_effective_end ?? item?.meta?.event_effective_end ?? "",
     },
-    { hrefBase },
+    { hrefBase, cmsUrl },
   );
 });
 

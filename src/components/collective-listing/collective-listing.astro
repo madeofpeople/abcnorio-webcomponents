@@ -9,6 +9,14 @@ import {
 import contentListingStylesHref from './collective-listing.scss?url';
 import collectiveTeaserStylesHref from '../collective-teaser/collective-teaser.scss?url';
 
+const env = import.meta.env || {};
+const mode = process.env.MODE || 'development';
+const defaultCmsUrl = (
+  mode === 'production' || mode === 'staging' || mode === 'preview'
+    ? env.STAGING_CMS
+    : env.DEV_CMS
+) || '';
+
 const {
   class: className,
   ariaLabel = COLLECTIVE_LISTING_DEFAULTS.ariaLabel,
@@ -19,6 +27,7 @@ const {
   mountId = COLLECTIVE_LISTING_DEFAULTS.mountId,
   listId = COLLECTIVE_LISTING_DEFAULTS.listId,
   collectiveHrefBase = COLLECTIVE_LISTING_DEFAULTS.collectiveHrefBase,
+  cmsUrl = defaultCmsUrl,
 } = Astro.props;
 
 const sourceItems = Array.isArray(items) ? items : [];
@@ -30,7 +39,7 @@ const collectiveItems = sourceItems
       ...item,
       priority: item?.priority ?? index < 5,
     },
-    { hrefBase: collectiveHrefBase },
+    { hrefBase: collectiveHrefBase, cmsUrl },
   ));
 
 const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;

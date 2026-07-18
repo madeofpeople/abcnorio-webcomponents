@@ -13,6 +13,14 @@ import eventTeaserStylesHref from '../event-teaser/event-teaser.scss?url';
 import articleTeaserStylesHref from '../article-teaser/article-teaser.scss?url';
 import 'blaze-slider/dist/blaze.css';
 
+const env = import.meta.env || {};
+const mode = process.env.MODE || 'development';
+const defaultCmsUrl = (
+  mode === 'production' || mode === 'staging' || mode === 'preview'
+    ? env.STAGING_CMS
+    : env.DEV_CMS
+) || '';
+
 const {
   class: className,
   ariaLabel = CONTENT_LISTING_DEFAULTS.ariaLabel,
@@ -25,6 +33,7 @@ const {
   listId = CONTENT_LISTING_DEFAULTS.listId,
   articleHrefBase = CONTENT_LISTING_DEFAULTS.articleHrefBase,
   eventHrefBase = CONTENT_LISTING_DEFAULTS.eventHrefBase,
+  cmsUrl = defaultCmsUrl,
 } = Astro.props;
 
 const sourceItems = Array.isArray(items) ? items : [];
@@ -39,12 +48,12 @@ const eventItems = sourceItems
       event_end_date: item?.event_end_date ?? item?.acf?.event_end_date ?? '',
       event_effective_end: item?.event_effective_end ?? item?.acf?.event_effective_end ?? '',
     },
-    { hrefBase: eventHrefBase },
+    { hrefBase: eventHrefBase, cmsUrl },
   ));
 
 const articleItems = sourceItems
   .filter((item: any) => isArticle(item))
-  .map((item: any) => buildArticleTeaserPayload(item, { hrefBase: articleHrefBase }));
+  .map((item: any) => buildArticleTeaserPayload(item, { hrefBase: articleHrefBase, cmsUrl }));
 
 const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;
 ---

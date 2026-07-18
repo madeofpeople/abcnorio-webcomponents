@@ -54,6 +54,8 @@ const bgLg = getSizeUrl('full') || bgMd;
 const toCssBackground = (url: string) => (url ? `url("${url}")` : 'none');
 
 ---
+<div class="cover">
+
 <div
   class="hero"
   style={{
@@ -71,6 +73,7 @@ const toCssBackground = (url: string) => (url ? `url("${url}")` : 'none');
       innerBlocks={block.innerBlocks || null}
     />
   ))}
+</div>
 </div>
 
 <script>

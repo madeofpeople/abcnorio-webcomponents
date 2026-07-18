@@ -1,6 +1,6 @@
 // Build-time registry for component-local fixture files used by the fixture export route.
-const fixtureModules = import.meta.glob('../components/*/*.fixture.js', { eager: true });
-const componentModules = import.meta.glob('../components/*/*.astro', { eager: true });
+const fixtureModules = import.meta.glob('../components/**/*.fixture.js', { eager: true });
+const componentModules = import.meta.glob('../components/**/*.astro', { eager: true });
 
 function fail(message) {
   throw new Error(message);

@@ -1,4 +1,4 @@
-const fixtureModules = import.meta.glob('../components/*/*.fixture.js', { eager: true });
+const fixtureModules = import.meta.glob('../components/**/*.fixture.js', { eager: true });
 
 function fail(message) {
   throw new Error(message);

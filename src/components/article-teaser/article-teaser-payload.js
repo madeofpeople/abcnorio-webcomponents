@@ -32,6 +32,7 @@ const normalizeHref = (basePath, slug) => {
 };
 
 export function buildArticleTeaserPayload(attributes = {}, options = {}) {
+  const cmsUrl = options.cmsUrl || '';
   const slug = String(attributes?.slug || '').trim();
   const title = attributes?.title?.rendered || slug || 'Untitled article';
   const dateRaw = String(
@@ -54,6 +55,7 @@ export function buildArticleTeaserPayload(attributes = {}, options = {}) {
       size: 'abcnorio-card',
       defaultWidth: 900,
       defaultHeight: 600,
+      cmsUrl,
     }),
   };
 }

@@ -8,6 +8,7 @@ const normalizeHref = (basePath, slug) => {
 };
 
 export function buildCollectiveTeaserPayload(attributes = {}, options = {}) {
+  const cmsUrl = options.cmsUrl || '';
   const {
     slug = '',
     title: titleSource = {},
@@ -33,6 +34,7 @@ export function buildCollectiveTeaserPayload(attributes = {}, options = {}) {
       size: 'abcnorio-collective-thumb',
       defaultWidth: 290,
       defaultHeight: 9999,
+      cmsUrl,
     }),
   };
 }
