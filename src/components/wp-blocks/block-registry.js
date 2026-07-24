@@ -7,7 +7,7 @@ import ImageBlock from './image/image.astro';
 import QuoteBlock from './quote/quote.astro';
 import ListBlock from './list/list.astro';
 import ListItemBlock from './list-item/list-item.astro';
-import CoverBlock from './cover/cover.astro';
+import HeroBlock from './hero/hero.astro';
 import GalleryBlock from './gallery/gallery.astro';
 import ButtonsBlock from './buttons/buttons.astro';
 import GroupBlock from './group/group.astro';
@@ -37,9 +37,11 @@ export const CUSTOM_BLOCK_KEYS = {
   CONTENT_LISTING: CONTENT_LISTING_KEY,
   EVENT_LISTING: EVENT_LISTING_KEY,
   COLLECTIVE_LISTING: COLLECTIVE_LISTING_KEY,
+  HERO: 'abcnorio/hero',
   ANNOUNCEMENT_TOUT: 'abcnorio/announcement-tout',
   SIDEBAR_TOUT: 'abcnorio/sidebar-tout',
-  MAILCHIMP: 'mailchimp/mailchimp',
+  NEWSLETTER_SIGNUP: 'abcnorio/newsletter-signup',
+  LEGACY_MAILCHIMP: 'mailchimp/mailchimp',
 };
 
 export const CORE_BLOCK_REGISTRY = {
@@ -49,7 +51,7 @@ export const CORE_BLOCK_REGISTRY = {
   [CORE_BLOCK_KEYS.QUOTE]: QuoteBlock,
   [CORE_BLOCK_KEYS.LIST]: ListBlock,
   [CORE_BLOCK_KEYS.LIST_ITEM]: ListItemBlock,
-  [CORE_BLOCK_KEYS.COVER]: CoverBlock,
+  [CORE_BLOCK_KEYS.COVER]: HeroBlock,
   [CORE_BLOCK_KEYS.GALLERY]: GalleryBlock,
   [CORE_BLOCK_KEYS.BUTTONS]: ButtonsBlock,
   [CORE_BLOCK_KEYS.GROUP]: GroupBlock,
@@ -59,9 +61,11 @@ export const CUSTOM_BLOCK_REGISTRY = {
   [CUSTOM_BLOCK_KEYS.CONTENT_LISTING]: ContentListBlock,
   [CUSTOM_BLOCK_KEYS.EVENT_LISTING]: EventsListBlock,
   [CUSTOM_BLOCK_KEYS.COLLECTIVE_LISTING]: CollectiveListBlock,
+  [CUSTOM_BLOCK_KEYS.HERO]: HeroBlock,
   [CUSTOM_BLOCK_KEYS.ANNOUNCEMENT_TOUT]: AnnouncementToutBlock,
   [CUSTOM_BLOCK_KEYS.SIDEBAR_TOUT]: SidebarToutBlock,
-  [CUSTOM_BLOCK_KEYS.MAILCHIMP]: MailchimpBlock,
+  [CUSTOM_BLOCK_KEYS.NEWSLETTER_SIGNUP]: MailchimpBlock,
+  [CUSTOM_BLOCK_KEYS.LEGACY_MAILCHIMP]: MailchimpBlock,
 };
 
 export const EMBED_PROVIDER_REGISTRY = {

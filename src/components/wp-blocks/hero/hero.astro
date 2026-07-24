@@ -1,6 +1,6 @@
 ---
 import '../_wp-blocks.scss';
-import './cover.scss';
+import './hero.scss';
 
 const {
   component: _component,
@@ -54,28 +54,31 @@ const bgLg = getSizeUrl('full') || bgMd;
 const toCssBackground = (url: string) => (url ? `url("${url}")` : 'none');
 
 ---
-<div class="cover">
+<div class="abcnorio-hero">
 
 <div
-  class="hero"
+  class="abcnorio-hero__image-wrapper"
   style={{
     '--cover-bg-xs': toCssBackground(bgXs),
     '--cover-bg-sm': toCssBackground(bgSm),
     '--cover-bg-md': toCssBackground(bgMd),
     '--cover-bg-lg': toCssBackground(bgLg),
   }}
->
-    {RecursiveBlock && innerBlocks.map((block: any) => (
-     <RecursiveBlock
-      {...recursiveProps}
-      component={block.name}
-      attributes={block.attributes}
-      innerBlocks={block.innerBlocks || null}
-    />
-  ))}
-</div>
+></div>
+  <div class="abcnorio-hero__content-wrapper">
+      <div class="abcnorio-hero__content">
+        {RecursiveBlock && innerBlocks.map((block: any) => (
+          <RecursiveBlock
+            {...recursiveProps}
+            component={block.name}
+            attributes={block.attributes}
+            innerBlocks={block.innerBlocks || null}
+          />
+        ))}
+      </div>
+    </div>
 </div>
 
 <script>
-  import './cover.js';
+  import './hero.js';
 </script>

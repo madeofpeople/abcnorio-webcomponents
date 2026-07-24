@@ -122,7 +122,7 @@ declare module 'abcnorio-webcomponents/wp-blocks/group' {
   export default Component;
 }
 
-declare module 'abcnorio-webcomponents/wp-blocks/cover' {
+declare module 'abcnorio-webcomponents/wp-blocks/hero' {
   const Component: any;
   export default Component;
 }
@@ -242,7 +242,7 @@ declare module 'abcnorio-webcomponents/sidebar-tout' {
   export default Component;
 }
 
-declare module 'abcnorio-webcomponents/wp-blocks/cover/element' {
+declare module 'abcnorio-webcomponents/wp-blocks/hero/element' {
   const Component: any;
   export default Component;
 }

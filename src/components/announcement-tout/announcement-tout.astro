@@ -12,7 +12,7 @@ const {
 } = Astro.props;
 ---
 
-<section
+<div
   class:list={["announcement-tout", className]}
   data-component={ANNOUNCEMENT_TOUT_TAG}
 >
@@ -24,7 +24,7 @@ const {
       <Button class="reversed" href={buttonUrl}>{buttonLabel}</Button>
     </div>
   </div>
-</section>
+</div>
 
 <style lang="scss">
   @use "./announcement-tout.scss";
