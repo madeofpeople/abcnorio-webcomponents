@@ -11,6 +11,7 @@ import CoverBlock from './cover/cover.astro';
 import GalleryBlock from './gallery/gallery.astro';
 import ButtonsBlock from './buttons/buttons.astro';
 import GroupBlock from './group/group.astro';
+import MailchimpBlock from './mailchimp/mailchimp.astro';
 import AnnouncementToutBlock from './announcement-tout/announcement-tout.astro';
 import SidebarToutBlock from './sidebar-tout/sidebar-tout.astro';
 import YouTubeEmbed from './youtube/youtube.astro';
@@ -38,6 +39,7 @@ export const CUSTOM_BLOCK_KEYS = {
   COLLECTIVE_LISTING: COLLECTIVE_LISTING_KEY,
   ANNOUNCEMENT_TOUT: 'abcnorio/announcement-tout',
   SIDEBAR_TOUT: 'abcnorio/sidebar-tout',
+  MAILCHIMP: 'mailchimp/mailchimp',
 };
 
 export const CORE_BLOCK_REGISTRY = {
@@ -59,6 +61,7 @@ export const CUSTOM_BLOCK_REGISTRY = {
   [CUSTOM_BLOCK_KEYS.COLLECTIVE_LISTING]: CollectiveListBlock,
   [CUSTOM_BLOCK_KEYS.ANNOUNCEMENT_TOUT]: AnnouncementToutBlock,
   [CUSTOM_BLOCK_KEYS.SIDEBAR_TOUT]: SidebarToutBlock,
+  [CUSTOM_BLOCK_KEYS.MAILCHIMP]: MailchimpBlock,
 };
 
 export const EMBED_PROVIDER_REGISTRY = {

@@ -1,0 +1,494 @@
+---
+const {
+  attributes = {},
+  innerBlocks = [],
+  cmsUrl = '',
+} = Astro.props;
+
+const listId = String(attributes?.list_id || '').trim();
+const header = String(attributes?.header || '').trim();
+const subHeader = String(attributes?.sub_header || '').trim();
+const submitText = String(attributes?.submit_text || 'Subscribe').trim() || 'Subscribe';
+const requiredIndicatorText = String(attributes?.required_indicator_text || '* = required field').trim();
+const showRequiredIndicator = Boolean(attributes?.show_required_indicator ?? true);
+const template = String(attributes?.template || 'default').trim() || 'default';
+const updateExistingSubscribers = Boolean(attributes?.update_existing_subscribers ?? true);
+const doubleOptIn = Boolean(attributes?.double_opt_in ?? true);
+
+const apiRoot = cmsUrl ? `${String(cmsUrl).replace(/\/$/, '')}/wp-json/abcnorio/v1/mailchimp` : '';
+const listDataEndpoint = listId && apiRoot ? `${apiRoot}/list-data/${encodeURIComponent(listId)}` : '';
+const submitEndpoint = apiRoot ? `${apiRoot}/submit` : '';
+
+const listDataResponse = listDataEndpoint ? await fetch(listDataEndpoint).catch(() => null) : null;
+const listDataPayload = listDataResponse?.ok ? await listDataResponse.json() : null;
+
+type MergeField = {
+  tag?: string;
+  name?: string;
+  type?: string;
+  required?: boolean;
+  help_text?: string;
+  default_value?: string;
+  options?: Record<string, any>;
+};
+
+type InterestChoice = {
+  id?: string | number;
+  name?: string;
+};
+
+type InterestGroup = {
+  id?: string;
+  title?: string;
+  type?: string;
+  groups?: InterestChoice[];
+};
+
+type RenderableField = {
+  tag: string;
+  key: string;
+  label: string;
+  type: string;
+  required: boolean;
+  helpText: string;
+  defaultValue: string;
+  options: Record<string, any>;
+  choices: string[];
+};
+
+type RenderableGroup = {
+  id: string;
+  label: string;
+  type: string;
+  groups: InterestChoice[];
+};
+
+const mergeFields: MergeField[] = Array.isArray(listDataPayload?.merge_fields) ? listDataPayload.merge_fields : [];
+const interestGroups: InterestGroup[] = Array.isArray(listDataPayload?.interest_groups) ? listDataPayload.interest_groups : [];
+
+const mergeFieldsByTag: Map<string, MergeField> = new Map();
+for (const entry of mergeFields) {
+  if (!entry || typeof entry !== 'object') {
+    continue;
+  }
+
+  const tag = String(entry.tag || '').trim();
+  if (tag !== '') {
+    mergeFieldsByTag.set(tag, entry);
+  }
+}
+
+const interestGroupsById: Map<string, InterestGroup> = new Map();
+for (const entry of interestGroups) {
+  if (!entry || typeof entry !== 'object') {
+    continue;
+  }
+
+  const id = String(entry.id || '').trim();
+  if (id !== '') {
+    interestGroupsById.set(id, entry);
+  }
+}
+
+function blockName(block: any): string {
+  return String(block?.name || block?.blockName || '');
+}
+
+const fieldBlocks: any[] = [];
+const groupBlocks: any[] = [];
+for (const block of (Array.isArray(innerBlocks) ? innerBlocks : [])) {
+  const name = blockName(block);
+  if (name === 'mailchimp/mailchimp-form-field') {
+    fieldBlocks.push(block);
+  }
+
+  if (name === 'mailchimp/mailchimp-audience-group') {
+    groupBlocks.push(block);
+  }
+}
+
+const visibleFieldTags: string[] = [];
+for (const block of fieldBlocks) {
+  const tag = String(block?.attributes?.tag || '').trim();
+  if (tag === '') {
+    continue;
+  }
+
+  const visible = Boolean(block?.attributes?.visible);
+  if (tag === 'EMAIL') {
+    visibleFieldTags.push(tag);
+    continue;
+  }
+
+  if (template === 'default') {
+    const field = mergeFieldsByTag.get(tag);
+    if (Boolean(field?.required) || visible) {
+      visibleFieldTags.push(tag);
+    }
+    continue;
+  }
+
+  if (visible) {
+    visibleFieldTags.push(tag);
+  }
+}
+
+function fieldInputType(field: any): 'text' | 'tel' | 'url' | 'number' | 'email' | 'date' {
+  const type = String(field?.type || '').toLowerCase();
+
+  if (type === 'phone') return 'tel';
+  if (type === 'url' || type === 'imageurl') return 'url';
+  if (type === 'number') return 'number';
+  if (type === 'email') return 'email';
+  if (type === 'date' || type === 'birthday') return 'date';
+
+  return 'text';
+}
+
+function fieldChoices(field: any): string[] {
+  const choices = field?.options?.choices;
+  if (!Array.isArray(choices)) {
+    return [];
+  }
+
+  return choices.map((choice) => String(choice));
+}
+
+function shouldRenderGroup(block: any, group: any): boolean {
+  const visible = Boolean(block?.attributes?.visible);
+  const type = String(group?.type || '');
+
+  if (type === 'hidden') {
+    return false;
+  }
+
+  return visible;
+}
+
+const renderableFields: RenderableField[] = [];
+
+for (const block of fieldBlocks) {
+  const tag = String(block?.attributes?.tag || '').trim();
+  if (tag === '') {
+    continue;
+  }
+
+  const sourceField = mergeFieldsByTag.get(tag) || null;
+  const label = String(block?.attributes?.label || sourceField?.name || tag);
+  const visible = visibleFieldTags.includes(tag);
+
+  if (!visible) {
+    continue;
+  }
+
+  renderableFields.push({
+    tag,
+    key: `mc_mv_${tag}`,
+    label,
+    type: String(sourceField?.type || block?.attributes?.type || 'text').toLowerCase(),
+    required: Boolean(sourceField?.required || tag === 'EMAIL'),
+    helpText: String(sourceField?.help_text || ''),
+    defaultValue: String(sourceField?.default_value || ''),
+    options: sourceField?.options || {},
+    choices: fieldChoices(sourceField),
+  });
+}
+
+const renderableGroups: RenderableGroup[] = [];
+
+for (const block of groupBlocks) {
+  const id = String(block?.attributes?.id || '').trim();
+  if (id === '') {
+    continue;
+  }
+
+  const sourceGroup = interestGroupsById.get(id) || null;
+  if (!sourceGroup || !shouldRenderGroup(block, sourceGroup)) {
+    continue;
+  }
+
+  renderableGroups.push({
+    id,
+    label: String(block?.attributes?.label || sourceGroup?.title || ''),
+    type: String(sourceGroup?.type || ''),
+    groups: Array.isArray(sourceGroup?.groups) ? sourceGroup.groups : [],
+  });
+}
+---
+
+<div class="mailchimp-block" data-mailchimp-block>
+  {header && <h2 class="mailchimp-block__header">{header}</h2>}
+  {subHeader && <h3 class="mailchimp-block__sub-header">{subHeader}</h3>}
+
+  <form class="mailchimp-block__form" data-mailchimp-form data-submit-endpoint={submitEndpoint} novalidate>
+    <input type="hidden" name="mailchimp_list_id" value={listId} />
+    <input type="hidden" name="mailchimp_template" value={template} />
+    <input type="hidden" name="mailchimp_update_existing_subscribers" value={updateExistingSubscribers ? '1' : '0'} />
+    <input type="hidden" name="mailchimp_double_opt_in" value={doubleOptIn ? '1' : '0'} />
+    <input type="text" name="mailchimp_sf_alt_email" value="" tabindex="-1" autocomplete="off" class="mailchimp-block__honeypot" aria-hidden="true" />
+
+    {visibleFieldTags.map((tag) => (
+      <input type="hidden" name="mailchimp_visible_fields[]" value={tag} />
+    ))}
+
+    <div class="mailchimp-block__message" role="status" aria-live="polite"></div>
+
+    {renderableFields.map((field) => (
+      <div class="mailchimp-block__field" data-field={field.key}>
+        <label for={field.key}>
+          {field.label}
+          {field.required && showRequiredIndicator && <span aria-hidden="true">*</span>}
+        </label>
+
+        {field.type === 'radio' && field.choices.length > 0 ? (
+          <div class="mailchimp-block__choices">
+            {field.choices.map((choice, idx) => (
+              <label for={`${field.key}_${idx}`}>
+                <input
+                  id={`${field.key}_${idx}`}
+                  type="radio"
+                  name={field.key}
+                  value={choice}
+                  checked={field.defaultValue === choice}
+                  required={field.required}
+                />
+                <span>{choice}</span>
+              </label>
+            ))}
+          </div>
+        ) : field.type === 'dropdown' && field.choices.length > 0 ? (
+          <select id={field.key} name={field.key} required={field.required}>
+            {field.choices.map((choice) => (
+              <option value={choice} selected={field.defaultValue === choice}>{choice}</option>
+            ))}
+          </select>
+        ) : field.type === 'checkboxes' && field.choices.length > 0 ? (
+          <div class="mailchimp-block__choices">
+            {field.choices.map((choice, idx) => (
+              <label for={`${field.key}_${idx}`}>
+                <input
+                  id={`${field.key}_${idx}`}
+                  type="checkbox"
+                  name={`${field.key}[${choice}]`}
+                  value={choice}
+                />
+                <span>{choice}</span>
+              </label>
+            ))}
+          </div>
+        ) : (
+          <input
+            id={field.key}
+            type={fieldInputType(field)}
+            name={field.key}
+            value={field.defaultValue}
+            required={field.required}
+            class={field.type === 'phone' ? 'mailchimp-block__phone' : ''}
+          />
+        )}
+
+        {field.helpText && <small>{field.helpText}</small>}
+      </div>
+    ))}
+
+    {renderableGroups.map((group) => (
+      <fieldset class="mailchimp-block__group">
+        {group.label && <legend>{group.label}</legend>}
+
+        {group.type === 'dropdown' ? (
+          <select name={`group[${group.id}]`}>
+            <option value=""></option>
+            {group.groups.map((choice) => (
+              <option value={String(choice.id || '')}>{String(choice.name || '')}</option>
+            ))}
+          </select>
+        ) : group.type === 'radio' ? (
+          <div class="mailchimp-block__choices">
+            {group.groups.map((choice, idx) => (
+              <label for={`group_${group.id}_${idx}`}>
+                <input
+                  id={`group_${group.id}_${idx}`}
+                  type="radio"
+                  name={`group[${group.id}]`}
+                  value={String(choice.id || '')}
+                />
+                <span>{String(choice.name || '')}</span>
+              </label>
+            ))}
+          </div>
+        ) : (
+          <div class="mailchimp-block__choices">
+            {group.groups.map((choice, idx) => (
+              <label for={`group_${group.id}_${idx}`}>
+                <input
+                  id={`group_${group.id}_${idx}`}
+                  type="checkbox"
+                  name={`group[${group.id}][${String(choice.id || '')}]`}
+                  value={String(choice.name || '')}
+                />
+                <span>{String(choice.name || '')}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </fieldset>
+    ))}
+
+    {showRequiredIndicator && <p class="mailchimp-block__required">{requiredIndicatorText}</p>}
+
+    <div>
+      <button type="submit" data-submit-button>{submitText}</button>
+    </div>
+  </form>
+</div>
+
+<script is:inline>
+  function normalizeFieldErrors(value) {
+    if (!value || typeof value !== 'object') {
+      return {};
+    }
+
+    return value;
+  }
+
+  function clearFieldErrors(form) {
+    form.querySelectorAll('.mailchimp-block__field-error').forEach((node) => node.remove());
+    form.querySelectorAll('[aria-invalid="true"]').forEach((node) => node.removeAttribute('aria-invalid'));
+  }
+
+  function setFieldError(form, fieldName, message) {
+    const controls = Array.from(form.elements).filter((el) => el && el.name === fieldName);
+    if (controls.length === 0) {
+      return;
+    }
+
+    controls.forEach((control) => {
+      control.setAttribute('aria-invalid', 'true');
+    });
+
+    const fieldWrap = controls[0].closest('[data-field]') || controls[0].parentElement;
+    if (!fieldWrap) {
+      return;
+    }
+
+    const error = document.createElement('div');
+    error.className = 'mailchimp-block__field-error';
+    error.textContent = String(message || 'Invalid field value.');
+    fieldWrap.appendChild(error);
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const submitEndpoint = form.dataset.submitEndpoint || '';
+    const messageNode = form.querySelector('.mailchimp-block__message');
+    const submitButton = form.querySelector('[data-submit-button]');
+
+    clearFieldErrors(form);
+
+    if (messageNode) {
+      messageNode.textContent = '';
+      messageNode.classList.remove('is-error', 'is-success');
+    }
+
+    if (!submitEndpoint) {
+      if (messageNode) {
+        messageNode.textContent = 'Mailchimp endpoint is not configured.';
+        messageNode.classList.add('is-error');
+      }
+      return;
+    }
+
+    const formData = new FormData(form);
+
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+
+    try {
+      const response = await fetch(submitEndpoint, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      const fieldErrors = normalizeFieldErrors(payload.field_errors);
+
+      if (!response.ok || payload.success === false) {
+        const formError = payload.form_error || 'Unable to submit form right now.';
+        if (messageNode) {
+          messageNode.textContent = formError;
+          messageNode.classList.add('is-error');
+        }
+
+        Object.entries(fieldErrors).forEach(([name, errorMessage]) => {
+          setFieldError(form, name, String(errorMessage || 'Invalid value.'));
+        });
+
+        return;
+      }
+
+      if (messageNode) {
+        messageNode.textContent = String(payload.message || 'Success, you have been signed up.');
+        messageNode.classList.add('is-success');
+      }
+
+      form.reset();
+    } catch (_error) {
+      if (messageNode) {
+        messageNode.textContent = 'Unable to submit form right now.';
+        messageNode.classList.add('is-error');
+      }
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
+  }
+
+  document
+    .querySelectorAll('[data-mailchimp-form]')
+    .forEach((form) => form.addEventListener('submit', handleSubmit));
+</script>
+
+<style>
+  .mailchimp-block__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .mailchimp-block__message.is-error {
+    color: #8b0000;
+  }
+
+  .mailchimp-block__message.is-success {
+    color: #0f5132;
+  }
+
+  .mailchimp-block__field {
+    margin-bottom: 0.85rem;
+  }
+
+  .mailchimp-block__field-error {
+    margin-top: 0.35rem;
+    color: #8b0000;
+    font-size: 0.92rem;
+  }
+
+  .mailchimp-block__choices {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .mailchimp-block__required {
+    font-size: 0.9rem;
+  }
+</style>

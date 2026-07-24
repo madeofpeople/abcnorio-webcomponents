@@ -2,72 +2,90 @@
 @use 'mixins/layout';
 
 .cover {
-    height: 36rem;
     padding: 0;
     margin: 0;
-}
+    min-height: 46rem;
 
-.hero {
-    position: relative;
-	background-image: var(--cover-bg-xs, none);
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
-    min-height: 30rem;
 
-    > .wp-block-group {
+    .hero {
         position: relative;
-        @include layout.max-width();
-        margin: 0 auto;
-        > .wp-block-group {
-            min-height: 10rem;
-            max-height: 16rem;
-            border: 2px var(--color-text) solid;
-            position: absolute;
-            top: 20rem;
-            background-color: var(--color-page-bg);
-            padding: 0 5rem 1rem 2rem;
+        background-image: var(--cover-bg-xs, none);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 30rem;
 
-            p {
-                margin-top: 0;
-                font-size: 1.2rem;
-                line-height: 1.5;
+        .button {
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+        > .wp-block-group {
+            position: relative;
+            @include layout.max-width();
+            margin: 0 auto;
+            > .wp-block-group {
+                min-height: 10rem;
+                border: 2px var(--color-text) solid;
+                position: absolute;
+                top: 20rem;
+                background-color: var(--color-page-bg);
+                padding: 0 5rem 1rem 2rem;
+
+                p {
+                    margin-top: 0;
+                    font-size: 1.2rem;
+                    line-height: 1.5;
+                }
+            }
+        }
+
+        h2 {
+            display: inline-block;
+            font-family: var(--font-impact-label-reversed);
+            padding: 0.25rem 0.5rem;
+            background-color: var(--color-text);
+            color: var(--color-page-bg);
+            transform: rotate3d(0, 0, 1, -1deg);
+            position: relative;
+            left: -1rem;
+            top: -1.25rem;
+            box-shadow: 1px 1px 6px #000000de;
+        }
+    }
+
+
+    @media (min-width: breakpoints.get(sm)) {
+        min-height: 35rem;
+        .hero {
+            min-height: 33rem;
+            background-image: var(--cover-bg-sm, var(--cover-bg-xs, none));
+        }
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+        .hero {
+            min-height: 30rem;
+            background-image: var(--cover-bg-md, var(--cover-bg-sm, var(--cover-bg-xs, none)));
+        }
+    }
+
+    @media (min-width: breakpoints.get(lg)) {
+
+        .hero {
+            background-image: var(--cover-bg-lg, var(--cover-bg-md, var(--cover-bg-sm, var(--cover-bg-xs, none))));
+            > .wp-block-group {
+                > .wp-block-group {
+                    max-height: 16rem;
+                }
+                max-width: breakpoints.get(lg);
             }
         }
     }
 
-    h2 {
-        display: inline-block;
-        font-family: var(--font-impact-label-reversed);
-        padding: 0.25rem 0.5rem;
-        background-color: var(--color-text);
-        color: var(--color-page-bg);
-        transform: rotate3d(0, 0, 1, -1deg);
-        position: relative;
-        left: -1rem;
-        top: -1.25rem;
-        box-shadow: 1px 1px 6px #000000de;
-    }
-
-    @media (min-width: breakpoints.get(sm)) {
-        background-image: var(--cover-bg-sm, var(--cover-bg-xs, none));
-    }
-
-    @media (min-width: breakpoints.get(md)) {
-        background-image: var(--cover-bg-md, var(--cover-bg-sm, var(--cover-bg-xs, none)));
-    }
-
-    @media (min-width: breakpoints.get(lg)) {
-        background-image: var(--cover-bg-lg, var(--cover-bg-md, var(--cover-bg-sm, var(--cover-bg-xs, none))));
-        > .wp-block-group {
-            max-width: breakpoints.get(lg);
-        }
-
-    }
-
-        @media (min-width: breakpoints.get(xl)) {
+    @media (min-width: breakpoints.get(xl)) {
+        .hero {
             box-shadow: 0px 0px 16px #000000de;
             border: 2rem var(--color-page-bg);
         }
-
+    }
 }

@@ -179,7 +179,7 @@ packageJson.exports = exportsMap;
 fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 EOF
 
-npm run sync:types
+(cd "$ROOT_DIR" && npm run sync:types)
 
 if [[ "$SCOPE" == "wp-blocks" ]]; then
   BLOCK_REGISTRY_PATH="$BLOCK_REGISTRY_PATH" COMPONENT_NAME="$COMPONENT_NAME" WP_BLOCK_NAME="$WP_BLOCK_NAME" node --input-type=module <<'EOF'

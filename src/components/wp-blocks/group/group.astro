@@ -16,7 +16,7 @@ const recursiveProps = {
 ---
 
 <Tag class:list={['wp-block-group', attributes?.className]}>
-  {RecursiveBlock && innerBlocks.map((block: any) => (
+  {RecursiveBlock  && innerBlocks?.map((block: any) => (
     <RecursiveBlock
       {...recursiveProps}
       component={block.name}
