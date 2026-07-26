@@ -1,4 +1,18 @@
 ---
-const { attributes } = Astro.props;
+import { cleanEventBodyArtifactsInHtml } from '../../../util/clean-event-body-artifacts.js';
+import { linkifyInstagramMentionsInHtml } from '../../../util/linkify-instagram-mentions.js';
+
+const {
+	attributes = {},
+	linkMentionsToInstagram = false,
+	cleanEventBodyArtifacts = false,
+} = Astro.props;
+const rawContent = attributes?.content || '';
+const cleanedContent = cleanEventBodyArtifacts
+	? cleanEventBodyArtifactsInHtml(rawContent)
+	: rawContent;
+const content = linkMentionsToInstagram
+	? linkifyInstagramMentionsInHtml(cleanedContent)
+	: cleanedContent;
 ---
-<li class="list-item" set:html={attributes?.content} />
+{content && <li class="list-item" set:html={content} />}

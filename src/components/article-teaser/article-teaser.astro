@@ -34,6 +34,13 @@ const imageProps = featured_image && typeof featured_image === 'object' ? featur
         />
       )
     }
+    {
+      !imageProps?.url && (
+        <div class="no-img_placeholder" aria-hidden="true">
+
+        </div>
+      )
+    }
 
     {
       dateLabel && (

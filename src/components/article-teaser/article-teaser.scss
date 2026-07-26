@@ -1,50 +1,69 @@
 @use "mixins/teasers";
+@use "@tokens/colors";
 @use "@tokens/typography";
 
 .article-teaser {
+
   @include teasers.teaser();
-
-  background-color: var(--color-grey-light);
-
+  background-color: #fafafa;
+  
   &__content {
-    box-sizing: border-box;
     position: relative;
     padding: 1rem;
     top: 9.25rem;
+    height: calc( 100% - 9.25rem);
     overflow: hidden;
   }
 
   &__date {
     line-height: 2;
+    font-size: 1rem;
     padding: 0.25rem 0.5rem;
     position: absolute;
     transform: none;
     top: 0;
-    span {
-      background-color: #0af;
-      color: #fff;
-    }
+    background-color: var(--color-text);
+    color: var(--color-page-bg);
   }
 
   &__title {
     display: absolute;
     box-sizing: border-box;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem;
     margin: 0 0 1rem 0;
     background-color: var(--color-text);
     color: var(--color-page-bg);
     font-weight: 900;
-    font-size: 1.25 * typography.$type-base * typography.$type-size-ratio px;
+    font-size: 1rem;
   }
 
   &__excerpt {
     font-size: 1rem;
     color: var(--color-text);
+    padding: 0.5rem;
   }
 
   &__image {
       position: absolute;
       top: 0;
+      left: 0;
+      right: 0;
+      object-fit: cover;
+      object-position: top;
+      box-sizing: border-box;
+      opacity: 1;
+      display: block;
+      width: auto;
+      height: 12rem;
+      aspect-ratio: 3/4;
+  }
+
+  .no-img_placeholder {
+      aspect-ratio: 3/4;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       object-fit: cover;
       object-position: top;
       opacity: 1;
@@ -52,6 +71,10 @@
       width: 100%;
       height: 12rem;
       mix-blend-mode: multiply;
-    }
-
+      background-color: #eee;
+      background-image: 
+        linear-gradient(rgba( #aaa, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(#aaa,0.2) 1px, transparent 1px);
+      background-size: 11px 11px;
+  }
 }

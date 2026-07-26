@@ -5,7 +5,7 @@
 @use 'mixins/layout';
 
 .prefooter {
-   margin: 1rem 1rem 2rem 1rem;
+   margin: 0 1rem 2rem 1rem;
 
    .wp-block-group {
       background-color: var(--color-panel-bg);   
@@ -28,7 +28,10 @@
          flex-direction: row;
          justify-content: space-evenly;
          column-gap: 2rem;
-         max-width: breakpoints.get(lg);
+         margin-left: 1rem;
+         margin-right: 1rem;
+         position: relative;
+         top: 4rem;
       }
    }
 }

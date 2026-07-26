@@ -1,12 +1,17 @@
 @use "mixins/layout";
+@use "mixins/slider";
 
 .content-listing {
   display: block;
 
-   &.card-grid {   
+  &.card-grid {   
     .teaser-list {
       @include layout.card-grid();
     }
+  }
+  
+  &.blaze-slider {
+    @include slider.slider();
   }
 }
 

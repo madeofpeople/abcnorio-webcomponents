@@ -7,12 +7,14 @@ const {
 } = Astro.props;
 
 const blockData = attributes?.data ?? attributes ?? {};
+const variantClass = blockData?.variant === 'secondary' ? 'announcement-tout--secondary' : '';
+const mergedClassName = [blockData?.className, variantClass].filter(Boolean).join(' ');
 ---
 
 <AnnouncementTout
-  class={blockData?.className}
+  class={mergedClassName}
   toast={String(blockData?.toast || 'Toast')}
-  title={String(blockData?.title || 'Announcement Title')}
+  title={String(blockData?.title ?? '')}
   details={String(blockData?.details || 'Add details here.')}
   buttonLabel={String(blockData?.buttonLabel || 'Register Here')}
   buttonUrl={String(blockData?.buttonUrl || '#')}

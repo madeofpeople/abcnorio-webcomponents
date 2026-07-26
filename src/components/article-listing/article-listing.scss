@@ -46,7 +46,8 @@ $stagger-step: 23ms;
 }
 
 :global(article-listing[data-component="abcnorio/article-listing"]) {
-  &.htmx-swapping article-teaser {
+  &.htmx-swapping article-teaser,
+  .htmx-swapping & article-teaser {
     @for $i from 1 through $stagger-count {
       &:nth-child(#{$i}) {
         animation-delay: ($i - 1) * $stagger-step;
@@ -54,7 +55,8 @@ $stagger-step: 23ms;
     }
   }
 
-  &.htmx-added article-teaser {
+  &.htmx-added article-teaser,
+  .htmx-added & article-teaser {
     @for $i from 1 through $stagger-count {
       &:nth-child(#{$i}) {
         animation-delay: $article-teaser-out-duration + (($i - 1) * $stagger-step);
@@ -63,11 +65,13 @@ $stagger-step: 23ms;
   }
 }
 
-:global(article-listing[data-component="abcnorio/article-listing"].htmx-swapping article-teaser) {
+:global(article-listing[data-component="abcnorio/article-listing"].htmx-swapping article-teaser),
+:global(.htmx-swapping article-listing[data-component="abcnorio/article-listing"] article-teaser) {
   animation: article-teaser-out $article-teaser-out-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-:global(article-listing[data-component="abcnorio/article-listing"].htmx-added article-teaser) {
+:global(article-listing[data-component="abcnorio/article-listing"].htmx-added article-teaser),
+:global(.htmx-added article-listing[data-component="abcnorio/article-listing"] article-teaser) {
   animation: article-teaser-in $article-teaser-in-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 

@@ -2,7 +2,7 @@
     border-radius: 0;
     border: 1px var(--color-link) solid;
     color: var(--color-link);
-    background-color: var(--page-bg);
+    background-color: var(--color-page-bg);
     display: inline-block;
     padding: 0.5rem 1rem;
     vertical-align: bottom;
@@ -15,7 +15,6 @@
     &:focus,
     &:hover {
         background-color: var(--color-link);
-        border-color: var(--color-page-bg);
         color: var(--color-page-bg);
     }
 
@@ -30,6 +29,18 @@
             color: var(--color-link);
         }
 
+    }
+
+    &.dark {
+        background-color: var(--color-text);
+        color: var(--color-page-bg);
+
+        &:focus,
+        &:hover {
+            background-color: var(--color-accent);
+            border-color: var(--color-accent);
+            color: var(--color-page-bg);
+        }
     }
 
     svg {

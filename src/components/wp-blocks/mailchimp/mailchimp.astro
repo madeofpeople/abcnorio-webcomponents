@@ -135,6 +135,9 @@ if (hasLegacyInnerBlocks) {
         .filter(Boolean),
   );
 
+  // Keep form usable even if list-data endpoint is slow/unavailable.
+  selectedTagSet.add('EMAIL');
+
   for (const field of mergeFields) {
     const tag = String(field?.tag || '').trim();
     if (tag === '' || !selectedTagSet.has(tag)) {
@@ -171,6 +174,18 @@ if (hasLegacyInnerBlocks) {
       });
     }
   }
+}
+
+if (!fieldBlocks.some((block) => String(block?.attributes?.tag || '').trim() === 'EMAIL')) {
+  fieldBlocks.unshift({
+    name: 'mailchimp/mailchimp-form-field',
+    attributes: {
+      tag: 'EMAIL',
+      label: 'Email address',
+      type: 'email',
+      visible: true,
+    },
+  });
 }
 
 const visibleFieldTags: string[] = [];
@@ -250,8 +265,8 @@ for (const block of fieldBlocks) {
   renderableFields.push({
     tag,
     key: `mc_mv_${tag}`,
-    label,
-    type: String(sourceField?.type || block?.attributes?.type || 'text').toLowerCase(),
+    label: tag === 'EMAIL' ? (label || 'Email address') : label,
+    type: String(sourceField?.type || block?.attributes?.type || (tag === 'EMAIL' ? 'email' : 'text')).toLowerCase(),
     required: Boolean(sourceField?.required || tag === 'EMAIL'),
     helpText: String(sourceField?.help_text || ''),
     defaultValue: String(sourceField?.default_value || ''),
@@ -283,8 +298,8 @@ for (const block of groupBlocks) {
 ---
 
 <div class="mailchimp-block" data-mailchimp-block>
-  {header && <h2 class="mailchimp-block__header">{header}</h2>}
-  {subHeader && <h3 class="mailchimp-block__sub-header">{subHeader}</h3>}
+  {header && <h3 class="mailchimp-block__header">{header}</h3>}
+  {subHeader && <p class="mailchimp-block__sub-header">{subHeader}</p>}
 
   <form class="mailchimp-block__form" data-mailchimp-form data-submit-endpoint={submitEndpoint} novalidate>
     <input type="hidden" name="mailchimp_list_id" value={listId} />
@@ -403,7 +418,7 @@ for (const block of groupBlocks) {
     {showRequiredIndicator && <p class="mailchimp-block__required">{requiredIndicatorText}</p>}
 
     <div>
-      <button type="submit" data-submit-button>{submitText}</button>
+      <button class="button reversed" type="submit" data-submit-button>{submitText}</button>
     </div>
   </form>
 </div>

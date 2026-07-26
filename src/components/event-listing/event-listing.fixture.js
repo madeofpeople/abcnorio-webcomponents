@@ -79,7 +79,6 @@ export default {
   empty: {
     props: {
       items: [],
-      countText: 'The current filters are displaying 0 events.',
     },
   },
 };

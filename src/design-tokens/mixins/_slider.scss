@@ -1,0 +1,87 @@
+@use "./visibility";
+
+@mixin slider() {
+
+    .blaze-slide-dots {
+        margin: 1.5rem 0 3rem 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    :global(button.blaze-slide-dot) {
+        box-sizing: border-box;
+        width: 0.625rem;
+        height: 0.625rem;
+        display: inline-block;
+        border-radius: 50%;
+        border: 2px var(--color-grey--light) solid;
+        background: var(--color-grey--light);
+        outline: none;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    :global(button.blaze-slide-dot:hover),
+    :global(button.blaze-slide-dot.active),
+    :global(button.blaze-slide-dot.is-active) {
+        background: var(--color-text);
+        border: 2px var(--color-text) solid;
+    }
+
+    .blaze-prev,
+    .blaze-next {
+
+        position: absolute;
+        top: 40%;
+        background-color: var(--color-link);
+        color: var(--color-page-bg);
+        width: 2rem;
+        height: 2rem;
+        text-decoration: none;
+        display: inline-block;
+
+        span {
+            @include visibility.sr-only;
+        }
+
+        &::after {
+            display: block;
+            width: 2rem;
+            height: 2rem;
+            font-size: 2rem;
+            font-weight: 500;
+            line-height: 0.875;
+            text-align: center;
+        }
+    }
+
+    .blaze-prev:hover,
+    .blaze-prev:focus,
+    .blaze-next:hover,
+    .blaze-next:focus {
+        background-color: var(--color-text);
+        box-shadow: 1px 1px 4px #00000066; 
+    }
+
+    .blaze-prev {
+        left: -0.75rem;
+        &::after {
+            content: '‹';
+        }
+        &:hover {
+            left: -1rem;
+        }
+    }
+
+    .blaze-next {
+        right: -0.75rem;
+        &::after {
+            content: '›';
+        }
+        &:hover {
+            right: -1rem;
+        }
+    }
+}

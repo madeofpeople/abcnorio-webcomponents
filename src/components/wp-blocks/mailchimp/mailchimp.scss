@@ -34,4 +34,35 @@
     &__required {
         font-size: 0.9rem;
     }
+    
+    .sidebar-layout aside & {
+        padding: 1rem;
+        background-color: var(--color-grey--dark);
+        color: white;
+
+        h2 { 
+            text-transform: none;
+            font-size: 1.25rem;
+        }
+
+        label {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 14px;
+            background-color: var(--color-text);
+            color: var(--color-page-bg);
+        }
+
+        input {
+            box-sizing: border-box;
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        button {
+            width: 100%;
+        }
+    }
 }
+

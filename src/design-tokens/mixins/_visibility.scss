@@ -1,5 +1,7 @@
 @mixin sr-only {
-    position: absolute;
+    position: fixed;
+    left: 110vw;
+    bottom: 110vw;
     width: 1px;
     height: 1px;
     padding: 0;

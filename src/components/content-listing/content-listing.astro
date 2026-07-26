@@ -26,9 +26,7 @@ const {
   ariaLabel = CONTENT_LISTING_DEFAULTS.ariaLabel,
   busy = false,
   items = [],
-  totalResults,
   isSlider = CONTENT_LISTING_DEFAULTS.isSlider,
-  showCount = false,
   mountId = CONTENT_LISTING_DEFAULTS.mountId,
   listId = CONTENT_LISTING_DEFAULTS.listId,
   articleHrefBase = CONTENT_LISTING_DEFAULTS.articleHrefBase,
@@ -55,7 +53,7 @@ const articleItems = sourceItems
   .filter((item: any) => isArticle(item))
   .map((item: any) => buildArticleTeaserPayload(item, { hrefBase: articleHrefBase, cmsUrl }));
 
-const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;
+const itemCount = eventItems.length + articleItems.length;
 ---
 
 <content-listing
@@ -66,9 +64,6 @@ const displayCount = typeof totalResults === 'number' ? totalResults : sourceIte
   `${contentListingStylesHref},${eventTeaserStylesHref},${articleTeaserStylesHref}`
   }
 >
-{ showCount === true && (
-  <p class="content-listing__count">Displaying {displayCount} items.</p>
-)}
   {isSlider === true ? (
     <div class="blaze-container">
       <div class="blaze-track-container">
@@ -85,6 +80,7 @@ const displayCount = typeof totalResults === 'number' ? totalResults : sourceIte
       </div>
       <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
       <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
+      <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>
       <div class="blaze-pagination"></div>
     </div>
   ) : (

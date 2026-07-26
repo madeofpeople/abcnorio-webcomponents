@@ -43,15 +43,16 @@ interface EventTeaserItem {
   } | null;
 }
 
+type SliderPreset = 'default' | 'compact';
+
 const {
   class: className,
   ariaLabel = EVENT_LISTING_DEFAULTS.ariaLabel,
   busy = false,
   items = [],
-  totalResults,
   totalPages,
   isSlider = false,
-  showCount = false,
+  sliderPreset = 'default',
   showPagination = false,
   showAllLink = true,
   page,
@@ -61,7 +62,6 @@ const {
   teaserListId = EVENT_LISTING_DEFAULTS.teaserListId,
   paginationId = EVENT_LISTING_DEFAULTS.paginationId,
   filtersFormSelector = EVENT_LISTING_DEFAULTS.filtersFormSelector,
-  countText,
 } = Astro.props;
 
 const sourceItems = (Array.isArray(items) ? items : []) as any[];
@@ -102,26 +102,17 @@ const normalizedItems = sourceItems.map((item: any, index: number) => {
 });
 
 const itemCount = normalizedItems.length;
-const displayCount =
-  typeof totalResults === "number" ? totalResults : itemCount;
-const resolvedCountText =
-  typeof countText === "string" && countText.trim() !== ""
-    ? countText
-    : `The current filters are displaying ${displayCount} ${displayCount === 1 ? "event" : "events"}.`;
 ---
 
 <event-listing
   id={mountId}
   class:list={['event-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
   data-component={EVENT_LISTING_KEY}
+  data-slider-preset={sliderPreset}
   data-style-deps={
     `${eventListingStylesHref},${eventTeaserStylesHref}`
   }
 >
-  {showCount === true && (
-  <p class="event-listing__count events__count">{resolvedCountText}</p>
-  )}
-
   {isSlider === true ? (
     <div class="blaze-container">
       <div class="blaze-track-container">
@@ -140,6 +131,7 @@ const resolvedCountText =
 
       <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
       <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
+      <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>
       <div class="blaze-pagination"></div>
     </div>
   ):(

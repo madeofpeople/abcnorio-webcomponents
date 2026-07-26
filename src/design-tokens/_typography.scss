@@ -49,7 +49,7 @@ h4 {
 
 h1 {
     line-height: 1.1;
-    font-size: #{2.5 * $type-size-ratio}rem;
+    font-size: #{2 * $type-size-ratio}rem;
     @media screen and (min-width: breakpoints.get(sm)) {
         font-size: #{2 * $type-size-ratio}rem;
     }

@@ -1,11 +1,14 @@
+@use '@tokens/breakpoints';
+
 .announcement-tout {
   background: var(--color-text);
   color: var(--color-page-bg);
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 2rem;
+  padding: 1rem;
   gap: 1rem;
+  margin-top: 1rem;
 
   .announcement-tout__toast {
     font-family: var(--font-impact-label-reversed), monospace;
@@ -20,7 +23,7 @@
     width: fit-content;
     position: absolute;
     top: -1.2rem;
-    left: 1.75rem;
+    left: 2.25rem;
   }
 
   .announcement-tout__title {
@@ -32,6 +35,7 @@
     display: flex;
     column-gap: 2rem;
     flex-direction: row;
+    padding: 2rem 0.5rem 0.5rem 0.5rem;
   }
 
   &__details {
@@ -42,9 +46,39 @@
     display: inline-block;
   }
 
-  @media screen and (min-width: 720px) {
-    .announcement-tout {
-      padding: 2.5rem;
-    }
+  @media (min-width: breakpoints.get(lg)) {
+      padding: 2rem;
   }
 }
+
+.announcement-tout--secondary {
+  background: var(--color-page-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-accent--secondary);
+
+  .announcement-tout__content {
+    padding: 3rem 0.5rem 0.5rem 0.5rem;
+    flex-direction: column;
+  }
+  .announcement-tout__toast {
+    background-color: var(--color-accent--secondary);
+    color: var(--color-page-bg);
+    display: inline;
+    text-align: center;
+    width: min-content;
+  }
+
+  .announcement-tout__title {
+    font-size: 1.5rem;
+  }
+
+  .button {
+    box-sizing: border-box;
+    text-align: center;
+    color: var(--color-page-bg);
+    background-color: var(--color-text);
+    border-color: var(--color-text);
+    width: 100%;
+  }
+}
+

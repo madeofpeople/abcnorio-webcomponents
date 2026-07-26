@@ -1,6 +1,7 @@
 @use "breakpoints";
 @use "mixins/visibility";
 @use "mixins/layout";
+@use "mixins/slider";
 
 $event-teaser-out-duration: 0.2s;
 $event-teaser-in-duration: 0.2s;
@@ -50,7 +51,8 @@ $stagger-step: 23ms;
 }
 
 :global(event-listing[data-component="abcnorio/event-listing"]) {
-  &.htmx-swapping event-teaser {
+  &.htmx-swapping event-teaser,
+  .htmx-swapping & event-teaser {
     @for $i from 1 through $stagger-count {
       &:nth-child(#{$i}) {
         animation-delay: ($i - 1) * $stagger-step;
@@ -58,7 +60,8 @@ $stagger-step: 23ms;
     }
   }
 
-  &.htmx-added event-teaser {
+  &.htmx-added event-teaser,
+  .htmx-added & event-teaser {
     @for $i from 1 through $stagger-count {
       &:nth-child(#{$i}) {
         animation-delay: $event-teaser-out-duration + (($i - 1) * $stagger-step);
@@ -67,11 +70,13 @@ $stagger-step: 23ms;
   }
 }
 
-:global(event-listing[data-component="abcnorio/event-listing"].htmx-swapping event-teaser) {
+:global(event-listing[data-component="abcnorio/event-listing"].htmx-swapping event-teaser),
+:global(.htmx-swapping event-listing[data-component="abcnorio/event-listing"] event-teaser) {
   animation: event-teaser-out $event-teaser-out-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-:global(event-listing[data-component="abcnorio/event-listing"].htmx-added event-teaser) {
+:global(event-listing[data-component="abcnorio/event-listing"].htmx-added event-teaser),
+:global(.htmx-added event-listing[data-component="abcnorio/event-listing"] event-teaser) {
   animation: event-teaser-in $event-teaser-in-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
@@ -80,6 +85,10 @@ $stagger-step: 23ms;
     .teaser-list {
       @include layout.card-grid();
     }
+  }
+
+  &.blaze-slider {
+    @include slider.slider();
   }
 
   .teaser-list {
@@ -96,55 +105,5 @@ $stagger-step: 23ms;
     }
   }
 
-  .blaze-prev,
-  .blaze-next {
-    position: absolute;
-    top: 40%;
-    background-color: var(--color-link);
-    color: var(--color-page-bg);
-    width: 2rem;
-    height: 2rem;
-    text-decoration: none;
-    display: inline-block;
-    span {
-      @include visibility.sr-only;
-    }
-    &::after {
-      display: block;
-      width: 2rem;
-      height: 2rem;
-      font-size: 2rem;
-      font-weight: 500;
-      line-height: 0.875;
-      text-align: center;
-    }
-  }
 
-  .blaze-prev:hover,
-  .blaze-prev:focus,
-  .blaze-next:hover,
-  .blaze-next:focus {
-    background-color: var(--color-text);
-    box-shadow: 1px 1px 4px #00000066; 
-  }
-
-  .blaze-prev {
-    left: -0.75rem;
-    &::after {
-      content: '‹';
-    }
-    &:hover {
-      left: -1rem;
-    }
-  }
-
-  .blaze-next {
-    right: -0.75rem;
-    &::after {
-      content: '›';
-    }
-    &:hover {
-      right: -1rem;
-    }
-  }
 }
