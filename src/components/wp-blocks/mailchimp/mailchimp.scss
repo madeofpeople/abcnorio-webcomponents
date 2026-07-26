@@ -1,4 +1,7 @@
 .mailchimp-block {
+    padding: 1rem;
+    background-color: var(--color-grey--dark);
+    color: white;
 
     &__honeypot {
     position: absolute;
@@ -35,34 +38,28 @@
         font-size: 0.9rem;
     }
     
-    .sidebar-layout aside & {
-        padding: 1rem;
-        background-color: var(--color-grey--dark);
-        color: white;
+    &__title {
+        text-transform: none;
+        font-size: 1.25rem;
+    }
 
-        h2 { 
-            text-transform: none;
-            font-size: 1.25rem;
-        }
+    label {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        font-size: 14px;
+        background-color: var(--color-text);
+        color: var(--color-page-bg);
+    }
 
-        label {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            font-size: 14px;
-            background-color: var(--color-text);
-            color: var(--color-page-bg);
-        }
+    input {
+        box-sizing: border-box;
+        display: block;
+        width: 100%;
+        padding: 0.5rem;
+    }
 
-        input {
-            box-sizing: border-box;
-            display: block;
-            width: 100%;
-            padding: 0.5rem;
-        }
-
-        button {
-            width: 100%;
-        }
+    .button {
+        width: 100%;
     }
 }
 
