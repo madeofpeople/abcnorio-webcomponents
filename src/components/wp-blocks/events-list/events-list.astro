@@ -14,6 +14,7 @@ const resolvedIsSlider =
   typeof isSlider === 'boolean'
     ? isSlider
     : String(attributes?.variant || 'grid').toLowerCase() === 'slider';
+const title = String(attributes?.title || '').trim();
 
 const itemCount = Math.max(1, Number.parseInt(String(attributes?.itemCount ?? 6), 10) || 6);
 const sortOrder = String(attributes?.order || 'desc').toLowerCase() === 'asc' ? 'asc' : 'desc';
@@ -21,6 +22,24 @@ const dateFilter = String(attributes?.dateFilter || 'upcoming').toLowerCase();
 
 const now = new Date().toLocaleString('sv', { timeZone: timezone });
 const startOfToday = `${now.slice(0, 10)} 00:00:00`;
+
+const resolveTermId = async (restBase: string, rawValue: string): Promise<string | null> => {
+  const value = rawValue.trim();
+  if (value === '' || !restPath) return null;
+
+  const numeric = Number.parseInt(value, 10);
+  if (Number.isFinite(numeric) && numeric > 0) {
+    return String(numeric);
+  }
+
+  const endpoint = `${restPath}${restBase}?slug=${encodeURIComponent(value)}&_fields=id`;
+  const response = await fetch(endpoint).catch(() => null);
+  if (!response?.ok) return null;
+
+  const terms = await response.json().catch(() => []);
+  const termId = Array.isArray(terms) ? terms?.[0]?.id : null;
+  return Number.isFinite(Number(termId)) && Number(termId) > 0 ? String(termId) : null;
+};
 
 const params = new URLSearchParams({
   per_page: String(itemCount),
@@ -36,14 +55,15 @@ if (dateFilter === 'upcoming') {
 }
 
 const eventType = String(attributes?.eventType || '').trim();
-if (eventType !== '') {
-  // Keep raw slug contract from block payload. API support can evolve independently.
-  params.set('event_type', eventType);
+const eventTypeId = await resolveTermId('event-types', eventType);
+if (eventTypeId) {
+  params.set('event-types', eventTypeId);
 }
 
 const collectiveAssociation = String(attributes?.collectiveAssociation || '').trim();
-if (collectiveAssociation !== '') {
-  params.set('collective_association', collectiveAssociation);
+const collectiveAssociationId = await resolveTermId('collective-associations', collectiveAssociation);
+if (collectiveAssociationId) {
+  params.set('collective-associations', collectiveAssociationId);
 }
 
 const endpoint = restPath ? `${restPath}events?${params.toString()}` : '';
@@ -54,6 +74,7 @@ const totalResults = Number.parseInt(response?.headers?.get('X-WP-Total') || Str
 const totalPages = Number.parseInt(response?.headers?.get('X-WP-TotalPages') || '1', 10) || 1;
 ---
 <EventListing
+  title={title}
   items={items}
   page={1}
   isSlider={resolvedIsSlider}

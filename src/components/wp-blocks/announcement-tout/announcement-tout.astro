@@ -4,18 +4,49 @@ import AnnouncementTout from '../../announcement-tout/announcement-tout.astro';
 
 const {
   attributes = {},
+  innerBlocks = [],
+  ...routerProps
 } = Astro.props;
 
 const blockData = attributes?.data ?? attributes ?? {};
 const variantClass = blockData?.variant === 'secondary' ? 'announcement-tout--secondary' : '';
 const mergedClassName = [blockData?.className, variantClass].filter(Boolean).join(' ');
+const RecursiveBlock = routerProps.Block || null;
+const normalizedInnerBlocks = Array.isArray(innerBlocks) ? innerBlocks : [];
+const hasInnerBlocks = normalizedInnerBlocks.length > 0;
+const recursiveProps = {
+  ...routerProps,
+  Block: RecursiveBlock,
+};
 ---
 
-<AnnouncementTout
-  class={mergedClassName}
-  toast={String(blockData?.toast || 'Toast')}
-  title={String(blockData?.title ?? '')}
-  details={String(blockData?.details || 'Add details here.')}
-  buttonLabel={String(blockData?.buttonLabel || 'Register Here')}
-  buttonUrl={String(blockData?.buttonUrl || '#')}
-/>
+{hasInnerBlocks ? (
+  <AnnouncementTout
+    class={mergedClassName}
+    toast={String(blockData?.toast || '')}
+    toastHeadingLevel={Number.parseInt(String(blockData?.toastHeadingLevel ?? blockData?.toast_heading_level ?? 2), 10) || 2}
+    title={String(blockData?.title ?? '')}
+    details={String(blockData?.details || '')}
+    buttonLabel={String(blockData?.buttonLabel || '')}
+    buttonUrl={String(blockData?.buttonUrl || '')}
+  >
+    {RecursiveBlock && normalizedInnerBlocks.map((block: any) => (
+      <RecursiveBlock
+        {...recursiveProps}
+        component={block.name}
+        attributes={block.attributes}
+        innerBlocks={Array.isArray(block?.innerBlocks) ? block.innerBlocks : []}
+      />
+    ))}
+  </AnnouncementTout>
+) : (
+  <AnnouncementTout
+    class={mergedClassName}
+    toast={String(blockData?.toast || '')}
+    toastHeadingLevel={Number.parseInt(String(blockData?.toastHeadingLevel ?? blockData?.toast_heading_level ?? 2), 10) || 2}
+    title={String(blockData?.title ?? '')}
+    details={String(blockData?.details || '')}
+    buttonLabel={String(blockData?.buttonLabel || '')}
+    buttonUrl={String(blockData?.buttonUrl || '')}
+  />
+)}

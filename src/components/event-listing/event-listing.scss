@@ -81,6 +81,10 @@ $stagger-step: 23ms;
 }
 
 .event-listing {
+  .event-listing__title {
+    margin: 0 0 1rem;
+  }
+
   &.card-grid {
     .teaser-list {
       @include layout.card-grid();
@@ -99,9 +103,6 @@ $stagger-step: 23ms;
 
     .events__count {
       grid-column: 1 / -1;
-      font-size: 0.875rem;
-      color: var(--color-text);
-      margin: 0;
     }
   }
 

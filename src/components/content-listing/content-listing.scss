@@ -4,6 +4,10 @@
 .content-listing {
   display: block;
 
+  .content-listing__title {
+    margin: 0 0 1rem;
+  }
+
   &.card-grid {   
     .teaser-list {
       @include layout.card-grid();
@@ -13,10 +17,6 @@
   &.blaze-slider {
     @include slider.slider();
   }
-}
-
-.content-listing__count {
-  margin: 0 0 1rem;
 }
 
 .content-listing__item {

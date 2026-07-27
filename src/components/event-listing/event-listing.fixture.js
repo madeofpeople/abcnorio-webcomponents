@@ -72,6 +72,7 @@ const defaultItems = [
 export default {
   default: {
     props: {
+      title: 'Featured events',
       items: defaultItems,
       isSlider: false,
     },

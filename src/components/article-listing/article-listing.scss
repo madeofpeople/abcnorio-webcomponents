@@ -76,6 +76,7 @@ $stagger-step: 23ms;
 }
 
 .article-listing {
+
   .teaser-list {
     @include layout.card-grid();
   }

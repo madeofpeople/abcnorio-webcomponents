@@ -135,7 +135,10 @@
 
   .events__count {
     grid-column: 1 / -1;
-    margin: 0;
+    margin: 0 1rem;
+    font-size: 0.925rem;
+    color: var(--color-text);
+
   }
 
   @media (min-width: breakpoints.get(sm)) {

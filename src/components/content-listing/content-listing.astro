@@ -23,12 +23,16 @@ const defaultCmsUrl = (
 
 const {
   class: className,
+  title = '',
   ariaLabel = CONTENT_LISTING_DEFAULTS.ariaLabel,
   busy = false,
   items = [],
   isSlider = CONTENT_LISTING_DEFAULTS.isSlider,
   mountId = CONTENT_LISTING_DEFAULTS.mountId,
   listId = CONTENT_LISTING_DEFAULTS.listId,
+  hasCta = false,
+  ctaLabel = '',
+  ctaUrl = '',
   articleHrefBase = CONTENT_LISTING_DEFAULTS.articleHrefBase,
   eventHrefBase = CONTENT_LISTING_DEFAULTS.eventHrefBase,
   cmsUrl = defaultCmsUrl,
@@ -54,48 +58,60 @@ const articleItems = sourceItems
   .map((item: any) => buildArticleTeaserPayload(item, { hrefBase: articleHrefBase, cmsUrl }));
 
 const itemCount = eventItems.length + articleItems.length;
+const resolvedCtaLabel = String(ctaLabel || '').trim();
+const resolvedCtaUrl = String(ctaUrl || '').trim();
+const hasRenderableCta = Boolean(hasCta) && resolvedCtaLabel !== '' && resolvedCtaUrl !== '';
 ---
 
-<content-listing
-  id={mountId}
-  class:list={['content-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
-  data-component={CONTENT_LISTING_KEY}
-  data-style-deps={
-  `${contentListingStylesHref},${eventTeaserStylesHref},${articleTeaserStylesHref}`
-  }
->
-  {isSlider === true ? (
-    <div class="blaze-container">
-      <div class="blaze-track-container">
-        <section
-          id={listId}
-          class={`teaser-list blaze-track`}
-          role="region"
-          aria-label={ariaLabel}
-          aria-busy={busy ? 'true' : 'false'}
-        >
-          {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
-          {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
-        </section>
+{itemCount > 0 && (
+  <content-listing
+    id={mountId}
+    class:list={['content-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
+    data-component={CONTENT_LISTING_KEY}
+    data-style-deps={
+    `${contentListingStylesHref},${eventTeaserStylesHref},${articleTeaserStylesHref}`
+    }
+  >
+    {title && <h2 class="content-listing__title">{title}</h2>}
+
+    {isSlider === true ? (
+      <div class="blaze-container">
+        <div class="blaze-track-container">
+          <section
+            id={listId}
+            class={`teaser-list blaze-track`}
+            role="region"
+            aria-label={ariaLabel}
+            aria-busy={busy ? 'true' : 'false'}
+          >
+            {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
+            {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
+          </section>
+        </div>
+        <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
+        <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
+        <div class="blaze-pagination"></div>
       </div>
-      <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
-      <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
-      <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>
-      <div class="blaze-pagination"></div>
-    </div>
-  ) : (
-    <section
-      id={listId}
-      class="teaser-list"
-      role="region"
-      aria-label={ariaLabel}
-      aria-busy={busy ? 'true' : 'false'}
-    >
-      {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
-      {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
-    </section>
-  )}
-</content-listing>
+    ) : (
+      <section
+        id={listId}
+        class="teaser-list"
+        role="region"
+        aria-label={ariaLabel}
+        aria-busy={busy ? 'true' : 'false'}
+      >
+        {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
+        {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
+      </section>
+    )}
+    {(isSlider === true || hasRenderableCta) && (
+      <div class="actions">
+        {isSlider === true && <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
+        {hasRenderableCta && <a class="button content-listing__cta" href={resolvedCtaUrl}>{resolvedCtaLabel}</a>}
+      </div>
+    )}
+  </content-listing>
+)}
 
 <script>
   import './content-listing.js';

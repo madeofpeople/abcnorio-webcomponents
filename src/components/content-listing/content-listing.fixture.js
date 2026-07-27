@@ -33,11 +33,13 @@ const defaultItems = [
 export default {
   default: {
     props: {
+      title: 'Featured content',
       items: defaultItems,
     },
   },
   slider: {
     props: {
+      title: 'Featured content',
       items: defaultItems,
       isSlider: true,
     },

@@ -5,11 +5,18 @@ import Button from "../button/button.astro";
 const {
   class: className,
   toast = "",
+  toastHeadingLevel = 2,
   title = "",
   details = "",
   buttonLabel = "Call to Action",
   buttonUrl = "#",
 } = Astro.props;
+
+const hasLegacyFallback = details || (buttonLabel && buttonUrl);
+const parsedToastHeadingLevel = Number.parseInt(String(toastHeadingLevel), 10);
+const normalizedToastHeadingLevel = Number.isFinite(parsedToastHeadingLevel) && parsedToastHeadingLevel >= 1 && parsedToastHeadingLevel <= 6
+  ? parsedToastHeadingLevel
+  : 2;
 
 ---
 
@@ -17,13 +24,26 @@ const {
   class:list={["announcement-tout", className]}
   data-component={ANNOUNCEMENT_TOUT_TAG}
 >
-  {toast && <h2 class="announcement-tout__toast">{toast}</h2>}
+  {toast && normalizedToastHeadingLevel === 1 && <h1 class="announcement-tout__toast">{toast}</h1>}
+  {toast && normalizedToastHeadingLevel === 2 && <h2 class="announcement-tout__toast">{toast}</h2>}
+  {toast && normalizedToastHeadingLevel === 3 && <h3 class="announcement-tout__toast">{toast}</h3>}
+  {toast && normalizedToastHeadingLevel === 4 && <h4 class="announcement-tout__toast">{toast}</h4>}
+  {toast && normalizedToastHeadingLevel === 5 && <h5 class="announcement-tout__toast">{toast}</h5>}
+  {toast && normalizedToastHeadingLevel === 6 && <h6 class="announcement-tout__toast">{toast}</h6>}
   {title && <h3 class="announcement-tout__title">{title}</h3>}
   <div class="announcement-tout__content">
-    <div class="announcement-tout__details">{details}</div>
-    <div class="announcement-tout__actions">
-      <Button class="reversed" href={buttonUrl}>{buttonLabel}</Button>
-    </div>
+    <slot>
+      {hasLegacyFallback && (
+        <>
+          <div class="announcement-tout__details">{details}</div>
+          {buttonLabel && buttonUrl && (
+            <div class="announcement-tout__actions">
+              <Button class="reversed" href={buttonUrl}>{buttonLabel}</Button>
+            </div>
+          )}
+        </>
+      )}
+    </slot>
   </div>
 </div>
 

@@ -47,6 +47,7 @@ type SliderPreset = 'default' | 'compact';
 
 const {
   class: className,
+  title = '',
   ariaLabel = EVENT_LISTING_DEFAULTS.ariaLabel,
   busy = false,
   items = [],
@@ -104,65 +105,73 @@ const normalizedItems = sourceItems.map((item: any, index: number) => {
 const itemCount = normalizedItems.length;
 ---
 
-<event-listing
-  id={mountId}
-  class:list={['event-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
-  data-component={EVENT_LISTING_KEY}
-  data-slider-preset={sliderPreset}
-  data-style-deps={
-    `${eventListingStylesHref},${eventTeaserStylesHref}`
-  }
->
-  {isSlider === true ? (
-    <div class="blaze-container">
-      <div class="blaze-track-container">
-
-        <section
-          id={teaserListId}
-          class={`teaser-list blaze-track`}
-          role="region"
-          aria-label={ariaLabel}
-          aria-busy={busy ? "true" : "false"}
-        >
-          {itemCount > 0 && normalizedItems.map((item) => <EventTeaser {...item} />)}
-        </section>
-
-      </div>
-
-      <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
-      <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
-      <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>
-      <div class="blaze-pagination"></div>
-    </div>
-  ):(
-      <section
-    id={teaserListId}
-    class={`teaser-list`}
-    role="region"
-    aria-label={ariaLabel}
-    aria-busy={busy ? "true" : "false"}
+{itemCount > 0 && (
+  <event-listing
+    id={mountId}
+    class:list={['event-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
+    data-component={EVENT_LISTING_KEY}
+    data-slider-preset={sliderPreset}
+    data-style-deps={
+      `${eventListingStylesHref},${eventTeaserStylesHref}`
+    }
   >
-    {itemCount > 0 && normalizedItems.map((item) => <EventTeaser {...item} />)}
-    </section>
+    {title && <h2 class="event-listing__title">{title}</h2>}
 
-  )}
+    {isSlider === true ? (
+      <div class="blaze-container">
+        <div class="blaze-track-container">
 
-  {showPagination === true && (
-    <Pagination
-      id={paginationId}
-      currentPage={page}
-      totalPages={totalPages}
-      hxGet="/events/listing"
-      hrefBase={hrefBase}
-      hxTarget={`#${mountId}`}
-      hxInclude={filtersFormSelector}
-    />
-  )}
+          <section
+            id={teaserListId}
+            class={`teaser-list blaze-track`}
+            role="region"
+            aria-label={ariaLabel}
+            aria-busy={busy ? "true" : "false"}
+          >
+            {normalizedItems.map((item) => <EventTeaser {...item} />)}
+          </section>
 
-  {showAllLink === true && (
-    <a href="/events" class="show-all button">View all</a>
-  )}
-</event-listing>
+        </div>
+
+        <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
+        <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
+        <div class="blaze-pagination"></div>
+      </div>
+    ):(
+        <section
+      id={teaserListId}
+      class={`teaser-list`}
+      role="region"
+      aria-label={ariaLabel}
+      aria-busy={busy ? "true" : "false"}
+    >
+      {normalizedItems.map((item) => <EventTeaser {...item} />)}
+      </section>
+
+    )}
+
+    {showPagination === true && (
+      <Pagination
+        id={paginationId}
+        currentPage={page}
+        totalPages={totalPages}
+        hxGet="/events/listing"
+        hrefBase={hrefBase}
+        hxTarget={`#${mountId}`}
+        hxInclude={filtersFormSelector}
+      />
+    )}
+
+    {(isSlider === true || showAllLink === true) && (
+      <div class="actions">
+        {showAllLink === true && (
+          <a href="/events" class="show-all button">View all</a>
+        )}
+        {isSlider === true && <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
+      </div>
+    )}
+  </event-listing>
+)}
 
 <script>
   import "./event-listing.js";
