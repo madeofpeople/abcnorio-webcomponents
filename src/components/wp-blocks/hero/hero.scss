@@ -63,6 +63,16 @@
         }
     }
 
+    &.short {
+        .abcnorio-hero__image-wrapper {
+            height: 24rem;
+        }
+
+        .abcnorio-hero__content-wrapper {
+            padding-top: 16rem;
+        }
+    }
+
     @media (min-width: breakpoints.get(lg)) {
 
         .abcnorio-hero__image-wrapper {
