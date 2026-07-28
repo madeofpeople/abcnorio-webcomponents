@@ -1,18 +1,13 @@
 ---
 import { ANNOUNCEMENT_TOUT_TAG } from "./announcement-tout.metadata.js";
-import Button from "../button/button.astro";
 
 const {
   class: className,
   toast = "",
   toastHeadingLevel = 2,
   title = "",
-  details = "",
-  buttonLabel = "Call to Action",
-  buttonUrl = "#",
 } = Astro.props;
 
-const hasLegacyFallback = details || (buttonLabel && buttonUrl);
 const parsedToastHeadingLevel = Number.parseInt(String(toastHeadingLevel), 10);
 const normalizedToastHeadingLevel = Number.isFinite(parsedToastHeadingLevel) && parsedToastHeadingLevel >= 1 && parsedToastHeadingLevel <= 6
   ? parsedToastHeadingLevel
@@ -32,18 +27,7 @@ const normalizedToastHeadingLevel = Number.isFinite(parsedToastHeadingLevel) && 
   {toast && normalizedToastHeadingLevel === 6 && <h6 class="announcement-tout__toast">{toast}</h6>}
   {title && <h3 class="announcement-tout__title">{title}</h3>}
   <div class="announcement-tout__content">
-    <slot>
-      {hasLegacyFallback && (
-        <>
-          <div class="announcement-tout__details">{details}</div>
-          {buttonLabel && buttonUrl && (
-            <div class="announcement-tout__actions">
-              <Button class="reversed" href={buttonUrl}>{buttonLabel}</Button>
-            </div>
-          )}
-        </>
-      )}
-    </slot>
+    <slot />
   </div>
 </div>
 

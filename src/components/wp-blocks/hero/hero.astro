@@ -17,7 +17,8 @@ const recursiveProps = {
 };
 
 const sizesData = attributes?.sizes_data || {};
-const variant = String(attributes?.variant ?? 'default').toLowerCase() === 'short' ? 'short' : 'default';
+const rawVariant = String(attributes?.variant ?? 'default').toLowerCase();
+const variant = rawVariant === 'short' || rawVariant === 'thin' ? rawVariant : 'default';
 
 const getSizeUrl = (...keys: string[]) => {
   for (const key of keys) {
@@ -55,7 +56,7 @@ const bgLg = getSizeUrl('full') || bgMd;
 const toCssBackground = (url: string) => (url ? `url("${url}")` : 'none');
 
 ---
-<div class:list={["abcnorio-hero", variant === 'short' ? 'short' : undefined]}>
+<div class:list={["abcnorio-hero", variant !== 'default' ? variant : undefined]}>
 
 <div
   class="abcnorio-hero__image-wrapper"

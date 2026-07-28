@@ -8,7 +8,7 @@ const {
   ...routerProps
 } = Astro.props;
 
-const blockData = attributes?.data ?? attributes ?? {};
+const blockData = attributes ?? {};
 const variantClass = blockData?.variant === 'secondary' ? 'announcement-tout--secondary' : '';
 const mergedClassName = [blockData?.className, variantClass].filter(Boolean).join(' ');
 const RecursiveBlock = routerProps.Block || null;
@@ -24,11 +24,8 @@ const recursiveProps = {
   <AnnouncementTout
     class={mergedClassName}
     toast={String(blockData?.toast || '')}
-    toastHeadingLevel={Number.parseInt(String(blockData?.toastHeadingLevel ?? blockData?.toast_heading_level ?? 2), 10) || 2}
+    toastHeadingLevel={Number.parseInt(String(blockData?.toastHeadingLevel ?? 2), 10) || 2}
     title={String(blockData?.title ?? '')}
-    details={String(blockData?.details || '')}
-    buttonLabel={String(blockData?.buttonLabel || '')}
-    buttonUrl={String(blockData?.buttonUrl || '')}
   >
     {RecursiveBlock && normalizedInnerBlocks.map((block: any) => (
       <RecursiveBlock
@@ -43,10 +40,7 @@ const recursiveProps = {
   <AnnouncementTout
     class={mergedClassName}
     toast={String(blockData?.toast || '')}
-    toastHeadingLevel={Number.parseInt(String(blockData?.toastHeadingLevel ?? blockData?.toast_heading_level ?? 2), 10) || 2}
+    toastHeadingLevel={Number.parseInt(String(blockData?.toastHeadingLevel ?? 2), 10) || 2}
     title={String(blockData?.title ?? '')}
-    details={String(blockData?.details || '')}
-    buttonLabel={String(blockData?.buttonLabel || '')}
-    buttonUrl={String(blockData?.buttonUrl || '')}
   />
 )}

@@ -1,4 +1,5 @@
 @use '@tokens/breakpoints';
+@use '@tokens/typography';
 @use 'mixins/layout';
 
 .abcnorio-hero {
@@ -42,7 +43,7 @@
             margin-bottom: 0.25rem;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4, h5, h6 {
             display: inline-block;
             font-family: var(--font-impact-label-reversed);
             padding: 0.25rem 0.5rem;
@@ -53,6 +54,8 @@
             left: -1rem;
             top: -1.25rem;
             box-shadow: 1px 1px 6px #000000de;
+            font-size: #{1.75 * typography.$type-size-ratio}rem;
+
         }
 
         p {
@@ -70,6 +73,16 @@
 
         .abcnorio-hero__content-wrapper {
             padding-top: 16rem;
+        }
+    }
+
+    &.thin {
+        .abcnorio-hero__image-wrapper {
+            height: 18rem;
+        }
+
+        .abcnorio-hero__content-wrapper {
+            padding-top: 13rem;
         }
     }
 
