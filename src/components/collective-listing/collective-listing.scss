@@ -1,3 +1,4 @@
+@use "@tokens/breakpoints";
 @use "mixins/layout";
 
 .collective-listing {
@@ -5,5 +6,18 @@
 }
 
 .collective-listing__items {
-  @include layout.collective-grid();
+  @include layout.max-width();
+  display: grid;
+  gap: 1rem;
+  position: relative;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+
+  @media (min-width: breakpoints.get(sm)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: breakpoints.get(md)) {
+    gap: 2rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }

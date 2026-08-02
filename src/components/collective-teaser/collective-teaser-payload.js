@@ -1,11 +1,4 @@
-import { resolveFeaturedImage } from '../../util/resolve-featured-image.js';
-
-const normalizeHref = (basePath, slug) => {
-  const [pathPart, queryPart = ''] = String(basePath).split('?');
-  const trimmedPath = String(pathPart || '/collectives').replace(/\/+$/, '');
-  const normalizedPath = `${trimmedPath}/${slug}`;
-  return queryPart ? `${normalizedPath}?${queryPart}` : normalizedPath;
-};
+import { normalizeTeaserHref, resolveFeaturedImage } from '../../util/resolve-featured-image.js';
 
 export function buildCollectiveTeaserPayload(attributes = {}, options = {}) {
   const cmsUrl = options.cmsUrl || '';
@@ -25,7 +18,7 @@ export function buildCollectiveTeaserPayload(attributes = {}, options = {}) {
   const excerpt = (typeof excerptSource === 'string' ? excerptSource : excerptSource?.rendered) || '';
 
   return {
-    href: normalizeHref(hrefBase, slug),
+    href: normalizeTeaserHref(hrefBase, slug),
     slug,
     title,
     excerpt,

@@ -1,15 +1,33 @@
 @use '@tokens/breakpoints';
 
+@mixin announcement-tout-list-container {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  :global(li) {
+    margin: 0;
+    display: block;
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px #444 solid;
+  }
+
+  @media (min-width: breakpoints.get(lg)) {
+      padding: 2rem;
+  }
+
+}
+
+:global(.block-editor-iframe__body .announcement-tout),
 .announcement-tout {
   background: var(--color-text);
+  color: var(--color-page-bg);
   display: flex;
-  flex-direction: column;
   position: relative;
   padding: 1rem;
   gap: 1rem;
   margin-top: 1rem;
 
-  .announcement-tout__toast {
+  :global(.announcement-tout__toast) {
     font-family: var(--font-impact-label-reversed), monospace;
     color: #fff;
     font-size: 1.5rem;
@@ -30,52 +48,35 @@
     margin: 0;
   }
 
-  &__content {
+  .announcement-tout__content {
     column-gap: 2rem;
-    color: var(--color-page-bg);
-
-    > :first-child {
-      flex: 1 1 auto;
-      min-width: 0;
-    }
-
-    :global(.list),
-    :global(.wp-block-list),
-    :global(ul),
-    :global(ol) {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-
-      :global(li) {
-        margin: 0;
-        display: block;
-        padding: 0.25rem 0.5rem;
-        border-bottom: 1px #444 solid;
-      }
-    }
-  }
-
-  &__content {
     color: var(--color-page-bg);
     margin: 0 0 1rem 0;
   }
 
+  :global(.list),
+  :global(.wp-block-list) {
+    @include announcement-tout-list-container;
+  }
+
+
   .button {
     display: inline-block;
   }
-
-  @media (min-width: breakpoints.get(lg)) {
-      padding: 2rem;
-  }
 }
 
+.announcement-tout {
+  @include announcement-tout-list-container;
+}
+
+:global( .block-editor-iframe__body .announcement-tout--secondary),
 .announcement-tout--secondary {
   background: var(--color-page-bg);
   color: var(--color-text);
   border: 2px solid var(--color-accent--secondary);
 
-  .announcement-tout__content {
+  .announcement-tout__content,
+  :global(.announcement-tout__content) {
     padding: 3rem 0.5rem 0.5rem 0.5rem;
     flex-direction: column;
     color: var(--color-text);
@@ -84,10 +85,9 @@
     > .announcement-tout__actions {
       align-self: stretch;
     }
-
-
   }
-  .announcement-tout__toast {
+
+  :global(.announcement-tout__toast) {
     background-color: var(--color-accent--secondary);
     color: var(--color-page-bg);
     display: inline;
@@ -104,9 +104,70 @@
     width: 100%;
   }
 
+  .button,
   .wp-block-button,
   .wp-block-button__link {
     width: 100%;
   }
 }
+
+// /* WP Editor only styles */
+// :global(.block-editor-iframe__body .announcement-tout) {
+//   flex-direction: column;
+
+//   :global(.announcement-tout__toast) {
+//     font-family: var(--font-impact-label-reversed), monospace;
+//     color: #fff;
+//     font-size: 1.5rem;
+//     background-color: var(--color-link);
+//     font-weight: 400;
+//     display: inline;
+//     margin: 0;
+//     padding-left: 0.5rem;
+//     padding-right: 0.5rem;
+//     width: fit-content;
+//     position: absolute;
+//     top: -1.2rem;
+//     left: 2.25rem;
+//   }
+
+//   :global(.announcement-tout__content) {
+//     padding: 2rem 0.5rem 0.5rem 0.5rem;
+
+//     :global(.list),
+//     :global(.wp-block-list) {
+//       @include announcement-tout-list-container;
+//     }
+
+//     .block-editor-block-list__layout {
+//       display: flex;
+//       flex-direction: row;
+//       column-gap: 2rem;
+
+//       > :first-child {
+//         flex: 1 1 auto;
+//         min-width: 0;
+//       }
+//     }
+
+//     .wp-block-buttons,
+//     .announcement-tout__actions {
+//       flex: 0 0 auto;
+//       align-self: flex-start;
+//       margin: 0;
+//     }
+//   }
+
+//   &.announcement-tout--secondary {
+//     :global(.announcement-tout__toast) {
+//       background-color: var(--color-accent--secondary);
+//       color: var(--color-page-bg);
+//     }
+
+//     .announcement-tout__content .block-editor-block-list__layout {
+//       flex-direction: column;
+//       row-gap: 1rem;
+//     }
+//   }
+// }
 

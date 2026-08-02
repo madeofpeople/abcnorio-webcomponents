@@ -7,6 +7,13 @@ const defaultCmsUrl = (
     : env.DEV_CMS
 ) || '';
 
+export function normalizeTeaserHref(basePath, slug) {
+  const [pathPart, queryPart = ''] = String(basePath).split('?');
+  const trimmedPath = String(pathPart || '/').replace(/\/+$/, '');
+  const normalizedPath = `${trimmedPath}/${String(slug || '').trim()}`;
+  return queryPart ? `${normalizedPath}?${queryPart}` : normalizedPath;
+}
+
 function resolveWordPressImageUrl(value, cmsUrl = defaultCmsUrl) {
   if (!value || !cmsUrl) {
     return value;

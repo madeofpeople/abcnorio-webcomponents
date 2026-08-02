@@ -28,6 +28,27 @@
         padding-top: 24rem;
     }
 
+
+        &.short {
+        .abcnorio-hero__image-wrapper {
+            height: 24rem;
+        }
+
+        .abcnorio-hero__content-wrapper {
+            padding-top: 16rem;
+        }
+    }
+
+    &.thin {
+        .abcnorio-hero__image-wrapper {
+            height: 18rem;
+        }
+
+        .abcnorio-hero__content-wrapper {
+            padding-top: 10rem;
+        }
+    }
+    
     .abcnorio-hero__content {
         position: relative;
         box-sizing: border-box;
@@ -63,26 +84,6 @@
             font-size: 1.2rem;
             line-height: 1.5;
             overflow: hidden;
-        }
-    }
-
-    &.short {
-        .abcnorio-hero__image-wrapper {
-            height: 24rem;
-        }
-
-        .abcnorio-hero__content-wrapper {
-            padding-top: 16rem;
-        }
-    }
-
-    &.thin {
-        .abcnorio-hero__image-wrapper {
-            height: 18rem;
-        }
-
-        .abcnorio-hero__content-wrapper {
-            padding-top: 13rem;
         }
     }
 

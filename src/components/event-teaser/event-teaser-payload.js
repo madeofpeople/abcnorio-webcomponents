@@ -1,12 +1,5 @@
 import { formatEventDate } from '../../util/dates.js';
-import { resolveFeaturedImage } from '../../util/resolve-featured-image.js';
-
-const normalizeHref = (basePath, slug) => {
-  const [pathPart, queryPart = ''] = String(basePath).split('?');
-  const trimmedPath = String(pathPart || '/events').replace(/\/+$/, '');
-  const normalizedPath = `${trimmedPath}/${slug}`;
-  return queryPart ? `${normalizedPath}?${queryPart}` : normalizedPath;
-};
+import { normalizeTeaserHref, resolveFeaturedImage } from '../../util/resolve-featured-image.js';
 
 export { formatEventDate };
 
@@ -34,7 +27,7 @@ export function buildEventTeaserPayload(attributes = {}, options = {}) {
   const isPastEvent = comparisonDateTime ? new Date(comparisonDateTime) < new Date() : false;
 
   return {
-    href: normalizeHref(hrefBase, slug),
+    href: normalizeTeaserHref(hrefBase, slug),
     slug,
     title,
     excerpt,

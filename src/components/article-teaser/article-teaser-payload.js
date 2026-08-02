@@ -1,4 +1,4 @@
-import { resolveFeaturedImage } from '../../util/resolve-featured-image.js';
+import { normalizeTeaserHref, resolveFeaturedImage } from '../../util/resolve-featured-image.js';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -24,13 +24,6 @@ function formatArticleDate(raw) {
   };
 }
 
-const normalizeHref = (basePath, slug) => {
-  const [pathPart, queryPart = ''] = String(basePath).split('?');
-  const trimmedPath = String(pathPart || '/articles').replace(/\/+$/, '');
-  const normalizedPath = `${trimmedPath}/${slug}`;
-  return queryPart ? `${normalizedPath}?${queryPart}` : normalizedPath;
-};
-
 export function buildArticleTeaserPayload(attributes = {}, options = {}) {
   const cmsUrl = options.cmsUrl || '';
   const slug = String(attributes?.slug || '').trim();
@@ -45,7 +38,7 @@ export function buildArticleTeaserPayload(attributes = {}, options = {}) {
   const hrefBase = options.hrefBase || '/articles';
 
   return {
-    href: slug ? normalizeHref(hrefBase, slug) : hrefBase,
+    href: slug ? normalizeTeaserHref(hrefBase, slug) : hrefBase,
     slug,
     title,
     dateLabel: date?.label || '',
