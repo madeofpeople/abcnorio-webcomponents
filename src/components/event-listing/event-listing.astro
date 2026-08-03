@@ -63,7 +63,13 @@ const {
   teaserListId = EVENT_LISTING_DEFAULTS.teaserListId,
   paginationId = EVENT_LISTING_DEFAULTS.paginationId,
   filtersFormSelector = EVENT_LISTING_DEFAULTS.filtersFormSelector,
+  paginationTargetId,
 } = Astro.props;
+
+const resolvedPaginationTargetId =
+  typeof paginationTargetId === 'string' && paginationTargetId.trim() !== ''
+    ? paginationTargetId
+    : mountId;
 
 const sourceItems = (Array.isArray(items) ? items : []) as any[];
 
@@ -157,7 +163,7 @@ const itemCount = normalizedItems.length;
         totalPages={totalPages}
         hxGet="/events/listing"
         hrefBase={hrefBase}
-        hxTarget={`#${mountId}`}
+        hxTarget={`#${resolvedPaginationTargetId}`}
         hxInclude={filtersFormSelector}
       />
     )}

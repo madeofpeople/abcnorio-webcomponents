@@ -1,0 +1,48 @@
+@use 'mixins/slider';
+@use 'blaze-slider/dist/blaze.css';
+
+:global(gallery-listing.gallery) {
+  display: block;
+
+  &.blaze-slider {
+    @include slider.slider();
+
+    :global(.images.blaze-track) {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      padding: 0 1rem;
+    }
+    :global(.gallery-item) {
+      height: 400px;
+      min-width: fit-content;
+    }
+
+    :global(.gallery-item > a),
+    :global(.gallery-item > figure),
+    :global(.gallery-item > img) {
+      display: block;
+      height: 100%;
+      width: auto;
+    }
+
+      // :global(.gallery-item > a) {
+      //   display: flex;
+      //   align-items: center;
+      //   justify-content: center;
+      // }
+
+    :global(.gallery-item figure) {
+      margin: 0;
+      padding: 0;
+    }
+
+    :global(.gallery-item img) {
+      display: block;
+      height: 100%;
+      width: auto;
+      max-width: none;
+      object-fit: contain;
+    }
+  }
+}

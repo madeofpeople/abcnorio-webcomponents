@@ -50,26 +50,6 @@ $stagger-step: 23ms;
   transition-delay: 0ms;
 }
 
-:global(event-listing[data-component="abcnorio/event-listing"]) {
-  &.htmx-swapping event-teaser,
-  .htmx-swapping & event-teaser {
-    @for $i from 1 through $stagger-count {
-      &:nth-child(#{$i}) {
-        animation-delay: ($i - 1) * $stagger-step;
-      }
-    }
-  }
-
-  &.htmx-added event-teaser,
-  .htmx-added & event-teaser {
-    @for $i from 1 through $stagger-count {
-      &:nth-child(#{$i}) {
-        animation-delay: $event-teaser-out-duration + (($i - 1) * $stagger-step);
-      }
-    }
-  }
-}
-
 :global(event-listing[data-component="abcnorio/event-listing"].htmx-swapping event-teaser),
 :global(.htmx-swapping event-listing[data-component="abcnorio/event-listing"] event-teaser) {
   animation: event-teaser-out $event-teaser-out-duration cubic-bezier(0.4, 0, 0.2, 1) both;

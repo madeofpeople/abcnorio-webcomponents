@@ -1,52 +1,71 @@
 ---
 const {
   component: _component,
-  attributes: _attributes,
+  attributes = {},
   innerBlocks = [],
+  variant,
   ...routerProps
 } = Astro.props;
+
+const rawVariant = String(
+  variant || attributes?.variant || attributes?.className || 'default',
+).toLowerCase();
+const resolvedVariant =
+  rawVariant.includes('slider') || rawVariant === 'carousel' ? 'slider' : 'default';
+const isSliderVariant = resolvedVariant === 'slider';
+const extraClasses = String(attributes?.className || '')
+  .split(/\s+/)
+  .map((entry) => entry.trim())
+  .filter(Boolean);
+
+const galleryClass = [
+  'gallery',
+  'blaze-slider',
+  isSliderVariant ? 'gallery--slider' : 'gallery--default',
+  resolvedVariant !== 'default' ? `gallery--${resolvedVariant}` : undefined,
+  ...extraClasses,
+].filter(Boolean).join(' ');
+
 const RecursiveBlock = routerProps.Block || null;
 const recursiveProps = {
   ...routerProps,
   Block: RecursiveBlock,
 };
+
+const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 ---
-<style>
-  .gallery {
-    display: block;
-    overflow: hidden;
-    overflow-x: auto;
-    padding-top: 1rem;
-    margin-bottom: 2rem;
+<gallery-listing class={galleryClass} data-variant={resolvedVariant}>
+  <div class="blaze-container">
+    <div class="blaze-track-container">
+      <div class="images blaze-track">
+        {RecursiveBlock && blocks.length > 0 && blocks.map((block: any) => {
+          block.attributes.loading = 'lazy';
+          return (
+            <div class="gallery-item">
+              <RecursiveBlock
+                {...recursiveProps}
+                component={block.name}
+                attributes={block.attributes}
+                innerBlocks={block.innerBlocks || null}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
 
-    .images {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      object-fit: cover;
-      object-position: center top;
-
-      img {
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-        display: block;
-        max-width: 200px;
-        width: auto;
-      }
-    }
-  }
-</style>
-<section class="gallery">
-  <div class="images">
-    {RecursiveBlock && innerBlocks.length > 0 && innerBlocks.map((block: any) => {
-      block.attributes.loading = 'lazy';
-      return (
-        <RecursiveBlock
-          {...recursiveProps}
-          component={block.name}
-          attributes={block.attributes}
-          innerBlocks={block.innerBlocks || null}
-        />
-      );
-    })}
+    <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
+    <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
+    <div class="blaze-pagination"></div>
   </div>
-</section>
+
+  <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>
+</gallery-listing>
+
+<script>
+  import './gallery.ts';
+</script>
+
+<style lang="scss">
+  @use './gallery.scss';
+</style>

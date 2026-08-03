@@ -1,6 +1,7 @@
 ---
 import ArticleTeaser from '../article-teaser/article-teaser.astro';
 import { buildArticleTeaserPayload } from '../article-teaser/article-teaser-payload.js';
+import Pagination from '../pagination/pagination.astro';
 import {
   ARTICLE_LISTING_DEFAULTS,
   ARTICLE_LISTING_KEY,
@@ -20,6 +21,12 @@ interface Props {
   showCount?: boolean;
   totalResults?: number;
   countText?: string;
+  page?: number;
+  totalPages?: number;
+  showPagination?: boolean;
+  paginationId?: string;
+  filtersFormSelector?: string;
+  paginationTargetId?: string;
 }
 
 const {
@@ -34,7 +41,18 @@ const {
   showCount = false,
   totalResults,
   countText,
+  page = 1,
+  totalPages = 1,
+  showPagination = false,
+  paginationId = 'pagination',
+  filtersFormSelector = '#articles-filters-form',
+  paginationTargetId,
 } = Astro.props as Props;
+
+const resolvedPaginationTargetId =
+  typeof paginationTargetId === 'string' && paginationTargetId.trim() !== ''
+    ? paginationTargetId
+    : mountId;
 
 const sourceItems = Array.isArray(items) ? items : articles;
 const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;
@@ -64,6 +82,18 @@ const resolvedCountText =
       <ArticleTeaser {...buildArticleTeaserPayload(result, { hrefBase })} />
     ))}
   </section>
+
+  {showPagination === true && (
+    <Pagination
+      id={paginationId}
+      currentPage={page}
+      totalPages={totalPages}
+      hxGet="/articles/listing"
+      hrefBase={hrefBase}
+      hxTarget={`#${resolvedPaginationTargetId}`}
+      hxInclude={filtersFormSelector}
+    />
+  )}
 </article-listing>
 
 <script>
