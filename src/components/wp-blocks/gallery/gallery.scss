@@ -1,11 +1,18 @@
 @use 'mixins/slider';
 @use 'blaze-slider/dist/blaze.css';
+@use '@tokens/breakpoints';
 
 :global(gallery-listing.gallery) {
   display: block;
 
   &.blaze-slider {
+
     @include slider.slider();
+
+    background-color: var(--color-text);
+    margin-bottom: 0;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
 
     :global(.images.blaze-track) {
       display: flex;
@@ -13,9 +20,11 @@
       align-items: center;
       padding: 0 1rem;
     }
+
     :global(.gallery-item) {
-      height: 400px;
-      min-width: fit-content;
+      height: 300px;
+      min-width: 0;
+      max-width: 100%;
     }
 
     :global(.gallery-item > a),
@@ -23,14 +32,9 @@
     :global(.gallery-item > img) {
       display: block;
       height: 100%;
-      width: auto;
+      width: 100%;
+      max-width: 100%;
     }
-
-      // :global(.gallery-item > a) {
-      //   display: flex;
-      //   align-items: center;
-      //   justify-content: center;
-      // }
 
     :global(.gallery-item figure) {
       margin: 0;
@@ -40,9 +44,56 @@
     :global(.gallery-item img) {
       display: block;
       height: 100%;
-      width: auto;
-      max-width: none;
+      // width: 100%;
+      max-width: calc(100% - 4rem);
       object-fit: contain;
     }
+
+    :global(.gallery-item--ghost) {
+      opacity: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+      margin-left: -2rem;
+      margin-right: -2rem;
+
+      :global(.gallery-item) {
+        height: 400px;
+        min-width: fit-content;
+        max-width: none;
+      }
+
+      :global(.gallery-item img) {
+        width: auto;
+        max-width: none;
+      }
+
+    }
   }
+
+  :global(button.blaze-slide-dot:hover),
+  :global(button.blaze-slide-dot.active),
+  :global(button.blaze-slide-dot.is-active) {
+    background-color: var(--color-accent) !important;
+  }
+}
+
+:global(.pswp__custom-caption) {
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  max-width: min(42rem, calc(100% - 2rem));
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  position: absolute;
+  left: 50%;
+  top: 1rem;
+  transform: translateX(-50%);
+}
+
+:global(.pswp__custom-caption[hidden]) {
+  display: none;
 }

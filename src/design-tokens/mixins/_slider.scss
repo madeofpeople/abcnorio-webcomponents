@@ -1,9 +1,10 @@
 @use "./visibility";
+@use "../breakpoints";
 
 @mixin slider() {
 
     .blaze-slide-dots {
-        margin: 1.5rem 0 3rem 0;
+        margin: 1.5rem 0 1rem 0;
         display: flex;
         justify-content: center;
         align-items: center;

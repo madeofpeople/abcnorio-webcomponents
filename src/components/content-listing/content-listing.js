@@ -6,6 +6,35 @@ export class ContentListing extends HTMLElement {
   lastStateIndex = 0;
   pendingActiveSlideIndex = null;
 
+  updateArrowVisibility(slider) {
+    if (!slider) {
+      return;
+    }
+
+    const prev = this.querySelector('.blaze-prev');
+    const next = this.querySelector('.blaze-next');
+    const totalPages = Array.isArray(slider.states) ? slider.states.length : 0;
+    const lastIndex = Math.max(totalPages - 1, 0);
+    const currentStateIndex = Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
+    const hideEdges = slider.config?.loop !== true;
+    const hidePrev = totalPages <= 1 || (hideEdges && currentStateIndex <= 0);
+    const hideNext = totalPages <= 1 || (hideEdges && currentStateIndex >= lastIndex);
+
+    if (prev) {
+      prev.toggleAttribute('hidden', hidePrev);
+      prev.style.display = hidePrev ? 'none' : '';
+      prev.setAttribute('aria-hidden', hidePrev ? 'true' : 'false');
+      prev.tabIndex = hidePrev ? -1 : 0;
+    }
+
+    if (next) {
+      next.toggleAttribute('hidden', hideNext);
+      next.style.display = hideNext ? 'none' : '';
+      next.setAttribute('aria-hidden', hideNext ? 'true' : 'false');
+      next.tabIndex = hideNext ? -1 : 0;
+    }
+  }
+
   goToState(slider, nextStateIndex) {
     if (!slider || typeof nextStateIndex !== 'number') {
       return false;
@@ -58,6 +87,7 @@ export class ContentListing extends HTMLElement {
     const totalPages = slider.states?.length ?? 0;
     if (totalPages <= 1) {
       dotsEl.innerHTML = '';
+      this.updateArrowVisibility(slider);
       return;
     }
 
@@ -89,6 +119,7 @@ export class ContentListing extends HTMLElement {
     this.lastStateIndex = slider.stateIndex;
     this.activeSlideIndex = slider.states?.[slider.stateIndex]?.page?.[0] ?? 0;
     this.updateActiveState(slider, dots);
+    this.updateArrowVisibility(slider);
     slider.onSlide(() => {
       const currentStateIndex = slider.stateIndex;
       const currentState = slider.states?.[currentStateIndex];
@@ -104,6 +135,7 @@ export class ContentListing extends HTMLElement {
       this.pendingActiveSlideIndex = null;
       this.lastStateIndex = currentStateIndex;
       this.updateActiveState(slider, dots);
+      this.updateArrowVisibility(slider);
     });
   }
 
@@ -120,7 +152,7 @@ export class ContentListing extends HTMLElement {
       const config = {
         'all': {
           slidesToShow: 1,
-          loop: true,
+          loop: false,
           slidesToScroll: 1,
           enablePagination: false,
           transitionDuration: 300,
@@ -134,12 +166,12 @@ export class ContentListing extends HTMLElement {
           slidesToScroll: 3,
         },
         [`(min-width: ${bp('md')}px)`]: {
-          slidesToShow: 4,
-          slidesToScroll: 4,
+          slidesToShow: 3,
+          slidesToScroll: 3,
         },
         [`(min-width: ${bp('lg')}px)`]: {
-          slidesToShow: 5,
-          slidesToScroll: 5,
+          slidesToShow: 4,
+          slidesToScroll: 4,
         },
       };
 

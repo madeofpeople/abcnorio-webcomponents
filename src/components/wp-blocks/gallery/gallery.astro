@@ -13,6 +13,9 @@ const rawVariant = String(
 const resolvedVariant =
   rawVariant.includes('slider') || rawVariant === 'carousel' ? 'slider' : 'default';
 const isSliderVariant = resolvedVariant === 'slider';
+const navigationMode = String(attributes?.navigationMode || attributes?.navigation_mode || 'item').toLowerCase() === 'page'
+  ? 'page'
+  : 'item';
 const extraClasses = String(attributes?.className || '')
   .split(/\s+/)
   .map((entry) => entry.trim())
@@ -22,6 +25,7 @@ const galleryClass = [
   'gallery',
   'blaze-slider',
   isSliderVariant ? 'gallery--slider' : 'gallery--default',
+  `gallery--nav-${navigationMode}`,
   resolvedVariant !== 'default' ? `gallery--${resolvedVariant}` : undefined,
   ...extraClasses,
 ].filter(Boolean).join(' ');
@@ -34,7 +38,7 @@ const recursiveProps = {
 
 const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 ---
-<gallery-listing class={galleryClass} data-variant={resolvedVariant}>
+<gallery-listing class={galleryClass} data-variant={resolvedVariant} data-navigation-mode={navigationMode}>
   <div class="blaze-container">
     <div class="blaze-track-container">
       <div class="images blaze-track">

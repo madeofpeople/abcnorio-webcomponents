@@ -1,17 +1,37 @@
 import BlazeSlider from 'blaze-slider';
-// import { bp } from '@util/breakpoints';
+import { bp } from '@util/breakpoints';
 
 type PhotoSwipeLightboxInstance = {
   init: () => void;
   destroy: () => void;
+  on?: (eventName: string, callback: () => void) => void;
+  pswp?: {
+    currSlide?: {
+      data?: {
+        element?: Element | null;
+      };
+    };
+    ui?: {
+      registerElement: (options: {
+        name: string;
+        order: number;
+        isButton: boolean;
+        appendTo: string;
+        html: string;
+        onInit: (el: HTMLElement, pswp: any) => void;
+      }) => void;
+    };
+  };
 };
 
 export class GalleryListing extends HTMLElement {
-  activeSlideIndex = 0;
-  lastStateIndex = 0;
-  pendingActiveSlideIndex: number | null = null;
+  realItemCount = 0;
   lightbox: PhotoSwipeLightboxInstance | null = null;
   photoswipeLoadAttempted = false;
+
+  getNavigationMode(): 'item' | 'page' {
+    return this.dataset.navigationMode === 'page' ? 'page' : 'item';
+  }
 
   getClassNumber(prefix: string): number | null {
     const token = Array.from(this.classList).find((entry) => entry.startsWith(`${prefix}-`));
@@ -139,6 +159,11 @@ export class GalleryListing extends HTMLElement {
       return;
     }
 
+    const hasCaptions = Array.from(items).some((item) => {
+      const caption = item.getAttribute('data-pswp-caption');
+      return Boolean(caption && caption.trim());
+    });
+
     let lightboxModule: any;
 
     try {
@@ -162,6 +187,31 @@ export class GalleryListing extends HTMLElement {
       children: 'a[data-pswp-item="true"]',
       pswpModule: () => import(/* @vite-ignore */ pswpModuleUrl),
     });
+
+    if (hasCaptions && typeof lightbox.on === 'function') {
+      lightbox.on('uiRegister', () => {
+        lightbox.pswp?.ui?.registerElement({
+          name: 'custom-caption',
+          order: 9,
+          isButton: false,
+          appendTo: 'root',
+          html: '',
+          onInit: (el: HTMLElement, pswp: any) => {
+            const updateCaption = () => {
+              const slideElement = pswp?.currSlide?.data?.element as HTMLElement | null | undefined;
+              const caption = slideElement?.getAttribute('data-pswp-caption')?.trim() || '';
+
+              el.textContent = caption;
+              el.toggleAttribute('hidden', !caption);
+            };
+
+            pswp.on('change', updateCaption);
+            pswp.on('afterInit', updateCaption);
+          },
+        });
+      });
+    }
+
     lightbox.init();
     this.lightbox = lightbox;
   }
@@ -185,15 +235,91 @@ export class GalleryListing extends HTMLElement {
     return false;
   }
 
+  getCurrentRealItemIndex(slider: any) {
+    if (!slider) {
+      return 0;
+    }
+
+    const maxRealIndex = Math.max(this.realItemCount - 1, 0);
+    const stateIndex = Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
+    return Math.max(0, Math.min(stateIndex, maxRealIndex));
+  }
+
+  getCurrentNavigationIndex(slider: any) {
+    if (!slider) {
+      return 0;
+    }
+
+    if (this.getNavigationMode() === 'page') {
+      return Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
+    }
+
+    return this.getCurrentRealItemIndex(slider);
+  }
+
+  prepareSlideTrack(slidesToShow: number) {
+    const track = this.querySelector('.images.blaze-track');
+    if (!track) {
+      this.realItemCount = 0;
+      return;
+    }
+
+    Array.from(track.querySelectorAll('.gallery-item--ghost')).forEach((ghost) => ghost.remove());
+
+    const realItems = Array.from(track.querySelectorAll(':scope > .gallery-item:not(.gallery-item--ghost)'));
+    this.realItemCount = realItems.length;
+
+    if (this.getNavigationMode() === 'page') {
+      return;
+    }
+
+    const ghostCount = Math.max(slidesToShow - 1, 0);
+    for (let i = 0; i < ghostCount; i += 1) {
+      const ghostItem = document.createElement('div');
+      ghostItem.className = 'gallery-item gallery-item--ghost';
+      ghostItem.setAttribute('aria-hidden', 'true');
+      track.appendChild(ghostItem);
+    }
+  }
+
+  updateArrowVisibility(slider: any) {
+    if (!slider) {
+      return;
+    }
+
+    const prev = this.querySelector<HTMLElement>('.blaze-prev');
+    const next = this.querySelector<HTMLElement>('.blaze-next');
+    const currentNavigationIndex = this.getCurrentNavigationIndex(slider);
+    const lastIndex = this.getNavigationMode() === 'page'
+      ? Math.max(Array.isArray(slider.states) ? slider.states.length - 1 : 0, 0)
+      : Math.max(this.realItemCount - 1, 0);
+    const hidePrev = currentNavigationIndex <= 0;
+    const hideNext = currentNavigationIndex >= lastIndex;
+
+    if (prev) {
+      prev.toggleAttribute('hidden', hidePrev);
+      prev.style.display = hidePrev ? 'none' : '';
+      prev.setAttribute('aria-hidden', hidePrev ? 'true' : 'false');
+      prev.tabIndex = hidePrev ? -1 : 0;
+    }
+
+    if (next) {
+      next.toggleAttribute('hidden', hideNext);
+      next.style.display = hideNext ? 'none' : '';
+      next.setAttribute('aria-hidden', hideNext ? 'true' : 'false');
+      next.tabIndex = hideNext ? -1 : 0;
+    }
+  }
+
   updateActiveState(slider: any, dots: HTMLButtonElement[]) {
     if (!slider || !Array.isArray(dots) || dots.length === 0) {
       return;
     }
 
-    const currentStateIndex = slider.stateIndex ?? 0;
+    const currentNavigationIndex = this.getCurrentNavigationIndex(slider);
 
     dots.forEach((dot, index) => {
-      const isActive = index === currentStateIndex;
+      const isActive = index === currentNavigationIndex;
       dot.classList.toggle('active', isActive);
       dot.classList.toggle('is-active', isActive);
       dot.setAttribute('aria-current', isActive ? 'true' : 'false');
@@ -206,57 +332,43 @@ export class GalleryListing extends HTMLElement {
       return;
     }
 
-    const pageStates = Array.isArray(slider.states) ? slider.states : [];
-    const totalPages = pageStates.length;
-    if (totalPages <= 1) {
+    const totalItems = this.getNavigationMode() === 'page'
+      ? Math.max(Array.isArray(slider.states) ? slider.states.length : 0, 0)
+      : this.realItemCount;
+    if (totalItems <= 1) {
       dotsEl.innerHTML = '';
+      this.updateArrowVisibility(slider);
       return;
     }
 
     dotsEl.innerHTML = '';
     const dots: HTMLButtonElement[] = [];
 
-    for (let pageIndex = 0; pageIndex < totalPages; pageIndex += 1) {
+    for (let pageIndex = 0; pageIndex < totalItems; pageIndex += 1) {
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.className = 'blaze-slide-dot';
       dot.setAttribute('aria-label', `Go to page ${pageIndex + 1}`);
 
       dot.addEventListener('click', () => {
-        const targetStateIndex = pageIndex;
-        const targetState = pageStates[targetStateIndex];
-        this.pendingActiveSlideIndex = targetState?.page?.[0] ?? 0;
-        const moved = this.goToState(slider, targetStateIndex);
-        if (!moved) {
-          this.activeSlideIndex = this.pendingActiveSlideIndex ?? 0;
-          this.pendingActiveSlideIndex = null;
-          this.updateActiveState(slider, dots);
-        }
+        const currentStates = Array.isArray(slider.states) ? slider.states : [];
+        const maxStateIndex = Math.max(currentStates.length - 1, 0);
+        const targetStateIndex = Math.min(pageIndex, maxStateIndex);
+        this.goToState(slider, targetStateIndex);
+        this.updateActiveState(slider, dots);
+        this.updateArrowVisibility(slider);
       });
 
       dots.push(dot);
       dotsEl.append(dot);
     }
 
-    this.lastStateIndex = slider.stateIndex;
-    this.activeSlideIndex = pageStates?.[slider.stateIndex]?.page?.[0] ?? 0;
     this.updateActiveState(slider, dots);
+    this.updateArrowVisibility(slider);
 
     slider.onSlide(() => {
-      const currentStateIndex = slider.stateIndex;
-      const currentState = pageStates?.[currentStateIndex];
-
-      if (typeof this.pendingActiveSlideIndex === 'number') {
-        this.activeSlideIndex = this.pendingActiveSlideIndex;
-      } else if (currentStateIndex > this.lastStateIndex) {
-        this.activeSlideIndex = currentState?.page?.[1] ?? this.activeSlideIndex;
-      } else if (currentStateIndex < this.lastStateIndex) {
-        this.activeSlideIndex = currentState?.page?.[0] ?? this.activeSlideIndex;
-      }
-
-      this.pendingActiveSlideIndex = null;
-      this.lastStateIndex = currentStateIndex;
       this.updateActiveState(slider, dots);
+      this.updateArrowVisibility(slider);
     });
   }
 
@@ -274,40 +386,37 @@ export class GalleryListing extends HTMLElement {
     }
 
     const dotsEl = this.querySelector('.blaze-slide-dots');
-    const variant = String(this.dataset.variant || 'default').toLowerCase();
-    const isSliderVariant = variant === 'slider' || this.classList.contains('gallery--slider');
+    const shouldLoop = false;
     const slidesAll = this.getClassNumber('blaze-all') ?? 4;
-    // const slidesXs = this.getClassNumber('blaze-xs') ?? 1;
-    // const slidesSm = this.getClassNumber('blaze-sm') ?? 1;
-    // const slidesMd = this.getClassNumber('blaze-md') ?? 1;
-    // const slidesLg = this.getClassNumber('blaze-lg') ?? 1;
+    this.prepareSlideTrack(slidesAll);
     const config = {
       all: {
         slidesToShow: slidesAll,
-        loop: isSliderVariant,
+        loop: shouldLoop,
         slidesToScroll: 1,
-        enablePagination: true,
+        enablePagination: false,
         transitionDuration: 200,
       },
-      // [`(min-width: ${bp('xs')}px)`]: {
-      //   slidesToShow: slidesXs,
-      //   slidesToScroll: slidesXs,
-      // },
-      // [`(min-width: ${bp('sm')}px)`]: {
-      //   slidesToShow: slidesSm,
-      //   slidesToScroll: slidesSm,
-      // },
-      // [`(min-width: ${bp('md')}px)`]: {
-      //   slidesToShow: slidesMd,
-      //   slidesToScroll: slidesMd,
-      // },
-      // [`(min-width: ${bp('lg')}px)`]: {
-      //   slidesToShow: slidesLg,
-      //   slidesToScroll: slidesLg,
-      // },
+      [`(min-width: ${bp('xs')}px)`]: {
+        slidesToShow: 2,
+        slidesToScroll: 2,
+      },
+      [`(min-width: ${bp('sm')}px)`]: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+      },
+      [`(min-width: ${bp('md')}px)`]: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+      },
+      [`(min-width: ${bp('lg')}px)`]: {
+        slidesToShow: 4,
+        slidesToScroll: 4,
+      }
     };
 
     const slider = new BlazeSlider(this, config as any);
+    this.updateArrowVisibility(slider);
     this.initSlideDots(slider, dotsEl);
   }
 
