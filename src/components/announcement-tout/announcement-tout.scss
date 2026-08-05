@@ -3,7 +3,7 @@
 @mixin announcement-tout-list-container {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin-bottom: 0;
 
   li {
     margin: 0;
@@ -12,17 +12,12 @@
     border-bottom: 1px #444 solid;
   }
 
-  @media (min-width: breakpoints.get(lg)) {
-      padding: 2rem;
-  }
-
 }
 
 .block-editor-iframe__body .announcement-tout,
 .announcement-tout {
   background: var(--color-text);
   color: var(--color-page-bg);
-  display: flex;
   position: relative;
   padding: 1rem;
   gap: 1rem;
@@ -34,14 +29,13 @@
     font-size: 1.5rem;
     background-color: var(--color-link);
     font-weight: 400;
-    display: inline;
+    display: inline-block;
     margin: 0;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-    width: fit-content;
-    position: absolute;
-    top: -1.2rem;
-    left: 2.25rem;
+    position: relative;
+    top: -1.75rem;
+    text-align: center;
   }
 
   .announcement-tout__title {
@@ -52,7 +46,8 @@
   .announcement-tout__content {
     column-gap: 2rem;
     color: var(--color-page-bg);
-    margin: 0 0 1rem 0;
+    margin: -1.75rem 0 0 0;
+    padding: 0rem 0.5rem 0.5rem 0.5rem;
   }
 
   .list,
@@ -60,9 +55,21 @@
     @include announcement-tout-list-container;
   }
 
-
   .button {
     display: inline-block;
+  }
+
+  @media (min-width: breakpoints.get(md)) {
+  }
+
+  @media (min-width: breakpoints.get(lg)) {
+    .announcement-tout__toast {
+      max-width: 80%;
+      left: 1rem;
+    }
+    .announcement-tout__content {
+        padding: 0 1rem 0rem 1rem;
+    }
   }
 }
 
@@ -73,7 +80,6 @@
   border: 2px solid var(--color-accent--secondary);
 
   .announcement-tout__content {
-    padding: 3rem 0.5rem 0.5rem 0.5rem;
     flex-direction: column;
     color: var(--color-text);
 
@@ -86,9 +92,6 @@
   .announcement-tout__toast {
     background-color: var(--color-accent--secondary);
     color: var(--color-page-bg);
-    display: inline;
-    text-align: center;
-    width: min-content;
   }
 
   .button {

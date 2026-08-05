@@ -1,8 +1,11 @@
-/* Component styles */
+@use '@tokens/mixins/ui';
+@use '@tokens/breakpoints';
+
 .collective-teaser {
 
     background-color: #eee;
-    overflow: hidden;
+    margin-bottom: 2rem;
+    border: 3px transparent solid;
 
     a {
         text-decoration: none;
@@ -12,47 +15,80 @@
         height: 100%;
     }
 
-    &__image {
-        position: relative;
-        display: block;
-        width: 50%;
-        object-fit: cover;
-        width: 338px;
-        height: 238px;
-    }
-
-    &__content {
+    .collective-teaser__image {
         position: absolute;
         top: 0;
         left: 0;
+        display: block;
         width: 100%;
-        line-height: 1;
+        height: 100%;
+        object-fit: cover;
     }
 
-    &__title {
-        padding: 0.25rem 0.5rem;
+    .collective-teaser__content {
         position: relative;
-        width: 11rem;
-        top: 1rem;
-        left: 30%;
-        display: inline-block;
+        top: 3rem;
+        padding-left: 30%;
+        padding-top: 3rem;
+        line-height: 1;
+        margin-right: 2rem;
+        transition-property: top;
+        transition-duration: 170ms;
+        transition-timing-function:cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .collective-teaser__title {
+        padding: 0.25rem 0.5rem;
+        display: inline;
         background-color: var(--color-accent--secondary);
         color: var(--color-page-bg);
         font-family: var(--font-impact-label-reversed), monospace;
+        @include ui.panel-shadow();
 
     }
 
-    &__excerpt {
-        position: absolute;
+    .collective-teaser__excerpt {
+
+        margin-top: 1rem;
         padding: 0.5rem 0.75rem;
         color: var(--color-page-bg);
         background-color: var(--color-text);
-        top: 5rem;
-        width: calc( 70% - 3rem);
-        left: 30%;
-        p {
+        font-size: 1rem;
+        line-height: 1.3;
+        transition-property: opacity;
+        transition-duration: 170ms;
+        transition-timing-function:cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+        :global(p) {
             margin: 0;
             padding: 0;
+        }
+    }
+
+    &:hover {
+        border: 3px var(--color-text) solid;
+
+        .collective-teaser__image {
+            filter: grayscale(100%);
+        }
+
+        .collective-teaser__title {
+            background-color: var(--color-accent);
+        }
+
+        .collective-teaser__content {
+            top: 1rem;
+        }
+
+        .collective-teaser__excerpt {
+            opacity: 1;
+        }
+
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+        .collective-teaser__excerpt {
+            opacity: 0;
         }
     }
 }

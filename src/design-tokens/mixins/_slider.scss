@@ -38,8 +38,8 @@
         top: 40%;
         background-color: var(--color-link);
         color: var(--color-page-bg);
-        width: 2rem;
-        height: 2rem;
+        width: 3rem;
+        height: 3rem;
         text-decoration: none;
         display: inline-block;
 
@@ -49,9 +49,9 @@
 
         &::after {
             display: block;
-            width: 2rem;
-            height: 2rem;
-            font-size: 2rem;
+            width: 3rem;
+            height: 3rem;
+            font-size: 3rem;
             font-weight: 500;
             line-height: 0.875;
             text-align: center;
@@ -67,22 +67,52 @@
     }
 
     .blaze-prev {
-        left: -0.75rem;
+        left: 0;
         &::after {
             content: '‹';
-        }
-        &:hover {
-            left: -1rem;
         }
     }
 
     .blaze-next {
-        right: -0.75rem;
+        right: 0;
         &::after {
             content: '›';
         }
-        &:hover {
-            right: -1rem;
+    }
+
+    @media (min-width: breakpoints.get(sm)) {
+
+        .blaze-prev,
+        .blaze-next {
+            width: 2rem;
+            height: 2rem;
+
+            &::after {
+                display: block;
+                width: 2rem;
+                height: 2rem;
+                font-size: 2rem;
+            }
+        }
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+
+        margin-left: -2rem;
+        margin-right: -2rem;
+
+        .blaze-prev {
+            left: -0.75rem;
+            &:hover {
+                left: -1rem;
+            }
+        }
+
+        .blaze-next {
+            right: -0.75rem;
+            &:hover {
+                right: -1rem;
+            }
         }
     }
 }

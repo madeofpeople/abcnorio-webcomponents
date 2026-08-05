@@ -387,15 +387,16 @@ export class GalleryListing extends HTMLElement {
 
     const dotsEl = this.querySelector('.blaze-slide-dots');
     const shouldLoop = false;
-    const slidesAll = this.getClassNumber('blaze-all') ?? 4;
-    this.prepareSlideTrack(slidesAll);
+    const slidesLg = this.getClassNumber('blaze-all') ?? 4;
+    this.prepareSlideTrack(1);
     const config = {
       all: {
-        slidesToShow: slidesAll,
         loop: shouldLoop,
-        slidesToScroll: 1,
         enablePagination: false,
         transitionDuration: 200,
+        slidesToShow: 1,
+        slideGap: '1rem',
+        slidesToScroll: 1,
       },
       [`(min-width: ${bp('xs')}px)`]: {
         slidesToShow: 2,
@@ -410,8 +411,8 @@ export class GalleryListing extends HTMLElement {
         slidesToScroll: 3,
       },
       [`(min-width: ${bp('lg')}px)`]: {
-        slidesToShow: 4,
-        slidesToScroll: 4,
+        slidesToShow: slidesLg,
+        slidesToScroll: slidesLg,
       }
     };
 
