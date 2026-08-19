@@ -6,6 +6,40 @@ export class EventListing extends HTMLElement {
   lastStateIndex = 0;
   pendingActiveSlideIndex = null;
 
+  ensureHtmxReady() {
+    const hasHtmxLinks = this.querySelector('[hx-get]');
+    if (!hasHtmxLinks) {
+      return;
+    }
+
+    if (window.htmx) {
+      window.htmx.process(this);
+      return;
+    }
+
+    const scriptSelector = 'script[data-abcnorio-htmx-loader="true"]';
+    const existing = document.querySelector(scriptSelector);
+    if (existing) {
+      existing.addEventListener('load', () => {
+        if (window.htmx) {
+          window.htmx.process(this);
+        }
+      }, { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.defer = true;
+    script.src = '/vendor/htmx.min.js';
+    script.dataset.abcnorioHtmxLoader = 'true';
+    script.addEventListener('load', () => {
+      if (window.htmx) {
+        window.htmx.process(this);
+      }
+    }, { once: true });
+    document.head.append(script);
+  }
+
   updateArrowVisibility(slider) {
     if (!slider) {
       return;
@@ -146,6 +180,8 @@ export class EventListing extends HTMLElement {
 
     this.dataset.upgraded = 'true';
     this.classList.add('is-upgraded');
+
+    this.ensureHtmxReady();
 
 
     if( this.classList.contains('blaze-slider')) {

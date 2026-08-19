@@ -2,6 +2,7 @@
 @use "mixins/visibility";
 @use "mixins/layout";
 @use "mixins/slider";
+@use "../pagination/pagination.scss";
 
 $event-teaser-out-duration: 0.2s;
 $event-teaser-in-duration: 0.2s;

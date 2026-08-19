@@ -4,17 +4,40 @@ interface Props {
     totalPages: number;
     hxGet: string;
     hrefBase?: string;
+    pagePathPrefix?: string;
     hxTarget: string;
     hxInclude?: string;
     id?: string;
     oob?: boolean;
 }
 
-const { currentPage, totalPages, hxGet, hrefBase, hxTarget, hxInclude, id = 'pagination', oob = false } = Astro.props;
+const { currentPage, totalPages, hxGet, hrefBase, pagePathPrefix, hxTarget, hxInclude, id = 'pagination', oob = false } = Astro.props;
 const sep = hxGet.includes('?') ? '&' : '?';
 const linkBase = hrefBase ?? hxGet;
 const linkSep = linkBase.includes('?') ? '&' : '?';
-const linkForPage = (page: number) => `${linkBase}${linkSep}page=${page}`;
+
+const buildPathPageUrl = (prefix: string, page: number) => {
+    const [basePath, queryString = ''] = prefix.split('?');
+    const normalizedPath = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
+    const suffix = queryString !== '' ? `?${queryString}` : '';
+    return `${normalizedPath}/${page}${suffix}`;
+};
+
+const linkForPage = (page: number) => {
+    if (typeof pagePathPrefix === 'string' && pagePathPrefix.trim() !== '') {
+        return buildPathPageUrl(pagePathPrefix, page);
+    }
+
+    return `${linkBase}${linkSep}page=${page}`;
+};
+
+const hxGetForPage = (page: number) => {
+    if (typeof pagePathPrefix === 'string' && pagePathPrefix.trim() !== '') {
+        return buildPathPageUrl(pagePathPrefix, page);
+    }
+
+    return `${hxGet}${sep}page=${page}`;
+};
 ---
 <nav
     id={id}
@@ -27,8 +50,9 @@ const linkForPage = (page: number) => `${linkBase}${linkSep}page=${page}`;
             {currentPage > 1 && (
                 <li>
                     <a href={linkForPage(currentPage - 1)}
-                       hx-get={`${hxGet}${sep}page=${currentPage - 1}`}
+                      hx-get={hxGetForPage(currentPage - 1)}
                        hx-target={hxTarget}
+                          hx-push-url="false"
                               hx-swap="outerHTML swap:0.2s settle:0.2s"
                        hx-include={hxInclude}>
                         &laquo; Prev
@@ -38,8 +62,9 @@ const linkForPage = (page: number) => `${linkBase}${linkSep}page=${page}`;
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                 <li>
                     <a href={linkForPage(p)}
-                       hx-get={`${hxGet}${sep}page=${p}`}
+                      hx-get={hxGetForPage(p)}
                        hx-target={hxTarget}
+                          hx-push-url="false"
                               hx-swap="outerHTML swap:0.2s settle:0.2s"
                        hx-include={hxInclude}
                        aria-current={p === currentPage ? 'page' : undefined}
@@ -51,8 +76,9 @@ const linkForPage = (page: number) => `${linkBase}${linkSep}page=${page}`;
             {currentPage < totalPages && (
                 <li>
                     <a href={linkForPage(currentPage + 1)}
-                       hx-get={`${hxGet}${sep}page=${currentPage + 1}`}
+                      hx-get={hxGetForPage(currentPage + 1)}
                        hx-target={hxTarget}
+                          hx-push-url="false"
                               hx-swap="outerHTML swap:0.2s settle:0.2s"
                        hx-include={hxInclude}>
                         Next &raquo;

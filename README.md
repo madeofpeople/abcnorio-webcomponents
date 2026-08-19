@@ -57,11 +57,11 @@ Use `BLOCK_KEYS` and `BLOCK_REGISTRY` for all block lookup logic.
 
 ### Data Normalization Boundary
 
-- Keep raw WordPress REST fields as upstream source (`type`, `featured_media`, `_embedded`).
+- Keep raw REST fields as upstream source (`type`, `featured_media`, `_embedded`).
 - Normalize once at adapter/payload-builder boundary into canonical app shape:
 	- `post_type`
 	- `featured_image` object (`url`, `alt`, `width`, `height`) or `null`
-- UI components should consume canonical shape only and should not parse WP `_embedded` directly.
+- UI components should consume canonical names only and should not parse WP `_embedded` directly.
 
 ## Local Development
 

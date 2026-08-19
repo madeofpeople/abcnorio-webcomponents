@@ -1,4 +1,5 @@
 @use "mixins/layout";
+@use "../pagination/pagination.scss";
 
 $article-teaser-out-duration: 0.2s;
 $article-teaser-in-duration: 0.2s;

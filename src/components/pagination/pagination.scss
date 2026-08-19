@@ -1,23 +1,43 @@
 .pagination ul {
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     list-style: none;
     padding: 0;
     gap: 0.5rem;
     margin: 1rem 0;
-    li a {
-        display: block;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        text-decoration: none;
-        color: inherit;
-        &:hover,
-        &:focus {
-            background: #f0f0f0;
-        }
-        &.is-current {
-            font-weight: bold;
-            border-color: currentColor;
-        }
-    }
+}
+
+.pagination li {
+    margin: 0;
+    padding: 0;
+}
+
+.pagination a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-link, #1f6ea7);
+    border-radius: 2px;
+    text-decoration: none;
+    color: var(--color-link, #1f6ea7);
+    background-color: var(--color-page-bg, #fff);
+    transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.pagination a:hover,
+.pagination a:focus-visible {
+    background-color: var(--color-link, #1f6ea7);
+    border-color: var(--color-link, #1f6ea7);
+    color: var(--color-page-bg, #fff);
+}
+
+.pagination a.is-current,
+.pagination a[aria-current='page'] {
+    font-weight: 700;
+    background-color: var(--color-accent, var(--color-link, #1f6ea7));
+    border-color: var(--color-accent, var(--color-link, #1f6ea7));
+    color: var(--color-page-bg, #fff);
 }

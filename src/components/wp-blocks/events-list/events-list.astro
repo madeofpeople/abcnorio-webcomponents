@@ -10,15 +10,34 @@ const {
   isSlider,
 } = Astro.props;
 
+const requestedPage = Math.max(1, Number.parseInt(String(attributes?.blockPage ?? attributes?.page ?? 1), 10) || 1);
+const variant = String(attributes?.variant || 'grid').toLowerCase();
+const isPaged = variant === 'paged-grid';
 const resolvedIsSlider =
   typeof isSlider === 'boolean'
     ? isSlider
-    : String(attributes?.variant || 'grid').toLowerCase() === 'slider';
+    : variant === 'slider';
+const effectiveIsSlider = isPaged ? false : resolvedIsSlider;
 const title = String(attributes?.title || '').trim();
+const showAllLink = Boolean(attributes?.showAllLink ?? true);
+const showAllLinkHrefRaw = String(attributes?.showAllLinkHref ?? '/events/').trim();
+const showAllLinkHref = showAllLinkHrefRaw !== '' ? showAllLinkHrefRaw : '/events/';
+const showAllLinkLabelRaw = String(attributes?.showAllLinkLabel ?? 'View all').trim();
+const showAllLinkLabel = showAllLinkLabelRaw !== '' ? showAllLinkLabelRaw : 'View all';
+const effectiveShowAllLink = isPaged ? false : showAllLink;
 
 const itemCount = Math.max(1, Number.parseInt(String(attributes?.itemCount ?? 6), 10) || 6);
 const sortOrder = String(attributes?.order || 'desc').toLowerCase() === 'asc' ? 'asc' : 'desc';
 const dateFilter = String(attributes?.dateFilter || 'upcoming').toLowerCase();
+const eventType = String(attributes?.eventType || '').trim();
+const collectiveAssociation = String(attributes?.collectiveAssociation || '').trim();
+const returnPath = String(attributes?.returnPath || '').trim();
+
+const explicitInstanceId = String(attributes?.mountId ?? attributes?.anchor ?? '').trim();
+const blockInstanceId = explicitInstanceId !== ''
+  ? explicitInstanceId
+  : `event-listing-${Math.random().toString(36).slice(2, 10)}`;
+const listingMountId = `${blockInstanceId}-mount`;
 
 const now = new Date().toLocaleString('sv', { timeZone: timezone });
 const startOfToday = `${now.slice(0, 10)} 00:00:00`;
@@ -43,6 +62,7 @@ const resolveTermId = async (restBase: string, rawValue: string): Promise<string
 
 const params = new URLSearchParams({
   per_page: String(itemCount),
+  page: String(requestedPage),
   orderby: 'event_start_date',
   order: sortOrder,
   _embed: 'wp:featuredmedia',
@@ -54,31 +74,64 @@ if (dateFilter === 'upcoming') {
   params.set('event_start_before', now);
 }
 
-const eventType = String(attributes?.eventType || '').trim();
 const eventTypeId = await resolveTermId('event-types', eventType);
 if (eventTypeId) {
   params.set('event-types', eventTypeId);
 }
 
-const collectiveAssociation = String(attributes?.collectiveAssociation || '').trim();
 const collectiveAssociationId = await resolveTermId('collective-associations', collectiveAssociation);
 if (collectiveAssociationId) {
   params.set('collective-associations', collectiveAssociationId);
 }
 
-const endpoint = restPath ? `${restPath}events?${params.toString()}` : '';
-const response = endpoint ? await fetch(endpoint).catch(() => null) : null;
+const fetchEndpoint = async (pageNumber: number) => {
+  params.set('page', String(pageNumber));
+  const endpoint = restPath ? `${restPath}events?${params.toString()}` : '';
+  return endpoint ? await fetch(endpoint).catch(() => null) : null;
+};
+
+let currentPage = requestedPage;
+let response = await fetchEndpoint(currentPage);
+
+if (!response?.ok && requestedPage > 1) {
+  currentPage = 1;
+  response = await fetchEndpoint(currentPage);
+}
 
 const items = response?.ok ? await response.json() : [];
 const totalResults = Number.parseInt(response?.headers?.get('X-WP-Total') || String(items.length), 10) || items.length;
 const totalPages = Number.parseInt(response?.headers?.get('X-WP-TotalPages') || '1', 10) || 1;
+
+const paginationConfig = {
+  title,
+  itemCount,
+  dateFilter,
+  order: sortOrder,
+  eventType,
+  collectiveAssociation,
+  showAllLink,
+  showAllLinkHref,
+  showAllLinkLabel,
+  mountId: blockInstanceId,
+  returnPath: returnPath !== '' ? returnPath : `${Astro.url.pathname}${Astro.url.search}`,
+};
+const encodedConfig = encodeURIComponent(JSON.stringify(paginationConfig));
+const paginationPathPrefix = `/events/listing/block/${encodeURIComponent(blockInstanceId)}?cfg=${encodedConfig}`;
 ---
 <EventListing
   title={title}
   items={items}
-  page={1}
-  isSlider={resolvedIsSlider}
+  page={currentPage}
+  isSlider={effectiveIsSlider}
   totalResults={totalResults}
   totalPages={totalPages}
   hrefBase={hrefBase}
+  showAllLink={effectiveShowAllLink}
+  showAllLinkHref={showAllLinkHref}
+  showAllLinkLabel={showAllLinkLabel}
+  mountId={listingMountId}
+  paginationTargetId={listingMountId}
+  filtersFormSelector=""
+  showPagination={isPaged}
+  paginationPathPrefix={isPaged ? paginationPathPrefix : undefined}
 />

@@ -12,7 +12,7 @@ import eventListingStylesHref from "../event-listing/event-listing.scss?url";
 import 'blaze-slider/dist/blaze.css';
 
 const env = import.meta.env || {};
-const mode = process.env.MODE || 'development';
+const mode = import.meta.env.MODE || 'development';
 const defaultCmsUrl = (
   mode === 'production' || mode === 'staging' || mode === 'preview'
     ? env.STAGING_CMS
@@ -34,6 +34,8 @@ interface EventTeaserItem {
   totalPages?: number;
   isSlider?: boolean;
   showAllLink?: boolean;
+  showAllLinkHref?: string;
+  showAllLinkLabel?: string;
 
   featured_image?: {
     url?: string;
@@ -56,6 +58,8 @@ const {
   sliderPreset = 'default',
   showPagination = false,
   showAllLink = true,
+  showAllLinkHref = '/events/',
+  showAllLinkLabel = 'View all',
   page,
   hrefBase = EVENT_LISTING_DEFAULTS.hrefBase,
   cmsUrl = defaultCmsUrl,
@@ -64,6 +68,7 @@ const {
   paginationId = EVENT_LISTING_DEFAULTS.paginationId,
   filtersFormSelector = EVENT_LISTING_DEFAULTS.filtersFormSelector,
   paginationTargetId,
+  paginationPathPrefix,
 } = Astro.props;
 
 const resolvedPaginationTargetId =
@@ -109,6 +114,8 @@ const normalizedItems = sourceItems.map((item: any, index: number) => {
 });
 
 const itemCount = normalizedItems.length;
+const resolvedShowAllLinkHref = String(showAllLinkHref || '').trim() || '/events/';
+const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View all';
 ---
 
 {itemCount > 0 && (
@@ -161,8 +168,9 @@ const itemCount = normalizedItems.length;
         id={paginationId}
         currentPage={page}
         totalPages={totalPages}
-        hxGet="/events/listing"
-        hrefBase={hrefBase}
+        hxGet={paginationPathPrefix || "/events/listing"}
+        hrefBase={paginationPathPrefix || hrefBase}
+        pagePathPrefix={paginationPathPrefix}
         hxTarget={`#${resolvedPaginationTargetId}`}
         hxInclude={filtersFormSelector}
       />
@@ -171,7 +179,7 @@ const itemCount = normalizedItems.length;
     {(isSlider === true || showAllLink === true) && (
       <div class="actions">
         {showAllLink === true && (
-          <a href="/events" class="show-all button">View all</a>
+          <a href={resolvedShowAllLinkHref} class="show-all button">{resolvedShowAllLinkLabel}</a>
         )}
         {isSlider === true && <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
       </div>

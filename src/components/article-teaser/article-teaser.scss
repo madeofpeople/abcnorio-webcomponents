@@ -9,8 +9,7 @@
   
   &__content {
     position: relative;
-    padding: 1rem;
-    top: 9.25rem;
+    padding-top: 9.25rem;
     height: calc( 100% - 9.25rem);
     overflow: hidden;
   }
@@ -30,7 +29,7 @@
     display: absolute;
     box-sizing: border-box;
     padding: 0.5rem;
-    margin: 0 0 1rem 0;
+    margin: 0 0.5rem;
     background-color: var(--color-text);
     color: var(--color-page-bg);
     font-weight: 900;
@@ -40,7 +39,7 @@
   &__excerpt {
     font-size: 1rem;
     color: var(--color-text);
-    padding: 0.5rem;
+    padding: 1rem;
   }
 
   &__image {
