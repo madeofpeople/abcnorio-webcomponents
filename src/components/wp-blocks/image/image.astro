@@ -103,7 +103,7 @@ const caption = attributes?.caption || '';
 ---
 
 {src && caption && (
-  <figure>
+  <figure class="image_wc">
     <img
       src={src}
       srcset={rawSrcset || undefined}
@@ -120,6 +120,7 @@ const caption = attributes?.caption || '';
 
 {src && !caption && (
   <img
+    class="image_wc"
     src={src}
     srcset={rawSrcset || undefined}
     sizes={sizes}
@@ -132,28 +133,5 @@ const caption = attributes?.caption || '';
 )}
 
 <style lang="scss">
-  article > *:not(.gallery) {
-    figure {
-      border: 1rem white solid;
-      margin: 1.5rem 0;
-
-      display: inline-block;
-      background-color: #fff; /*var(--color-panel-bg);*/
-      max-width: 100%;
-      box-shadow: 3px 3px 12px #00000033;
-
-      img {
-        max-width: 100%;
-        display: block;
-        border: 1px #efefef solid;
-      }
-
-      figcaption {
-        display: block;
-        line-height: 1.5;
-        padding: 1rem 0.5rem 0.5rem 0.5rem;
-        font-size: 0.875rem;
-      }
-    }
-  }
+  @use './image.scss';
 </style>
