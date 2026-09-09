@@ -68,7 +68,7 @@ Use `BLOCK_KEYS` and `BLOCK_REGISTRY` for all block lookup logic.
 - `npm run dev`
 : Starts dev server.
 
-Open `/` for the fixture index, then follow the linked fixture routes. Component previewing now happens in site-dev workshop pages; this package stays focused on component source and fixture routes.
+Open `/` for the fixture index, then follow the linked fixture routes. Component previewing now happens in site-frontend workshop pages; this package stays focused on component source and fixture routes.
 
 ## Design Tokens
 
