@@ -11,9 +11,14 @@ const rawVariant = String(
   variant || attributes?.variant || attributes?.className || 'default',
 ).toLowerCase();
 const resolvedVariant =
-  rawVariant.includes('slider') || rawVariant === 'carousel' ? 'slider' : 'default';
+  rawVariant.includes('slider') || rawVariant === 'carousel'
+    ? 'slider'
+    : rawVariant === 'paged-grid'
+      ? 'paged-grid'
+      : 'default';
 const isSliderVariant = resolvedVariant === 'slider';
-const navigationMode = String(attributes?.navigationMode || attributes?.navigation_mode || 'item').toLowerCase() === 'page'
+const isPagedGrid = resolvedVariant === 'paged-grid';
+const navigationMode = isPagedGrid || String(attributes?.navigationMode || attributes?.navigation_mode || 'item').toLowerCase() === 'page'
   ? 'page'
   : 'item';
 const extraClasses = String(attributes?.className || '')
@@ -23,8 +28,8 @@ const extraClasses = String(attributes?.className || '')
 
 const galleryClass = [
   'gallery',
-  'blaze-slider',
-  isSliderVariant ? 'gallery--slider' : 'gallery--default',
+  isPagedGrid ? undefined : 'blaze-slider',
+  isSliderVariant ? 'gallery--slider' : isPagedGrid ? undefined : 'gallery--default',
   `gallery--nav-${navigationMode}`,
   resolvedVariant !== 'default' ? `gallery--${resolvedVariant}` : undefined,
   ...extraClasses,
@@ -58,12 +63,14 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
       </div>
     </div>
 
-    <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
-    <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
-    <div class="blaze-pagination"></div>
+    {!isPagedGrid && <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>}
+    {!isPagedGrid && <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>}
+    {!isPagedGrid && <div class="blaze-pagination"></div>}
   </div>
 
-  <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>
+  {isPagedGrid
+    ? <nav class="gallery-pagination" aria-label="Gallery pagination" hidden></nav>
+    : <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
 </gallery-listing>
 
 <script>

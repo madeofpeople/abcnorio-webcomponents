@@ -9,7 +9,7 @@ export function buildCollectiveTeaserPayload(attributes = {}, options = {}) {
     priority = false,
   } = attributes;
 
-  const hrefBase = options.hrefBase || '/collectives';
+  const hrefBase = options.hrefBase || '/facilities';
   const title = (
     (typeof titleSource === 'string' ? titleSource : titleSource?.rendered)
     || slug

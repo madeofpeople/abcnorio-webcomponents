@@ -3,7 +3,7 @@ export const COLLECTIVE_LISTING_KEY = `abcnorio/${COLLECTIVE_LISTING_TAG}`;
 
 export const COLLECTIVE_LISTING_DEFAULTS = {
   ariaLabel: 'Content results',
-  collectiveHrefBase: '/collectives',
+  collectiveHrefBase: '/facilities',
   mountId: COLLECTIVE_LISTING_TAG,
   listId: 'collective-list',
 };

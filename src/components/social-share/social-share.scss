@@ -3,8 +3,11 @@
 social-share {
   position: relative;
   display: block;
+  padding: 0;
 
   .social-links {
+    padding: 0;
+
     .social-links__actuator {
       ul {
         display: flex;

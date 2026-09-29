@@ -13,6 +13,7 @@ import ButtonsBlock from './buttons/buttons.astro';
 import GroupBlock from './group/group.astro';
 import MailchimpBlock from './mailchimp/mailchimp.astro';
 import AnnouncementToutBlock from './announcement-tout/announcement-tout.astro';
+import PressItemBlock from './press-item/press-item.astro';
 import SidebarToutBlock from './sidebar-tout/sidebar-tout.astro';
 import YouTubeEmbed from './youtube/youtube.astro';
 import MatterportEmbed from './matterport/matterport.astro';
@@ -39,6 +40,7 @@ export const CUSTOM_BLOCK_KEYS = {
   HERO: 'abcnorio/hero',
   GALLERY: 'abcnorio/gallery',
   ANNOUNCEMENT_TOUT: 'abcnorio/announcement-tout',
+  PRESS_ITEM: 'abcnorio/press-item',
   SIDEBAR_TOUT: 'abcnorio/sidebar-tout',
   NEWSLETTER_SIGNUP: 'abcnorio/newsletter-signup',
   LEGACY_MAILCHIMP: 'mailchimp/mailchimp',
@@ -63,6 +65,7 @@ export const CUSTOM_BLOCK_REGISTRY = {
   [CUSTOM_BLOCK_KEYS.HERO]: HeroBlock,
   [CUSTOM_BLOCK_KEYS.GALLERY]: GalleryBlock,
   [CUSTOM_BLOCK_KEYS.ANNOUNCEMENT_TOUT]: AnnouncementToutBlock,
+  [CUSTOM_BLOCK_KEYS.PRESS_ITEM]: PressItemBlock,
   [CUSTOM_BLOCK_KEYS.SIDEBAR_TOUT]: SidebarToutBlock,
   [CUSTOM_BLOCK_KEYS.NEWSLETTER_SIGNUP]: MailchimpBlock,
   [CUSTOM_BLOCK_KEYS.LEGACY_MAILCHIMP]: MailchimpBlock,

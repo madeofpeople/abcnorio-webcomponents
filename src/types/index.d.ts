@@ -59,7 +59,7 @@ declare module 'abcnorio-webcomponents/util/normalize-post-type' {
   export function normalizePostType(item?: any): any;
   export function isEvent(item?: any): boolean;
   export function isArticle(item?: any): boolean;
-  export function isCollective(item?: any): boolean;
+  export function isFacility(item?: any): boolean;
 }
 
 declare module 'abcnorio-webcomponents/homepage-events-listing' {

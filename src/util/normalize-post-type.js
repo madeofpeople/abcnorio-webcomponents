@@ -12,4 +12,4 @@ export function normalizePostType(item = {}) {
 
 export const isEvent = (item) => item?.post_type === 'event';
 export const isArticle = (item) => item?.post_type === 'article';
-export const isCollective = (item) => item?.post_type === 'collective';
+export const isFacility = (item) => item?.post_type === 'facility';

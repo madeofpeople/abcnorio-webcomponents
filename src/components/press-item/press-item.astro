@@ -1,0 +1,19 @@
+---
+import { formatDate } from '../../util/dates.js';
+
+const {
+  class: className,
+  date = '',
+  fallbackDate = '',
+  title = '',
+  source = '',
+  sourceUrl = '',
+} = Astro.props;
+
+const formattedDate = formatDate(String(date));
+---
+<article class:list={['press-item', className]}>
+  {formattedDate ? <time datetime={formattedDate.datetime}>{formattedDate.label_date}</time> : fallbackDate && <time>{fallbackDate}</time>}
+  {title && <h3>{title}</h3>}
+  {sourceUrl && source ? <p>— <a class="source" href={sourceUrl} target="_blank" rel="noopener">{source}</a></p> : source && <p>— <span class="source">{source}</span></p>}
+</article>

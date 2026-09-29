@@ -1,0 +1,18 @@
+---
+import '../_wp-blocks.scss';
+import PressItem from '../../press-item/press-item.astro';
+
+const {
+  attributes = {},
+  innerBlocks: _innerBlocks,
+} = Astro.props;
+
+---
+<PressItem
+  class={String(attributes?.className || '')}
+  date={String(attributes?.date || '')}
+  fallbackDate={String(attributes?.fallbackDate || '')}
+  title={String(attributes?.title || '')}
+  source={String(attributes?.source || '')}
+  sourceUrl={String(attributes?.sourceUrl || '')}
+/>

@@ -18,7 +18,7 @@ const defaultItems = [
       },
       priority: true,
     },
-    { hrefBase: '/collectives' },
+    { hrefBase: '/facilities' },
   ),
   buildCollectiveTeaserPayload(
     {
@@ -34,7 +34,7 @@ const defaultItems = [
       },
       priority: true,
     },
-    { hrefBase: '/collectives' },
+    { hrefBase: '/facilities' },
   ),
 ];
 

@@ -1,6 +1,8 @@
 import BlazeSlider from 'blaze-slider';
 import { bp } from '@util/breakpoints';
 
+const PAGED_GRID_PAGE_SIZE = 6;
+
 type PhotoSwipeLightboxInstance = {
   init: () => void;
   destroy: () => void;
@@ -266,7 +268,8 @@ export class GalleryListing extends HTMLElement {
 
     Array.from(track.querySelectorAll('.gallery-item--ghost')).forEach((ghost) => ghost.remove());
 
-    const realItems = Array.from(track.querySelectorAll(':scope > .gallery-item:not(.gallery-item--ghost)'));
+    // editor children aren't wrapped in .gallery-item, so count direct children generically
+    const realItems = Array.from(track.querySelectorAll(':scope > *:not(.gallery-item--ghost)'));
     this.realItemCount = realItems.length;
 
     if (this.getNavigationMode() === 'page') {
@@ -372,6 +375,79 @@ export class GalleryListing extends HTMLElement {
     });
   }
 
+  initPagedGrid() {
+    const items = Array.from(this.querySelectorAll<HTMLElement>('.images > *:not(.gallery-item--ghost)'));
+    const pagination = this.querySelector<HTMLElement>('.gallery-pagination');
+    const totalPages = Math.ceil(items.length / PAGED_GRID_PAGE_SIZE);
+
+    if (!pagination || totalPages <= 1) {
+      return;
+    }
+
+    let currentPage = 1;
+    const list = document.createElement('ul');
+    const previousItem = document.createElement('li');
+    const previousButton = document.createElement('button');
+    previousButton.type = 'button';
+    previousButton.textContent = '\u00ab Prev';
+    previousButton.setAttribute('aria-label', 'Previous page');
+    previousItem.append(previousButton);
+    list.append(previousItem);
+
+    const pageButtons = Array.from({ length: totalPages }, (_, index) => {
+      const pageItem = document.createElement('li');
+      const pageButton = document.createElement('button');
+      const pageNumber = index + 1;
+      pageButton.type = 'button';
+      pageButton.textContent = String(pageNumber);
+      pageItem.append(pageButton);
+      list.append(pageItem);
+      return pageButton;
+    });
+
+    const nextItem = document.createElement('li');
+    const nextButton = document.createElement('button');
+    nextButton.type = 'button';
+    nextButton.textContent = 'Next \u00bb';
+    nextButton.setAttribute('aria-label', 'Next page');
+    nextItem.append(nextButton);
+    list.append(nextItem);
+
+    function updatePage(pageNumber: number) {
+      currentPage = Math.max(1, Math.min(pageNumber, totalPages));
+      const firstItemIndex = (currentPage - 1) * PAGED_GRID_PAGE_SIZE;
+
+      items.forEach((item, index) => {
+        const isVisible = index >= firstItemIndex && index < firstItemIndex + PAGED_GRID_PAGE_SIZE;
+        item.toggleAttribute('hidden', !isVisible);
+        item.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+      });
+
+      previousButton.disabled = currentPage === 1;
+      nextButton.disabled = currentPage === totalPages;
+      pageButtons.forEach((button, index) => {
+        const isCurrent = index + 1 === currentPage;
+        button.classList.toggle('is-current', isCurrent);
+        if (isCurrent) {
+          button.setAttribute('aria-current', 'page');
+          button.setAttribute('aria-label', `Page ${index + 1}, current page`);
+        } else {
+          button.removeAttribute('aria-current');
+          button.setAttribute('aria-label', `Go to page ${index + 1}`);
+        }
+      });
+    }
+
+    previousButton.addEventListener('click', () => updatePage(currentPage - 1));
+    nextButton.addEventListener('click', () => updatePage(currentPage + 1));
+    pageButtons.forEach((button, index) => {
+      button.addEventListener('click', () => updatePage(index + 1));
+    });
+    pagination.replaceChildren(list);
+    pagination.hidden = false;
+    updatePage(currentPage);
+  }
+
   connectedCallback() {
     if (this.dataset.upgraded === 'true') {
       return;
@@ -380,6 +456,11 @@ export class GalleryListing extends HTMLElement {
     this.dataset.upgraded = 'true';
     this.classList.add('is-upgraded');
     void this.initPhotoSwipe();
+
+    if (this.dataset.variant === 'paged-grid') {
+      this.initPagedGrid();
+      return;
+    }
 
     if (!this.classList.contains('blaze-slider')) {
       return;
@@ -394,7 +475,7 @@ export class GalleryListing extends HTMLElement {
         loop: shouldLoop,
         enablePagination: false,
         transitionDuration: 200,
-        slidesToShow: 1,
+        slidesToShow: 2,
         slideGap: '1rem',
         slidesToScroll: 1,
       },

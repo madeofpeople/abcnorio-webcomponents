@@ -6,7 +6,7 @@ import { normalizePostType } from '../../../util/normalize-post-type.js';
 const {
   attributes = {},
   restPath = '',
-  hrefBase = '/collectives',
+  hrefBase = '/facilities',
 } = Astro.props;
 
 const blockData = attributes?.data ?? attributes ?? {};
@@ -48,7 +48,7 @@ const params = new URLSearchParams({
   _embed: 'wp:featuredmedia',
 });
 
-const endpoint = restPath ? `${restPath}collectives?${params.toString()}` : '';
+const endpoint = restPath ? `${restPath}facilities?${params.toString()}` : '';
 
 const response = endpoint ? await fetch(endpoint).catch(() => null) : null;
 const rawItems = response?.ok ? await response.json() : [];
