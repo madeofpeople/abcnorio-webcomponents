@@ -378,7 +378,8 @@ export class GalleryListing extends HTMLElement {
   initPagedGrid() {
     const items = Array.from(this.querySelectorAll<HTMLElement>('.images > *:not(.gallery-item--ghost)'));
     const pagination = this.querySelector<HTMLElement>('.gallery-pagination');
-    const totalPages = Math.ceil(items.length / PAGED_GRID_PAGE_SIZE);
+    const pageSize = Number.parseInt(this.dataset.itemsPerPage || '', 10) || PAGED_GRID_PAGE_SIZE;
+    const totalPages = Math.ceil(items.length / pageSize);
 
     if (!pagination || totalPages <= 1) {
       return;
@@ -415,10 +416,10 @@ export class GalleryListing extends HTMLElement {
 
     function updatePage(pageNumber: number) {
       currentPage = Math.max(1, Math.min(pageNumber, totalPages));
-      const firstItemIndex = (currentPage - 1) * PAGED_GRID_PAGE_SIZE;
+      const firstItemIndex = (currentPage - 1) * pageSize;
 
       items.forEach((item, index) => {
-        const isVisible = index >= firstItemIndex && index < firstItemIndex + PAGED_GRID_PAGE_SIZE;
+        const isVisible = index >= firstItemIndex && index < firstItemIndex + pageSize;
         item.toggleAttribute('hidden', !isVisible);
         item.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
       });

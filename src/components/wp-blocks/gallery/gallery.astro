@@ -21,6 +21,7 @@ const isPagedGrid = resolvedVariant === 'paged-grid';
 const navigationMode = isPagedGrid || String(attributes?.navigationMode || attributes?.navigation_mode || 'item').toLowerCase() === 'page'
   ? 'page'
   : 'item';
+const itemsPerPage = Math.max(1, Number.parseInt(String(attributes?.itemsPerPage ?? 6), 10) || 6);
 const extraClasses = String(attributes?.className || '')
   .split(/\s+/)
   .map((entry) => entry.trim())
@@ -43,7 +44,7 @@ const recursiveProps = {
 
 const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 ---
-<gallery-listing class={galleryClass} data-variant={resolvedVariant} data-navigation-mode={navigationMode}>
+<gallery-listing class={galleryClass} data-variant={resolvedVariant} data-navigation-mode={navigationMode} data-items-per-page={itemsPerPage}>
   <div class="blaze-container">
     <div class="blaze-track-container">
       <div class="images blaze-track">
