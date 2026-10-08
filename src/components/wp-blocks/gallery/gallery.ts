@@ -1,7 +1,10 @@
 import BlazeSlider from 'blaze-slider';
 import { bp } from '@util/breakpoints';
 
-const PAGED_GRID_PAGE_SIZE = 6;
+const MIN_PAGED_GRID_PAGE_SIZE = 8;
+const MAX_PAGED_GRID_PAGE_SIZE = 24;
+const DEFAULT_PAGED_GRID_PAGE_SIZE = 8;
+const SLIDE_MS = 200; // keep in sync with gallery.scss $slide-duration
 
 type PhotoSwipeLightboxInstance = {
   init: () => void;
@@ -30,6 +33,7 @@ export class GalleryListing extends HTMLElement {
   realItemCount = 0;
   lightbox: PhotoSwipeLightboxInstance | null = null;
   photoswipeLoadAttempted = false;
+  pagedGridResizeObserver: ResizeObserver | null = null;
 
   getNavigationMode(): 'item' | 'page' {
     return this.dataset.navigationMode === 'page' ? 'page' : 'item';
@@ -51,6 +55,11 @@ export class GalleryListing extends HTMLElement {
   }
 
   resolvePhotoSwipeSource(image: HTMLImageElement) {
+    const fullSource = image.dataset.lightboxSrc;
+    if (fullSource) {
+      return fullSource;
+    }
+
     const currentSource = image.currentSrc || image.getAttribute('src') || '';
     if (!currentSource) {
       return '';
@@ -109,8 +118,8 @@ export class GalleryListing extends HTMLElement {
     trigger.setAttribute('href', source);
     trigger.setAttribute('data-pswp-item', 'true');
 
-    const width = image.getAttribute('width') || String(image.naturalWidth || 0);
-    const height = image.getAttribute('height') || String(image.naturalHeight || 0);
+    const width = image.dataset.lightboxWidth || image.getAttribute('width') || String(image.naturalWidth || 0);
+    const height = image.dataset.lightboxHeight || image.getAttribute('height') || String(image.naturalHeight || 0);
 
     if (width !== '0' && height !== '0') {
       trigger.setAttribute('data-pswp-width', width);
@@ -319,7 +328,7 @@ export class GalleryListing extends HTMLElement {
       return;
     }
 
-    const currentNavigationIndex = this.getCurrentNavigationIndex(slider);
+    const currentNavigationIndex = Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
 
     dots.forEach((dot, index) => {
       const isActive = index === currentNavigationIndex;
@@ -335,10 +344,8 @@ export class GalleryListing extends HTMLElement {
       return;
     }
 
-    const totalItems = this.getNavigationMode() === 'page'
-      ? Math.max(Array.isArray(slider.states) ? slider.states.length : 0, 0)
-      : this.realItemCount;
-    if (totalItems <= 1) {
+    const totalPages = Math.max(Array.isArray(slider.states) ? slider.states.length : 0, 0);
+    if (totalPages <= 1) {
       dotsEl.innerHTML = '';
       this.updateArrowVisibility(slider);
       return;
@@ -347,17 +354,14 @@ export class GalleryListing extends HTMLElement {
     dotsEl.innerHTML = '';
     const dots: HTMLButtonElement[] = [];
 
-    for (let pageIndex = 0; pageIndex < totalItems; pageIndex += 1) {
+    for (let pageIndex = 0; pageIndex < totalPages; pageIndex += 1) {
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.className = 'blaze-slide-dot';
       dot.setAttribute('aria-label', `Go to page ${pageIndex + 1}`);
 
       dot.addEventListener('click', () => {
-        const currentStates = Array.isArray(slider.states) ? slider.states : [];
-        const maxStateIndex = Math.max(currentStates.length - 1, 0);
-        const targetStateIndex = Math.min(pageIndex, maxStateIndex);
-        this.goToState(slider, targetStateIndex);
+        this.goToState(slider, pageIndex);
         this.updateActiveState(slider, dots);
         this.updateArrowVisibility(slider);
       });
@@ -378,7 +382,8 @@ export class GalleryListing extends HTMLElement {
   initPagedGrid() {
     const items = Array.from(this.querySelectorAll<HTMLElement>('.images > *:not(.gallery-item--ghost)'));
     const pagination = this.querySelector<HTMLElement>('.gallery-pagination');
-    const pageSize = Number.parseInt(this.dataset.itemsPerPage || '', 10) || PAGED_GRID_PAGE_SIZE;
+    const requestedPageSize = Number.parseInt(this.dataset.itemsPerPage || '', 10) || DEFAULT_PAGED_GRID_PAGE_SIZE;
+    const pageSize = Math.min(MAX_PAGED_GRID_PAGE_SIZE, Math.max(MIN_PAGED_GRID_PAGE_SIZE, requestedPageSize));
     const totalPages = Math.ceil(items.length / pageSize);
 
     if (!pagination || totalPages <= 1) {
@@ -386,6 +391,16 @@ export class GalleryListing extends HTMLElement {
     }
 
     let currentPage = 1;
+    let isSliding = false;
+    let measuredWidth = this.clientWidth;
+    let maxPageHeight = 0;
+    const host = this;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const preserveTallestPage = () => {
+      maxPageHeight = Math.max(maxPageHeight, this.getBoundingClientRect().height);
+      this.style.setProperty('--gallery-paged-grid-min-height', `${maxPageHeight}px`);
+    };
     const list = document.createElement('ul');
     const previousItem = document.createElement('li');
     const previousButton = document.createElement('button');
@@ -414,7 +429,7 @@ export class GalleryListing extends HTMLElement {
     nextItem.append(nextButton);
     list.append(nextItem);
 
-    function updatePage(pageNumber: number) {
+    function showPage(pageNumber: number) {
       currentPage = Math.max(1, Math.min(pageNumber, totalPages));
       const firstItemIndex = (currentPage - 1) * pageSize;
 
@@ -423,6 +438,7 @@ export class GalleryListing extends HTMLElement {
         item.toggleAttribute('hidden', !isVisible);
         item.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
       });
+      requestAnimationFrame(preserveTallestPage);
 
       previousButton.disabled = currentPage === 1;
       nextButton.disabled = currentPage === totalPages;
@@ -439,6 +455,33 @@ export class GalleryListing extends HTMLElement {
       });
     }
 
+    // slide current page out, swap, slide new page in; CSS keyframes read data-slide for direction
+    function updatePage(pageNumber: number) {
+      const targetPage = Math.max(1, Math.min(pageNumber, totalPages));
+      if (isSliding) {
+        return;
+      }
+      if (targetPage === currentPage || reducedMotion.matches) {
+        showPage(targetPage);
+        return;
+      }
+
+      host.dataset.slide = targetPage > currentPage ? 'next' : 'prev';
+      const leaving = items.filter((item) => !item.hidden);
+      leaving.forEach((item) => item.classList.add('is-leaving'));
+      isSliding = true;
+
+      window.setTimeout(() => {
+        leaving.forEach((item) => item.classList.remove('is-leaving'));
+        showPage(targetPage);
+        items.filter((item) => !item.hidden).forEach((item) => {
+          item.classList.add('is-entering');
+          item.addEventListener('animationend', () => item.classList.remove('is-entering'), { once: true });
+        });
+        isSliding = false;
+      }, SLIDE_MS);
+    }
+
     previousButton.addEventListener('click', () => updatePage(currentPage - 1));
     nextButton.addEventListener('click', () => updatePage(currentPage + 1));
     pageButtons.forEach((button, index) => {
@@ -447,6 +490,18 @@ export class GalleryListing extends HTMLElement {
     pagination.replaceChildren(list);
     pagination.hidden = false;
     updatePage(currentPage);
+    this.pagedGridResizeObserver = new ResizeObserver(() => {
+      const width = this.clientWidth;
+      if (width === measuredWidth) {
+        return;
+      }
+
+      measuredWidth = width;
+      maxPageHeight = 0;
+      this.style.removeProperty('--gallery-paged-grid-min-height');
+      requestAnimationFrame(preserveTallestPage);
+    });
+    this.pagedGridResizeObserver.observe(this);
   }
 
   connectedCallback() {
@@ -469,7 +524,6 @@ export class GalleryListing extends HTMLElement {
 
     const dotsEl = this.querySelector('.blaze-slide-dots');
     const shouldLoop = false;
-    const slidesLg = this.getClassNumber('blaze-all') ?? 4;
     this.prepareSlideTrack(1);
     const config = {
       all: {
@@ -478,7 +532,7 @@ export class GalleryListing extends HTMLElement {
         transitionDuration: 200,
         slidesToShow: 2,
         slideGap: '1rem',
-        slidesToScroll: 1,
+        slidesToScroll: 2,
       },
       [`(min-width: ${bp('xs')}px)`]: {
         slidesToShow: 2,
@@ -493,8 +547,8 @@ export class GalleryListing extends HTMLElement {
         slidesToScroll: 3,
       },
       [`(min-width: ${bp('lg')}px)`]: {
-        slidesToShow: slidesLg,
-        slidesToScroll: slidesLg,
+        slidesToShow: 4,
+        slidesToScroll: 4,
       }
     };
 
@@ -504,6 +558,9 @@ export class GalleryListing extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this.pagedGridResizeObserver?.disconnect();
+    this.pagedGridResizeObserver = null;
+
     if (!this.lightbox) {
       return;
     }
@@ -511,6 +568,7 @@ export class GalleryListing extends HTMLElement {
     this.lightbox.destroy();
     this.lightbox = null;
   }
+
 }
 
 if (!customElements.get('gallery-listing')) {

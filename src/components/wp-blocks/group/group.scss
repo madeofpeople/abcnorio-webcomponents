@@ -1,0 +1,22 @@
+.wp-block-group.dark {
+	background-color: var(--color-text);
+	color: var(--color-page-bg);
+	padding-top: 2rem;
+	
+	h2 {
+		padding-left: 2rem;
+	}
+
+	gallery-listing.gallery.gallery--paged-grid,
+	.images {
+		padding: 0;
+	}
+}
+
+.wp-block-group.dark :where(*) {
+	color: var(--color-page-bg);
+}
+
+.wp-block-group.gallery {
+	margin-bottom: 3rem;
+}

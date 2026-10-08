@@ -6,7 +6,7 @@
   "types": "./src/types/index.d.ts",
   "files": [
     "dist",
-    "design-tokens",
+    "src/design-tokens",
     "src/components",
     "src/fixtures",
     "src/styles",
@@ -88,7 +88,7 @@
     "prebuild": "npm run sync:fonts",
     "preversion": "npm run sync:fonts && test -d src/design-tokens && test -d src/design-tokens/mixins && test -d src/design-tokens/fonts",
     "version": "npm run build && test -d dist && test -d src/design-tokens && git add -f dist src/design-tokens package.json package-lock.json",
-    "build": "astro build && vite build --config vite.elements.config.mjs && node src/util/generate-fixtures-registry.js && node src/util/validate-manifest.js",
+    "build": "astro build && cp src/components/wp-blocks/gallery/image-sizes.json dist/gallery-image-sizes.json && vite build --config vite.elements.config.mjs && node src/util/generate-fixtures-registry.js && node src/util/validate-manifest.js",
     "check:payloads": "node test/payload-normalization.test.mjs",
     "check:manifest": "node src/util/validate-manifest.js",
     "check": "astro check",

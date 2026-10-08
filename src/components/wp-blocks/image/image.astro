@@ -94,6 +94,9 @@ const height = explicitHeight || (
 );
 
 const sizes = rawSizes || undefined;
+const lightboxSrc = resolveWordPressImageUrl(attributes?.lightboxSrc);
+const lightboxWidth = Number(attributes?.lightboxWidth) || undefined;
+const lightboxHeight = Number(attributes?.lightboxHeight) || undefined;
 
 const altText = src
   ? alt
@@ -109,6 +112,9 @@ const caption = attributes?.caption || '';
       srcset={rawSrcset || undefined}
       sizes={sizes}
       alt={altText}
+      data-lightbox-src={lightboxSrc}
+      data-lightbox-width={lightboxWidth}
+      data-lightbox-height={lightboxHeight}
       width={width}
       height={height}
       loading={loading}
@@ -125,6 +131,9 @@ const caption = attributes?.caption || '';
     srcset={rawSrcset || undefined}
     sizes={sizes}
     alt={altText}
+    data-lightbox-src={lightboxSrc}
+    data-lightbox-width={lightboxWidth}
+    data-lightbox-height={lightboxHeight}
     width={width}
     height={height}
     loading={loading}

@@ -1,4 +1,6 @@
 ---
+import imageSizes from './image-sizes.json';
+
 const {
   component: _component,
   attributes = {},
@@ -10,30 +12,40 @@ const {
 const rawVariant = String(
   variant || attributes?.variant || attributes?.className || 'default',
 ).toLowerCase();
-const resolvedVariant =
-  rawVariant.includes('slider') || rawVariant === 'carousel'
-    ? 'slider'
-    : rawVariant === 'paged-grid'
-      ? 'paged-grid'
-      : 'default';
-const isSliderVariant = resolvedVariant === 'slider';
+let resolvedVariant = 'default';
+if (rawVariant.includes('slider') || rawVariant === 'carousel') {
+  resolvedVariant = 'slider';
+}
+if (rawVariant === 'paged-grid') {
+  resolvedVariant = 'paged-grid';
+}
+if (rawVariant === 'masonry') {
+  resolvedVariant = 'masonry';
+}
 const isPagedGrid = resolvedVariant === 'paged-grid';
-const navigationMode = isPagedGrid || String(attributes?.navigationMode || attributes?.navigation_mode || 'item').toLowerCase() === 'page'
-  ? 'page'
-  : 'item';
-const itemsPerPage = Math.max(1, Number.parseInt(String(attributes?.itemsPerPage ?? 6), 10) || 6);
+const isMasonry = resolvedVariant === 'masonry';
+const usesBlaze = !isPagedGrid && !isMasonry;
+const requestedNavigation = String(attributes?.navigationMode || attributes?.navigation_mode || 'item').toLowerCase();
+let navigationMode = requestedNavigation === 'page' ? 'page' : 'item';
+if (isPagedGrid) {
+  navigationMode = 'page';
+}
+const parsedItemsPerPage = Number.parseInt(String(attributes?.itemsPerPage ?? 8), 10) || 8;
+const itemsPerPage = Math.min(24, Math.max(8, parsedItemsPerPage));
 const extraClasses = String(attributes?.className || '')
   .split(/\s+/)
   .map((entry) => entry.trim())
   .filter(Boolean);
 
+// paged-grid must not carry blaze classes, even if the editor className includes them
+const classes = usesBlaze ? extraClasses : extraClasses.filter((name) => !name.startsWith('blaze'));
+
 const galleryClass = [
   'gallery',
-  isPagedGrid ? undefined : 'blaze-slider',
-  isSliderVariant ? 'gallery--slider' : isPagedGrid ? undefined : 'gallery--default',
+  usesBlaze && 'blaze-slider',
+  `gallery--${resolvedVariant}`,
   `gallery--nav-${navigationMode}`,
-  resolvedVariant !== 'default' ? `gallery--${resolvedVariant}` : undefined,
-  ...extraClasses,
+  ...classes,
 ].filter(Boolean).join(' ');
 
 const RecursiveBlock = routerProps.Block || null;
@@ -45,17 +57,32 @@ const recursiveProps = {
 const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 ---
 <gallery-listing class={galleryClass} data-variant={resolvedVariant} data-navigation-mode={navigationMode} data-items-per-page={itemsPerPage}>
-  <div class="blaze-container">
-    <div class="blaze-track-container">
-      <div class="images blaze-track">
+  <div class:list={{ 'blaze-container': usesBlaze }}>
+    <div class:list={{ 'blaze-track-container': usesBlaze }}>
+      <div class:list={['images', usesBlaze && 'blaze-track']}>
         {RecursiveBlock && blocks.length > 0 && blocks.map((block: any) => {
-          block.attributes.loading = 'lazy';
+          const imageSize = imageSizes[resolvedVariant as keyof typeof imageSizes] || imageSizes.default;
+          const imageVariant = block.attributes.sizes_data?.[imageSize]
+            || block.attributes.media_details?.sizes?.[imageSize];
+          const lightboxImage = block.attributes.sizes_data?.large
+            || block.attributes.media_details?.sizes?.large;
+          const imageAttributes = {
+            ...block.attributes,
+            sizeSlug: imageSize,
+            url: imageVariant?.source_url || block.attributes.url,
+            lightboxSrc: lightboxImage?.source_url,
+            lightboxWidth: lightboxImage?.width,
+            lightboxHeight: lightboxImage?.height,
+            srcset: undefined,
+            sizes: undefined,
+            loading: 'lazy',
+          };
           return (
             <div class="gallery-item">
               <RecursiveBlock
                 {...recursiveProps}
                 component={block.name}
-                attributes={block.attributes}
+                attributes={imageAttributes}
                 innerBlocks={block.innerBlocks || null}
               />
             </div>
@@ -64,14 +91,13 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
       </div>
     </div>
 
-    {!isPagedGrid && <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>}
-    {!isPagedGrid && <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>}
-    {!isPagedGrid && <div class="blaze-pagination"></div>}
+    {usesBlaze && <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>}
+    {usesBlaze && <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>}
+    {usesBlaze && <div class="blaze-pagination"></div>}
   </div>
 
-  {isPagedGrid
-    ? <nav class="gallery-pagination" aria-label="Gallery pagination" hidden></nav>
-    : <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
+  {usesBlaze && <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
+  {isPagedGrid && <nav class="gallery-pagination" aria-label="Gallery pagination" hidden></nav>}
 </gallery-listing>
 
 <script>
