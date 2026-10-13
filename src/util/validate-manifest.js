@@ -4,6 +4,7 @@ import { pathToFileURL } from 'url';
 
 const distDir = path.resolve('./dist');
 const manifestPath = path.join(distDir, 'manifest.json');
+const gallerySizesPath = path.join(distDir, 'gallery-image-sizes.json');
 const fixtureSourceDir = path.resolve('./src/components');
 
 const fail = (message) => {
@@ -187,6 +188,21 @@ const ensureBuildInputs = () => {
 
   if (!fs.existsSync(manifestPath)) {
     fail('dist/manifest.json missing. Build contract broken.');
+  }
+
+  if (!fs.existsSync(gallerySizesPath)) {
+    fail('dist/gallery-image-sizes.json missing. Build contract broken.');
+  }
+
+  let gallerySizes;
+  try {
+    gallerySizes = JSON.parse(fs.readFileSync(gallerySizesPath, 'utf8'));
+  } catch {
+    fail('dist/gallery-image-sizes.json is not valid JSON.');
+  }
+  assertObject(gallerySizes, 'dist/gallery-image-sizes.json');
+  for (const [variant, size] of Object.entries(gallerySizes)) {
+    assertString(size, `dist/gallery-image-sizes.json variant "${variant}"`);
   }
 };
 
