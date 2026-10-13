@@ -20,3 +20,24 @@
 .wp-block-group.gallery {
 	margin-bottom: 3rem;
 }
+
+.wp-block-group.is-layout-flex {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	align-items: center;
+
+	&.is-nowrap {
+		flex-wrap: nowrap;
+	}
+
+	&.is-vertical {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	&.is-content-justification-left { justify-content: flex-start; }
+	&.is-content-justification-center { justify-content: center; }
+	&.is-content-justification-right { justify-content: flex-end; }
+	&.is-content-justification-space-between { justify-content: space-between; }
+}

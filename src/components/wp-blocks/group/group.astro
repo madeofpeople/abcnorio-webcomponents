@@ -1,7 +1,6 @@
 ---
 import '../_wp-blocks.scss';
 import './group.scss';
-
 const {
   component: _component,
   attributes,
@@ -9,14 +8,20 @@ const {
   ...routerProps
 } = Astro.props;
 const Tag = attributes?.tagName || 'div';
+const layout = attributes?.layout;
+const layoutClasses = [
+  layout?.type && `is-layout-${layout.type}`,
+  layout?.orientation && `is-${layout.orientation}`,
+  layout?.justifyContent && `is-content-justification-${layout.justifyContent}`,
+  layout?.flexWrap === 'nowrap' && 'is-nowrap',
+];
 const RecursiveBlock = routerProps.Block || null;
 const recursiveProps = {
   ...routerProps,
   Block: RecursiveBlock,
 };
 ---
-
-<Tag class:list={['wp-block-group', attributes?.className, attributes.layout]}>
+<Tag class:list={['wp-block-group', attributes?.className, layoutClasses]}>
   {RecursiveBlock  && innerBlocks?.map((block: any) => (
     <RecursiveBlock
       {...recursiveProps}
