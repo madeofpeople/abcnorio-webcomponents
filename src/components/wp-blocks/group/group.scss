@@ -17,6 +17,13 @@
 	color: var(--color-page-bg);
 }
 
+.wp-block-group.gallery.dark .gallery--masonry,
+.wp-block-group.gallery.dark .gallery--paged-grid {
+	margin-left: -2rem;
+	margin-right: -2rem;
+	background-color: var(--color-text);
+}
+
 .wp-block-group.gallery {
 	margin-bottom: 3rem;
 }

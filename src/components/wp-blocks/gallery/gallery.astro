@@ -25,11 +25,7 @@ if (rawVariant === 'masonry') {
 const isPagedGrid = resolvedVariant === 'paged-grid';
 const isMasonry = resolvedVariant === 'masonry';
 const usesBlaze = !isPagedGrid && !isMasonry;
-const requestedNavigation = String(attributes?.navigationMode || attributes?.navigation_mode || 'item').toLowerCase();
-let navigationMode = requestedNavigation === 'page' ? 'page' : 'item';
-if (isPagedGrid) {
-  navigationMode = 'page';
-}
+const navigationMode = 'page';
 const parsedItemsPerPage = Number.parseInt(String(attributes?.itemsPerPage ?? 8), 10) || 8;
 const itemsPerPage = Math.min(24, Math.max(8, parsedItemsPerPage));
 const extraClasses = String(attributes?.className || '')
@@ -101,7 +97,7 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 </gallery-listing>
 
 <script>
-  import './gallery.ts';
+  import './gallery.js';
 </script>
 
 <style lang="scss">

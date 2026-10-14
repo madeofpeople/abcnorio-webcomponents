@@ -32,6 +32,7 @@ $slide-duration: 0.2s;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
+      padding: 2rem;
     }
 
     :global(.images > *) {
@@ -183,11 +184,12 @@ $slide-duration: 0.2s;
 :global(gallery-listing.gallery--paged-grid .gallery-pagination ul) {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   list-style: none;
   padding: 0;
   gap: 0.5rem;
-  margin: 1rem 0;
+  width: fit-content;
+  margin: 1rem auto 0 auto;
+  padding-bottom: 2rem;
 }
 
 :global(gallery-listing.gallery--paged-grid .gallery-pagination li) {

@@ -1,0 +1,492 @@
+import BlazeSlider from 'blaze-slider';
+import { bp } from '@util/breakpoints';
+const MIN_PAGED_GRID_PAGE_SIZE = 8;
+const MAX_PAGED_GRID_PAGE_SIZE = 24;
+const DEFAULT_PAGED_GRID_PAGE_SIZE = 8;
+const SLIDE_MS = 200; // keep in sync with gallery.scss $slide-duration
+export class GalleryListing extends HTMLElement {
+    realItemCount = 0;
+    lightbox = null;
+    photoswipeLoadAttempted = false;
+    pagedGridResizeObserver = null;
+    getNavigationMode() {
+        return this.dataset.navigationMode === 'page' ? 'page' : 'item';
+    }
+    getClassNumber(prefix) {
+        const token = Array.from(this.classList).find((entry) => entry.startsWith(`${prefix}-`));
+        if (!token) {
+            return null;
+        }
+        const rawValue = token.slice(prefix.length + 1);
+        const parsed = Number.parseInt(rawValue, 10);
+        if (!Number.isFinite(parsed) || parsed < 1) {
+            return null;
+        }
+        return parsed;
+    }
+    resolvePhotoSwipeSource(image) {
+        const fullSource = image.dataset.lightboxSrc;
+        if (fullSource) {
+            return fullSource;
+        }
+        const currentSource = image.currentSrc || image.getAttribute('src') || '';
+        if (!currentSource) {
+            return '';
+        }
+        const srcset = image.getAttribute('srcset')?.trim();
+        if (srcset) {
+            const candidates = srcset
+                .split(',')
+                .map((entry) => entry.trim())
+                .filter(Boolean)
+                .map((entry) => {
+                const parts = entry.split(/\s+/);
+                const url = parts[0];
+                const descriptor = parts[1];
+                const width = Number.parseInt(descriptor?.replace(/w$/i, '') || '', 10);
+                return {
+                    url,
+                    width: Number.isFinite(width) ? width : null,
+                };
+            })
+                .filter((candidate) => candidate.url);
+            const preferred = candidates
+                .filter((candidate) => candidate.width && candidate.width >= 1080)
+                .sort((left, right) => (right.width ?? 0) - (left.width ?? 0))[0];
+            if (preferred?.url) {
+                return preferred.url;
+            }
+        }
+        return currentSource;
+    }
+    ensurePhotoSwipeItem(image) {
+        const source = this.resolvePhotoSwipeSource(image);
+        if (!source) {
+            return null;
+        }
+        const figure = image.closest('figure');
+        const container = figure && this.contains(figure) ? figure : image;
+        let trigger = container.closest('a');
+        if (!trigger || !this.contains(trigger)) {
+            trigger = document.createElement('a');
+            const parentNode = container.parentNode;
+            if (parentNode && this.contains(parentNode)) {
+                parentNode.insertBefore(trigger, container);
+            }
+            trigger.appendChild(container);
+        }
+        trigger.setAttribute('href', source);
+        trigger.setAttribute('data-pswp-item', 'true');
+        const width = image.dataset.lightboxWidth || image.getAttribute('width') || String(image.naturalWidth || 0);
+        const height = image.dataset.lightboxHeight || image.getAttribute('height') || String(image.naturalHeight || 0);
+        if (width !== '0' && height !== '0') {
+            trigger.setAttribute('data-pswp-width', width);
+            trigger.setAttribute('data-pswp-height', height);
+        }
+        const caption = figure?.querySelector('figcaption')?.textContent?.trim() || image.alt || '';
+        if (caption) {
+            trigger.setAttribute('data-pswp-caption', caption);
+        }
+        return trigger;
+    }
+    ensurePhotoSwipeStylesheet() {
+        if (document.getElementById('abcnorio-photoswipe-css')) {
+            return;
+        }
+        const link = document.createElement('link');
+        link.id = 'abcnorio-photoswipe-css';
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe.css';
+        document.head.appendChild(link);
+    }
+    async initPhotoSwipe() {
+        if (this.lightbox) {
+            return;
+        }
+        if (this.photoswipeLoadAttempted) {
+            return;
+        }
+        this.photoswipeLoadAttempted = true;
+        const images = Array.from(this.querySelectorAll('.images img'));
+        if (images.length === 0) {
+            return;
+        }
+        images.forEach((image) => this.ensurePhotoSwipeItem(image));
+        const items = this.querySelectorAll('a[data-pswp-item="true"]');
+        if (items.length === 0) {
+            return;
+        }
+        const hasCaptions = Array.from(items).some((item) => {
+            const caption = item.getAttribute('data-pswp-caption');
+            return Boolean(caption && caption.trim());
+        });
+        let lightboxModule;
+        try {
+            const lightboxModuleUrl = 'https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js';
+            lightboxModule = await import(/* @vite-ignore */ lightboxModuleUrl);
+        }
+        catch {
+            return;
+        }
+        const PhotoSwipeLightbox = lightboxModule?.default;
+        if (!PhotoSwipeLightbox) {
+            return;
+        }
+        this.ensurePhotoSwipeStylesheet();
+        const pswpModuleUrl = 'https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe.esm.js';
+        const lightbox = new PhotoSwipeLightbox({
+            gallery: this,
+            children: 'a[data-pswp-item="true"]',
+            pswpModule: () => import(/* @vite-ignore */ pswpModuleUrl),
+        });
+        if (hasCaptions && typeof lightbox.on === 'function') {
+            lightbox.on('uiRegister', () => {
+                lightbox.pswp?.ui?.registerElement({
+                    name: 'custom-caption',
+                    order: 9,
+                    isButton: false,
+                    appendTo: 'root',
+                    html: '',
+                    onInit: (el, pswp) => {
+                        const updateCaption = () => {
+                            const slideElement = pswp?.currSlide?.data?.element;
+                            const caption = slideElement?.getAttribute('data-pswp-caption')?.trim() || '';
+                            el.textContent = caption;
+                            el.toggleAttribute('hidden', !caption);
+                        };
+                        pswp.on('change', updateCaption);
+                        pswp.on('afterInit', updateCaption);
+                    },
+                });
+            });
+        }
+        lightbox.init();
+        this.lightbox = lightbox;
+    }
+    goToState(slider, nextStateIndex) {
+        if (!slider || typeof nextStateIndex !== 'number') {
+            return false;
+        }
+        const delta = nextStateIndex - slider.stateIndex;
+        if (delta > 0) {
+            slider.next(delta);
+            return true;
+        }
+        if (delta < 0) {
+            slider.prev(Math.abs(delta));
+            return true;
+        }
+        return false;
+    }
+    getCurrentRealItemIndex(slider) {
+        if (!slider) {
+            return 0;
+        }
+        const maxRealIndex = Math.max(this.realItemCount - 1, 0);
+        const stateIndex = Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
+        return Math.max(0, Math.min(stateIndex, maxRealIndex));
+    }
+    getCurrentNavigationIndex(slider) {
+        if (!slider) {
+            return 0;
+        }
+        if (this.getNavigationMode() === 'page') {
+            return Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
+        }
+        return this.getCurrentRealItemIndex(slider);
+    }
+    prepareSlideTrack(slidesToShow) {
+        const track = this.querySelector('.images.blaze-track');
+        if (!track) {
+            this.realItemCount = 0;
+            return;
+        }
+        Array.from(track.querySelectorAll('.gallery-item--ghost')).forEach((ghost) => ghost.remove());
+        // editor children aren't wrapped in .gallery-item, so count direct children generically
+        const realItems = Array.from(track.querySelectorAll(':scope > *:not(.gallery-item--ghost)'));
+        this.realItemCount = realItems.length;
+        if (this.getNavigationMode() === 'page') {
+            return;
+        }
+        const ghostCount = Math.max(slidesToShow - 1, 0);
+        for (let i = 0; i < ghostCount; i += 1) {
+            const ghostItem = document.createElement('div');
+            ghostItem.className = 'gallery-item gallery-item--ghost';
+            ghostItem.setAttribute('aria-hidden', 'true');
+            track.appendChild(ghostItem);
+        }
+    }
+    updateArrowVisibility(slider) {
+        if (!slider) {
+            return;
+        }
+        const prev = this.querySelector('.blaze-prev');
+        const next = this.querySelector('.blaze-next');
+        const currentNavigationIndex = this.getCurrentNavigationIndex(slider);
+        const lastIndex = this.getNavigationMode() === 'page'
+            ? Math.max(Array.isArray(slider.states) ? slider.states.length - 1 : 0, 0)
+            : Math.max(this.realItemCount - 1, 0);
+        const hidePrev = currentNavigationIndex <= 0;
+        const hideNext = currentNavigationIndex >= lastIndex;
+        if (prev) {
+            prev.toggleAttribute('hidden', hidePrev);
+            prev.style.display = hidePrev ? 'none' : '';
+            prev.setAttribute('aria-hidden', hidePrev ? 'true' : 'false');
+            prev.tabIndex = hidePrev ? -1 : 0;
+        }
+        if (next) {
+            next.toggleAttribute('hidden', hideNext);
+            next.style.display = hideNext ? 'none' : '';
+            next.setAttribute('aria-hidden', hideNext ? 'true' : 'false');
+            next.tabIndex = hideNext ? -1 : 0;
+        }
+    }
+    updateActiveState(slider, dots) {
+        if (!slider || !Array.isArray(dots) || dots.length === 0) {
+            return;
+        }
+        const currentNavigationIndex = Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
+        dots.forEach((dot, index) => {
+            const isActive = index === currentNavigationIndex;
+            dot.classList.toggle('active', isActive);
+            dot.classList.toggle('is-active', isActive);
+            dot.setAttribute('aria-current', isActive ? 'true' : 'false');
+            dot.setAttribute('aria-label', isActive ? `Current page ${index + 1}` : `Go to page ${index + 1}`);
+        });
+    }
+    initSlideDots(slider, dotsEl) {
+        if (!slider || !dotsEl) {
+            return;
+        }
+        const totalPages = Math.max(Array.isArray(slider.states) ? slider.states.length : 0, 0);
+        if (totalPages <= 1) {
+            dotsEl.innerHTML = '';
+            this.updateArrowVisibility(slider);
+            return;
+        }
+        dotsEl.innerHTML = '';
+        const dots = [];
+        for (let pageIndex = 0; pageIndex < totalPages; pageIndex += 1) {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'blaze-slide-dot';
+            dot.setAttribute('aria-label', `Go to page ${pageIndex + 1}`);
+            dot.addEventListener('click', () => {
+                this.goToState(slider, pageIndex);
+                this.updateActiveState(slider, dots);
+                this.updateArrowVisibility(slider);
+            });
+            dots.push(dot);
+            dotsEl.append(dot);
+        }
+        this.updateActiveState(slider, dots);
+        this.updateArrowVisibility(slider);
+        slider.onSlide(() => {
+            this.updateActiveState(slider, dots);
+            this.updateArrowVisibility(slider);
+        });
+    }
+    // Blaze positions the track as pageStart * (--slide-width + gap), which assumes equal widths.
+    // Slides here have variable widths, so replace its transform with the real slide position.
+    alignTrackToSlides(slider) {
+        const track = slider.track;
+        const align = () => {
+            const slides = Array.from(track.children);
+            const firstSlideOnPage = slides[slider.states[slider.stateIndex].page[0]];
+            const trackStart = slides[0].offsetLeft;
+            const maxOffset = Math.max(track.scrollWidth - track.clientWidth, 0);
+            const isLastPage = slider.stateIndex === slider.states.length - 1;
+            const offset = isLastPage ? maxOffset : Math.min(firstSlideOnPage.offsetLeft - trackStart, maxOffset);
+            track.style.transform = `translate3d(${slider.dragged - offset}px, 0, 0)`;
+        };
+        slider.onSlide(align);
+        ['pointermove', 'pointerup', 'touchmove', 'touchend'].forEach((eventName) => {
+            track.addEventListener(eventName, align);
+        });
+        window.addEventListener('resize', () => requestAnimationFrame(align));
+        window.addEventListener('load', align);
+        track.addEventListener('load', align, true); // lazy images change slide widths
+        align();
+    }
+    initPagedGrid() {
+        const items = Array.from(this.querySelectorAll('.images > *:not(.gallery-item--ghost)'));
+        const pagination = this.querySelector('.gallery-pagination');
+        const requestedPageSize = Number.parseInt(this.dataset.itemsPerPage || '', 10) || DEFAULT_PAGED_GRID_PAGE_SIZE;
+        const pageSize = Math.min(MAX_PAGED_GRID_PAGE_SIZE, Math.max(MIN_PAGED_GRID_PAGE_SIZE, requestedPageSize));
+        const totalPages = Math.ceil(items.length / pageSize);
+        if (!pagination || totalPages <= 1) {
+            return;
+        }
+        let currentPage = 1;
+        let isSliding = false;
+        let measuredWidth = this.clientWidth;
+        let maxPageHeight = 0;
+        const host = this;
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const preserveTallestPage = () => {
+            maxPageHeight = Math.max(maxPageHeight, this.getBoundingClientRect().height);
+            this.style.setProperty('--gallery-paged-grid-min-height', `${maxPageHeight}px`);
+        };
+        const list = document.createElement('ul');
+        const previousItem = document.createElement('li');
+        const previousButton = document.createElement('button');
+        previousButton.type = 'button';
+        previousButton.textContent = '\u00ab Prev';
+        previousButton.setAttribute('aria-label', 'Previous page');
+        previousItem.append(previousButton);
+        list.append(previousItem);
+        const pageButtons = Array.from({ length: totalPages }, (_, index) => {
+            const pageItem = document.createElement('li');
+            const pageButton = document.createElement('button');
+            const pageNumber = index + 1;
+            pageButton.type = 'button';
+            pageButton.textContent = String(pageNumber);
+            pageItem.append(pageButton);
+            list.append(pageItem);
+            return pageButton;
+        });
+        const nextItem = document.createElement('li');
+        const nextButton = document.createElement('button');
+        nextButton.type = 'button';
+        nextButton.textContent = 'Next \u00bb';
+        nextButton.setAttribute('aria-label', 'Next page');
+        nextItem.append(nextButton);
+        list.append(nextItem);
+        function showPage(pageNumber) {
+            currentPage = Math.max(1, Math.min(pageNumber, totalPages));
+            const firstItemIndex = (currentPage - 1) * pageSize;
+            items.forEach((item, index) => {
+                const isVisible = index >= firstItemIndex && index < firstItemIndex + pageSize;
+                item.toggleAttribute('hidden', !isVisible);
+                item.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+            });
+            requestAnimationFrame(preserveTallestPage);
+            previousButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+            pageButtons.forEach((button, index) => {
+                const isCurrent = index + 1 === currentPage;
+                button.classList.toggle('is-current', isCurrent);
+                if (isCurrent) {
+                    button.setAttribute('aria-current', 'page');
+                    button.setAttribute('aria-label', `Page ${index + 1}, current page`);
+                }
+                else {
+                    button.removeAttribute('aria-current');
+                    button.setAttribute('aria-label', `Go to page ${index + 1}`);
+                }
+            });
+        }
+        // slide current page out, swap, slide new page in; CSS keyframes read data-slide for direction
+        function updatePage(pageNumber) {
+            const targetPage = Math.max(1, Math.min(pageNumber, totalPages));
+            if (isSliding) {
+                return;
+            }
+            if (targetPage === currentPage || reducedMotion.matches) {
+                showPage(targetPage);
+                return;
+            }
+            host.dataset.slide = targetPage > currentPage ? 'next' : 'prev';
+            const leaving = items.filter((item) => !item.hidden);
+            leaving.forEach((item) => item.classList.add('is-leaving'));
+            isSliding = true;
+            window.setTimeout(() => {
+                leaving.forEach((item) => item.classList.remove('is-leaving'));
+                showPage(targetPage);
+                items.filter((item) => !item.hidden).forEach((item) => {
+                    item.classList.add('is-entering');
+                    item.addEventListener('animationend', () => item.classList.remove('is-entering'), { once: true });
+                });
+                isSliding = false;
+            }, SLIDE_MS);
+        }
+        previousButton.addEventListener('click', () => updatePage(currentPage - 1));
+        nextButton.addEventListener('click', () => updatePage(currentPage + 1));
+        pageButtons.forEach((button, index) => {
+            button.addEventListener('click', () => updatePage(index + 1));
+        });
+        pagination.replaceChildren(list);
+        pagination.hidden = false;
+        updatePage(currentPage);
+        this.pagedGridResizeObserver = new ResizeObserver(() => {
+            const width = this.clientWidth;
+            if (width === measuredWidth) {
+                return;
+            }
+            measuredWidth = width;
+            maxPageHeight = 0;
+            this.style.removeProperty('--gallery-paged-grid-min-height');
+            requestAnimationFrame(preserveTallestPage);
+        });
+        this.pagedGridResizeObserver.observe(this);
+    }
+    connectedCallback() {
+        if (this.dataset.upgraded === 'true') {
+            return;
+        }
+        this.dataset.upgraded = 'true';
+        this.classList.add('is-upgraded');
+        void this.initPhotoSwipe();
+        if (this.dataset.variant === 'paged-grid') {
+            this.initPagedGrid();
+            return;
+        }
+        if (!this.classList.contains('blaze-slider')) {
+            return;
+        }
+        const dotsEl = this.querySelector('.blaze-slide-dots');
+        const shouldLoop = false;
+        this.prepareSlideTrack(1);
+        const config = {
+            all: {
+                loop: shouldLoop,
+                enablePagination: false,
+                transitionDuration: 200,
+                slidesToShow: 2,
+                slideGap: '1rem',
+                slidesToScroll: 2,
+            },
+            [`(min-width: ${bp('xs')}px)`]: {
+                slidesToShow: 2,
+                slidesToScroll: 2,
+            },
+            [`(min-width: ${bp('sm')}px)`]: {
+                slidesToShow: 3,
+                slidesToScroll: 3,
+            },
+            [`(min-width: ${bp('md')}px)`]: {
+                slidesToShow: 3,
+                slidesToScroll: 3,
+            },
+            [`(min-width: ${bp('lg')}px)`]: {
+                slidesToShow: 4,
+                slidesToScroll: 4,
+            }
+        };
+        const slider = new BlazeSlider(this, config);
+        this.updateArrowVisibility(slider);
+        this.initSlideDots(slider, dotsEl);
+        this.alignTrackToSlides(slider);
+        // page count changes at breakpoints; rebuild dots when it does
+        let renderedPages = slider.states.length;
+        window.addEventListener('resize', () => {
+            if (slider.states.length === renderedPages) {
+                return;
+            }
+            renderedPages = slider.states.length;
+            this.initSlideDots(slider, dotsEl);
+        });
+    }
+    disconnectedCallback() {
+        this.pagedGridResizeObserver?.disconnect();
+        this.pagedGridResizeObserver = null;
+        if (!this.lightbox) {
+            return;
+        }
+        this.lightbox.destroy();
+        this.lightbox = null;
+    }
+}
+if (!customElements.get('gallery-listing')) {
+    customElements.define('gallery-listing', GalleryListing);
+}
