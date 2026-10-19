@@ -15,4 +15,4 @@ const content = linkMentionsToInstagram
 	? linkifyInstagramMentionsInHtml(cleanedContent)
 	: cleanedContent;
 ---
-{content && <li class="list-item" set:html={content} />}
+{content && <li class:list={["list-item", attributes?.className]} set:html={content} />}

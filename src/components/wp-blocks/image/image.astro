@@ -106,7 +106,7 @@ const caption = attributes?.caption || '';
 ---
 
 {src && caption && (
-  <figure class="image_wc">
+  <figure class:list={["image_wc", attributes?.className]}>
     <img
       src={src}
       srcset={rawSrcset || undefined}
@@ -126,7 +126,7 @@ const caption = attributes?.caption || '';
 
 {src && !caption && (
   <img
-    class="image_wc"
+    class:list={["image_wc", attributes?.className]}
     src={src}
     srcset={rawSrcset || undefined}
     sizes={sizes}

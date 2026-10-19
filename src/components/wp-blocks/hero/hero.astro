@@ -56,7 +56,7 @@ const bgLg = getSizeUrl('full') || bgMd;
 const toCssBackground = (url: string) => (url ? `url("${url}")` : 'none');
 
 ---
-<div class:list={["abcnorio-hero", variant !== 'default' ? variant : undefined]}>
+<div class:list={["abcnorio-hero", variant !== 'default' ? variant : undefined, attributes?.className]}>
 
 <div
   class="abcnorio-hero__image-wrapper"

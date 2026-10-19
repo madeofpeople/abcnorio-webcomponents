@@ -1,6 +1,24 @@
+@use '@tokens/breakpoints';
+
 .wp-block-group.dark {
 	background-color: var(--color-text);
 	color: var(--color-page-bg);
+}
+
+.wp-block-group.dark :where(*) {
+	background-color: var(--color-text);
+	color: var(--color-page-bg);
+}
+
+.wp-block-group.dark.emphasis {
+	gap: 2rem;
+	padding: 2rem;
+	justify-content: left;
+	border-bottom: 0.25rem var(--color-accent-secondary) solid;
+}
+
+.wp-block-group.gallery.dark {
+
 	padding-top: 2rem;
 	
 	h2 {
@@ -11,10 +29,6 @@
 	.images {
 		padding: 0;
 	}
-}
-
-.wp-block-group.dark :where(*) {
-	color: var(--color-page-bg);
 }
 
 .wp-block-group.gallery.dark .gallery--masonry,
@@ -29,10 +43,15 @@
 }
 
 .wp-block-group.is-layout-flex {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5em;
-	align-items: center;
+	@media (min-width: breakpoints.get(md)) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5em;
+	}
+
+	> * {
+		flex: 1;
+	}
 
 	&.is-nowrap {
 		flex-wrap: nowrap;

@@ -119,6 +119,7 @@ const encodedConfig = encodeURIComponent(JSON.stringify(paginationConfig));
 const paginationPathPrefix = `/events/listing/block/${encodeURIComponent(blockInstanceId)}?cfg=${encodedConfig}`;
 ---
 <EventListing
+  class={attributes?.className}
   title={title}
   items={items}
   page={currentPage}

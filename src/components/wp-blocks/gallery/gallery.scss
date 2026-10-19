@@ -198,6 +198,7 @@ $slide-duration: 0.2s;
 }
 
 :global(gallery-listing.gallery--paged-grid .gallery-pagination button) {
+  font-family: var(--font-impact-label-reversed), monospace;
   display: inline-flex;
   align-items: center;
   justify-content: center;

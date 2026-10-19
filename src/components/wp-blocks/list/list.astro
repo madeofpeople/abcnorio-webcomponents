@@ -1,7 +1,7 @@
 ---
 const {
   component: _component,
-  attributes: _attributes,
+  attributes,
   innerBlocks = [],
   ...routerProps
 } = Astro.props;
@@ -11,7 +11,7 @@ const recursiveProps = {
   Block: RecursiveBlock,
 };
 ---
-<ul class="list">
+<ul class:list={["list", attributes?.className]}>
   {RecursiveBlock && innerBlocks.length > 0 && innerBlocks.map((block: any) => (
     <RecursiveBlock
       {...recursiveProps}

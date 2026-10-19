@@ -297,7 +297,7 @@ for (const block of groupBlocks) {
 }
 ---
 
-<div class="mailchimp-block" data-mailchimp-block>
+<div class:list={["mailchimp-block", attributes?.className]} data-mailchimp-block>
   {header && <h3 class="mailchimp-block__header">{header}</h3>}
   {subHeader && <p class="mailchimp-block__sub-header">{subHeader}</p>}
 
