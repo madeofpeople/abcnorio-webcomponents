@@ -1,33 +1,59 @@
+@use "@tokens/mixins/ui";
 @use '@tokens/breakpoints';
 
+.prefooter > .wp-block-group {
+	box-sizing: border-box;
+	padding: 2rem;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	gap: 0;
+
+	> div {
+		min-width: 0;
+		flex: 1;
+		padding: 1rem;
+	}
+}
+
 .wp-block-group.dark {
-	background-color: var(--color-text);
-	color: var(--color-page-bg);
+	.wp-block-group {
+		@include ui.inverted();
+	}
 }
 
 .wp-block-group.dark :where(*) {
-	background-color: var(--color-text);
-	color: var(--color-page-bg);
+		@include ui.inverted();
 }
 
 .wp-block-group.dark.emphasis {
-	gap: 2rem;
-	padding: 2rem;
+	gap: 1rem;
 	justify-content: left;
-	border-bottom: 0.25rem var(--color-accent-secondary) solid;
+
+	.wp-block-group {
+		h2 {
+			font-size: 1.5rem;
+		}
+		padding: 1rem;
+	}
 }
 
 .wp-block-group.gallery.dark {
 
 	padding-top: 2rem;
-	
+
+	p,
 	h2 {
-		padding-left: 2rem;
+		display: block;
+		margin: 0;
+		width: fit-content;
+		padding: 1rem 2rem 1rem 1rem;
 	}
 
 	gallery-listing.gallery.gallery--paged-grid,
 	.images {
-		padding: 0;
+		padding: 0.5rem;
 	}
 }
 
@@ -35,7 +61,6 @@
 .wp-block-group.gallery.dark .gallery--paged-grid {
 	margin-left: -2rem;
 	margin-right: -2rem;
-	background-color: var(--color-text);
 }
 
 .wp-block-group.gallery {
@@ -43,11 +68,11 @@
 }
 
 .wp-block-group.is-layout-flex {
-	@media (min-width: breakpoints.get(md)) {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5em;
-	}
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 2rem;
 
 	> * {
 		flex: 1;
@@ -55,11 +80,13 @@
 
 	&.is-nowrap {
 		flex-wrap: nowrap;
+		border: 1px #0af solid;
 	}
 
 	&.is-vertical {
 		flex-direction: column;
 		align-items: flex-start;
+		border: 1px #f00 solid;
 	}
 
 	&.is-content-justification-left { justify-content: flex-start; }

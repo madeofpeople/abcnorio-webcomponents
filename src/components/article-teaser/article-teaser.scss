@@ -1,3 +1,4 @@
+@use "@tokens/mixins/ui";
 @use "mixins/teasers";
 @use "@tokens/colors";
 @use "@tokens/typography";
@@ -21,8 +22,7 @@
     position: absolute;
     transform: none;
     top: 0;
-    background-color: var(--color-text);
-    color: var(--color-page-bg);
+    @include ui.inverted();
   }
 
   &__title {
@@ -30,8 +30,7 @@
     box-sizing: border-box;
     padding: 0.5rem;
     margin: 0 0.5rem;
-    background-color: var(--color-text);
-    color: var(--color-page-bg);
+    @include ui.inverted();
     font-weight: 900;
     font-size: 1rem;
   }

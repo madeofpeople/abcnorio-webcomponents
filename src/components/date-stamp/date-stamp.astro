@@ -1,0 +1,11 @@
+---
+const { date, time } = Astro.props;
+---
+<time class="date-stamp">
+  <div set:html={`&nbsp;${date}&nbsp;`} />
+  <div set:html={`&nbsp;${time}&nbsp;`} />
+</time>
+
+<style lang="scss">
+  @use './date-stamp.scss';
+</style>

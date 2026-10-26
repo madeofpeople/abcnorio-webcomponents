@@ -1,24 +1,20 @@
 ---
-import './mailchimp.scss';
+import './newsletter-signup.scss';
 
 const {
   attributes = {},
-  innerBlocks = [],
   cmsUrl = '',
 } = Astro.props;
 
-const listId = String(attributes?.listId || attributes?.list_id || '').trim();
 const header = String(attributes?.header || '').trim();
-const subHeader = String(attributes?.subHeader || attributes?.sub_header || '').trim();
-const submitText = String(attributes?.submitText || attributes?.submit_text || 'Subscribe').trim() || 'Subscribe';
-const requiredIndicatorText = String(attributes?.requiredIndicatorText || attributes?.required_indicator_text || '* = required field').trim();
-const showRequiredIndicator = Boolean(attributes?.showRequiredIndicator ?? attributes?.show_required_indicator ?? true);
+const subHeader = String(attributes?.subHeader || '').trim();
+const submitText = String(attributes?.submitText || 'Subscribe').trim() || 'Subscribe';
+const requiredIndicatorText = String(attributes?.requiredIndicatorText || '* = required field').trim();
+const showRequiredIndicator = Boolean(attributes?.showRequiredIndicator ?? true);
 const template = String(attributes?.template || 'default').trim() || 'default';
-const updateExistingSubscribers = Boolean(attributes?.updateExistingSubscribers ?? attributes?.update_existing_subscribers ?? true);
-const doubleOptIn = Boolean(attributes?.doubleOptIn ?? attributes?.double_opt_in ?? true);
 
 const apiRoot = cmsUrl ? `${String(cmsUrl).replace(/\/$/, '')}/wp-json/abcnorio/v1/mailchimp` : '';
-const listDataEndpoint = listId && apiRoot ? `${apiRoot}/list-data/${encodeURIComponent(listId)}` : '';
+const listDataEndpoint = apiRoot ? `${apiRoot}/list-data` : '';
 const submitEndpoint = apiRoot ? `${apiRoot}/submit` : '';
 
 const listDataResponse = listDataEndpoint ? await fetch(listDataEndpoint).catch(() => null) : null;
@@ -93,10 +89,6 @@ for (const entry of interestGroups) {
   }
 }
 
-function blockName(block: any): string {
-  return String(block?.name || block?.blockName || '');
-}
-
 function normalizeStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) {
     return [];
@@ -110,75 +102,57 @@ function normalizeStringArray(value: unknown): string[] {
 const selectedFieldTags = normalizeStringArray(attributes?.fieldTags);
 const selectedGroupIds = normalizeStringArray(attributes?.groupIds);
 
-const hasLegacyInnerBlocks = Array.isArray(innerBlocks) && innerBlocks.length > 0;
-
 const fieldBlocks: any[] = [];
 const groupBlocks: any[] = [];
-if (hasLegacyInnerBlocks) {
-  for (const block of (Array.isArray(innerBlocks) ? innerBlocks : [])) {
-    const name = blockName(block);
-    if (name === 'mailchimp/mailchimp-form-field') {
-      fieldBlocks.push(block);
-    }
+const selectedTagSet = new Set(
+  selectedFieldTags.length > 0
+    ? selectedFieldTags
+    : mergeFields
+      .filter((field) => Boolean(field?.required) || Boolean(field?.public) || String(field?.tag || '') === 'EMAIL')
+      .map((field) => String(field?.tag || '').trim())
+      .filter(Boolean),
+);
 
-    if (name === 'mailchimp/mailchimp-audience-group') {
-      groupBlocks.push(block);
-    }
+// Keep form usable even if list-data endpoint is slow/unavailable.
+selectedTagSet.add('EMAIL');
+
+for (const field of mergeFields) {
+  const tag = String(field?.tag || '').trim();
+  if (tag === '' || !selectedTagSet.has(tag)) {
+    continue;
   }
-} else {
-  const selectedTagSet = new Set(
-    selectedFieldTags.length > 0
-      ? selectedFieldTags
-      : mergeFields
-        .filter((field) => Boolean(field?.required) || Boolean(field?.public) || String(field?.tag || '') === 'EMAIL')
-        .map((field) => String(field?.tag || '').trim())
-        .filter(Boolean),
-  );
 
-  // Keep form usable even if list-data endpoint is slow/unavailable.
-  selectedTagSet.add('EMAIL');
+  fieldBlocks.push({
+    attributes: {
+      tag,
+      label: String(field?.name || tag),
+      type: String(field?.type || 'text'),
+      visible: true,
+    },
+  });
+}
 
-  for (const field of mergeFields) {
-    const tag = String(field?.tag || '').trim();
-    if (tag === '' || !selectedTagSet.has(tag)) {
+if (selectedGroupIds.length > 0) {
+  const selectedGroupSet = new Set(selectedGroupIds);
+  for (const group of interestGroups) {
+    const id = String(group?.id || '').trim();
+    const type = String(group?.type || '');
+    if (id === '' || type === 'hidden' || !selectedGroupSet.has(id)) {
       continue;
     }
 
-    fieldBlocks.push({
-      name: 'mailchimp/mailchimp-form-field',
+    groupBlocks.push({
       attributes: {
-        tag,
-        label: String(field?.name || tag),
-        type: String(field?.type || 'text'),
+        id,
+        label: String(group?.title || id),
         visible: true,
       },
     });
-  }
-
-  if (selectedGroupIds.length > 0) {
-    const selectedGroupSet = new Set(selectedGroupIds);
-    for (const group of interestGroups) {
-      const id = String(group?.id || '').trim();
-      const type = String(group?.type || '');
-      if (id === '' || type === 'hidden' || !selectedGroupSet.has(id)) {
-        continue;
-      }
-
-      groupBlocks.push({
-        name: 'mailchimp/mailchimp-audience-group',
-        attributes: {
-          id,
-          label: String(group?.title || id),
-          visible: true,
-        },
-      });
-    }
   }
 }
 
 if (!fieldBlocks.some((block) => String(block?.attributes?.tag || '').trim() === 'EMAIL')) {
   fieldBlocks.unshift({
-    name: 'mailchimp/mailchimp-form-field',
     attributes: {
       tag: 'EMAIL',
       label: 'Email address',
@@ -297,32 +271,32 @@ for (const block of groupBlocks) {
 }
 ---
 
-<div class:list={["mailchimp-block", attributes?.className]} data-mailchimp-block>
-  {header && <h3 class="mailchimp-block__header">{header}</h3>}
-  {subHeader && <p class="mailchimp-block__sub-header">{subHeader}</p>}
+<div class:list={["abcnorio-newsletter-signup", attributes?.className]} data-newsletter-signup>
+  {header && <h3 class="abcnorio-newsletter-signup__header">{header}</h3>}
+  {subHeader && <p class="abcnorio-newsletter-signup__sub-header">{subHeader}</p>}
 
-  <form class="mailchimp-block__form" data-mailchimp-form data-submit-endpoint={submitEndpoint} novalidate>
-    <input type="hidden" name="mailchimp_list_id" value={listId} />
+  <form class="abcnorio-newsletter-signup__form" data-newsletter-signup-form data-submit-endpoint={submitEndpoint} novalidate>
     <input type="hidden" name="mailchimp_template" value={template} />
-    <input type="hidden" name="mailchimp_update_existing_subscribers" value={updateExistingSubscribers ? '1' : '0'} />
-    <input type="hidden" name="mailchimp_double_opt_in" value={doubleOptIn ? '1' : '0'} />
-    <input type="text" name="mailchimp_sf_alt_email" value="" tabindex="-1" autocomplete="off" class="mailchimp-block__honeypot" aria-hidden="true" />
+    <input type="text" name="newsletter_signup_website" value="" tabindex="-1" autocomplete="off" class="abcnorio-newsletter-signup__honeypot" aria-hidden="true" />
 
     {visibleFieldTags.map((tag) => (
       <input type="hidden" name="mailchimp_visible_fields[]" value={tag} />
     ))}
 
-    <div class="mailchimp-block__message" role="status" aria-live="polite"></div>
+    <div class="abcnorio-newsletter-signup__message" role="status" aria-live="polite">
+      <span class="abcnorio-newsletter-signup__message-text"></span>
+      <button type="button" class="abcnorio-newsletter-signup__message-close" aria-label="Close message">&times;</button>
+    </div>
 
     {renderableFields.map((field) => (
-      <div class="mailchimp-block__field" data-field={field.key}>
+      <div class="abcnorio-newsletter-signup__field" data-field={field.key}>
         <label for={field.key}>
           {field.label}
           {field.required && showRequiredIndicator && <span aria-hidden="true">*</span>}
         </label>
 
         {field.type === 'radio' && field.choices.length > 0 ? (
-          <div class="mailchimp-block__choices">
+          <div class="abcnorio-newsletter-signup__choices">
             {field.choices.map((choice, idx) => (
               <label for={`${field.key}_${idx}`}>
                 <input
@@ -344,7 +318,7 @@ for (const block of groupBlocks) {
             ))}
           </select>
         ) : field.type === 'checkboxes' && field.choices.length > 0 ? (
-          <div class="mailchimp-block__choices">
+          <div class="abcnorio-newsletter-signup__choices">
             {field.choices.map((choice, idx) => (
               <label for={`${field.key}_${idx}`}>
                 <input
@@ -364,7 +338,7 @@ for (const block of groupBlocks) {
             name={field.key}
             value={field.defaultValue}
             required={field.required}
-            class={field.type === 'phone' ? 'mailchimp-block__phone' : ''}
+            class={field.type === 'phone' ? 'abcnorio-newsletter-signup__phone' : ''}
           />
         )}
 
@@ -373,7 +347,7 @@ for (const block of groupBlocks) {
     ))}
 
     {renderableGroups.map((group) => (
-      <fieldset class="mailchimp-block__group">
+      <fieldset class="abcnorio-newsletter-signup__group">
         {group.label && <legend>{group.label}</legend>}
 
         {group.type === 'dropdown' ? (
@@ -384,7 +358,7 @@ for (const block of groupBlocks) {
             ))}
           </select>
         ) : group.type === 'radio' ? (
-          <div class="mailchimp-block__choices">
+          <div class="abcnorio-newsletter-signup__choices">
             {group.groups.map((choice, idx) => (
               <label for={`group_${group.id}_${idx}`}>
                 <input
@@ -398,7 +372,7 @@ for (const block of groupBlocks) {
             ))}
           </div>
         ) : (
-          <div class="mailchimp-block__choices">
+          <div class="abcnorio-newsletter-signup__choices">
             {group.groups.map((choice, idx) => (
               <label for={`group_${group.id}_${idx}`}>
                 <input
@@ -415,7 +389,7 @@ for (const block of groupBlocks) {
       </fieldset>
     ))}
 
-    {showRequiredIndicator && <p class="mailchimp-block__required">{requiredIndicatorText}</p>}
+    {showRequiredIndicator && <p class="abcnorio-newsletter-signup__required">{requiredIndicatorText}</p>}
 
     <div>
       <button class="button reversed" type="submit" data-submit-button>{submitText}</button>
@@ -424,5 +398,5 @@ for (const block of groupBlocks) {
 </div>
 
 <script>
-  import './mailchimp.js';
+  import './newsletter-signup.js';
 </script>

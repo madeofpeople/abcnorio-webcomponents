@@ -1,0 +1,13 @@
+.press-item {
+
+    margin-bottom: 2rem;
+    time {
+        font-family: var(--font-impact-label-reversed);
+        background-color: var(--color-text);
+        color: var(--page-bg);
+    }
+
+    h2, h3 {
+        margin-bottom: 0;
+    }
+}

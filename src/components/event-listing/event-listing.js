@@ -186,6 +186,7 @@ export class EventListing extends HTMLElement {
 
     if( this.classList.contains('blaze-slider')) {
       const dotsEl = this.querySelector('.blaze-slide-dots');
+      // sliderPreset 'default' (events-list block, wide layouts): up to 4 slides, 3.5 at lg.
       const defaultConfig = {
         'all': {
           slidesToShow: 1,  
@@ -211,7 +212,8 @@ export class EventListing extends HTMLElement {
           slidesToScroll: 3.5
         }
       };
-      const compactConfig = {
+      // sliderPreset 'content-width' (UpcomingEventsSlider in the event page prefooter): max 3 slides.
+      const contentWidthConfig = {
         'all': {
           slidesToShow: 1,
           loop: false,
@@ -219,16 +221,24 @@ export class EventListing extends HTMLElement {
           enablePagination: false,
           transitionDuration: 300,
         },
+        [`(min-width: ${bp("xs")}px)`]: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
         [`(min-width: ${bp("sm")}px)`]: {
           slidesToShow: 2,
           slidesToScroll: 2,
         },
-        [`(min-width: ${bp("lg")}px)`]: {
+        [`(min-width: ${bp("md")}px)`]: {
           slidesToShow: 3,
           slidesToScroll: 3,
+        },
+        [`(min-width: ${bp("lg")}px)`]: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
         }
       };
-      const config = this.dataset.sliderPreset === 'compact' ? compactConfig : defaultConfig;
+      const config = this.dataset.sliderPreset === 'content-width' ? contentWidthConfig : defaultConfig;
 
       const slider = new BlazeSlider(this, config);
       this.updateArrowVisibility(slider);

@@ -303,7 +303,11 @@ export class GalleryListing extends HTMLElement {
         ['pointermove', 'pointerup', 'touchmove', 'touchend'].forEach((eventName) => {
             track.addEventListener(eventName, align);
         });
-        window.addEventListener('resize', () => requestAnimationFrame(align));
+        // Blaze refreshes 200ms after a width change (e.g. scrollbar removed when lightbox opens) and resets the transform
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(align);
+            setTimeout(align, 250);
+        });
         window.addEventListener('load', align);
         track.addEventListener('load', align, true); // lazy images change slide widths
         align();

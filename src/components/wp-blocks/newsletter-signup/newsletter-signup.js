@@ -1,3 +1,18 @@
+const MESSAGE_DELAY_MS = 10000;
+const messageTimers = new WeakMap();
+
+function hideMessage(node) {
+  clearTimeout(messageTimers.get(node));
+  node.classList.remove('is-error', 'is-success');
+}
+
+function showMessage(node, text, state) {
+  hideMessage(node);
+  node.querySelector('.abcnorio-newsletter-signup__message-text').textContent = text;
+  node.classList.add(state);
+  messageTimers.set(node, setTimeout(() => hideMessage(node), MESSAGE_DELAY_MS));
+}
+
 function normalizeFieldErrors(value) {
   if (!value || typeof value !== 'object') {
     return {};
@@ -7,7 +22,7 @@ function normalizeFieldErrors(value) {
 }
 
 function clearFieldErrors(form) {
-  form.querySelectorAll('.mailchimp-block__field-error').forEach((node) => node.remove());
+  form.querySelectorAll('.abcnorio-newsletter-signup__field-error').forEach((node) => node.remove());
   form.querySelectorAll('[aria-invalid="true"]').forEach((node) => node.removeAttribute('aria-invalid'));
 }
 
@@ -27,7 +42,7 @@ function setFieldError(form, fieldName, message) {
   }
 
   const error = document.createElement('div');
-  error.className = 'mailchimp-block__field-error';
+  error.className = 'abcnorio-newsletter-signup__field-error';
   error.textContent = String(message || 'Invalid field value.');
   fieldWrap.appendChild(error);
 }
@@ -37,20 +52,16 @@ async function handleSubmit(event) {
 
   const form = event.currentTarget;
   const submitEndpoint = form.dataset.submitEndpoint || '';
-  const messageNode = form.querySelector('.mailchimp-block__message');
+  const messageNode = form.querySelector('.abcnorio-newsletter-signup__message');
   const submitButton = form.querySelector('[data-submit-button]');
 
   clearFieldErrors(form);
 
-  if (messageNode) {
-    messageNode.textContent = '';
-    messageNode.classList.remove('is-error', 'is-success');
-  }
+  hideMessage(messageNode);
 
   if (!submitEndpoint) {
     if (messageNode) {
-      messageNode.textContent = 'Mailchimp endpoint is not configured.';
-      messageNode.classList.add('is-error');
+      showMessage(messageNode, 'Newsletter signup endpoint is not configured.', 'is-error');
     }
     return;
   }
@@ -77,8 +88,7 @@ async function handleSubmit(event) {
     if (!response.ok || payload.success === false) {
       const formError = payload.form_error || 'Unable to submit form right now.';
       if (messageNode) {
-        messageNode.textContent = formError;
-        messageNode.classList.add('is-error');
+        showMessage(messageNode, formError, 'is-error');
       }
 
       Object.entries(fieldErrors).forEach(([name, errorMessage]) => {
@@ -89,15 +99,13 @@ async function handleSubmit(event) {
     }
 
     if (messageNode) {
-      messageNode.textContent = String(payload.message || 'Success, you have been signed up.');
-      messageNode.classList.add('is-success');
+      showMessage(messageNode, String(payload.message || 'Success, you have been signed up.'), 'is-success');
     }
 
     form.reset();
   } catch (_error) {
     if (messageNode) {
-      messageNode.textContent = 'Unable to submit form right now.';
-      messageNode.classList.add('is-error');
+      showMessage(messageNode, 'Unable to submit form right now.', 'is-error');
     }
   } finally {
     if (submitButton) {
@@ -107,12 +115,16 @@ async function handleSubmit(event) {
 }
 
 document
-  .querySelectorAll('[data-mailchimp-form]')
+  .querySelectorAll('[data-newsletter-signup-form]')
   .forEach((form) => {
-    if (form.dataset.mailchimpBound === '1') {
+    if (form.dataset.newsletterSignupBound === '1') {
       return;
     }
 
-    form.dataset.mailchimpBound = '1';
+    form.dataset.newsletterSignupBound = '1';
     form.addEventListener('submit', handleSubmit);
+    const messageNode = form.querySelector('.abcnorio-newsletter-signup__message');
+    form
+      .querySelector('.abcnorio-newsletter-signup__message-close')
+      .addEventListener('click', () => hideMessage(messageNode));
   });

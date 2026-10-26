@@ -73,7 +73,7 @@
         mix-blend-mode: multiply;
     }
 
-    &:focus,
+    &:focus-visible,
     &:hover {
         .event-teaser__date {
             span {

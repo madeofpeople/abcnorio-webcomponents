@@ -20,6 +20,7 @@
     "./collective-teaser/element": "./src/components/collective-teaser/collective-teaser.js",
     "./collective-listing": "./src/components/collective-listing/collective-listing.astro",
     "./collective-listing/element": "./src/components/collective-listing/collective-listing.js",
+    "./date-stamp": "./src/components/date-stamp/date-stamp.astro",
     "./add-to-calendar": "./src/components/add-to-calendar/add-to-calendar.astro",
     "./add-to-calendar/element": "./src/components/add-to-calendar/add-to-calendar.js",
     "./article-listing": "./src/components/article-listing/article-listing.astro",

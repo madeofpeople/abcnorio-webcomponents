@@ -1,3 +1,4 @@
+@use "@tokens/mixins/ui";
 .button {
     border-radius: 0;
     border: 1px var(--color-link) solid;
@@ -12,7 +13,7 @@
     line-height: 1.25;
     text-decoration: none;
 
-    &:focus,
+    &:focus-visible,
     &:hover {
         background-color: var(--color-link);
         color: var(--color-page-bg);
@@ -22,7 +23,7 @@
         background-color: var(--color-link);
         color: var(--color-page-bg);
 
-        &:focus,
+        &:focus-visible,
         &:hover {
             background-color: var(--color-page-bg);
             border-color: var(--color-link);
@@ -32,10 +33,9 @@
     }
 
     &.dark {
-        background-color: var(--color-text);
-        color: var(--color-page-bg);
+        @include ui.inverted();
 
-        &:focus,
+        &:focus-visible,
         &:hover {
             background-color: var(--color-accent);
             border-color: var(--color-accent);

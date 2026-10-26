@@ -1,5 +1,4 @@
 ---
-import '../_wp-blocks.scss';
 import PressItem from '../../press-item/press-item.astro';
 
 const {
@@ -16,3 +15,7 @@ const {
   source={String(attributes?.source || '')}
   sourceUrl={String(attributes?.sourceUrl || '')}
 />
+
+<style lang="scss">
+  @use './press-item';
+</style>
