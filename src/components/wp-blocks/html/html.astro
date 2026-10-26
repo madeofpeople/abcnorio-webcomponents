@@ -1,0 +1,57 @@
+---
+import sanitizeHtml from 'sanitize-html';
+
+const { attributes = {} } = Astro.props;
+
+const TRUSTED_HOST = 'www.zeffy.com';
+// Zeffy's own fallback handler; any other onerror value is stripped.
+const ZEFFY_ONERROR = "document.querySelectorAll('[data-zeffy-embed-fallback]').forEach(function(el){el.style.display='block';el.querySelectorAll('iframe[data-zeffy-embed-src]').forEach(function(f){f.src=f.getAttribute('data-zeffy-embed-src');});});";
+const STYLE_VALUE = [/^[\w\s.%-]+$/];
+
+const isTrustedUrl = (value = '') => {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.hostname === TRUSTED_HOST;
+  } catch {
+    return false;
+  }
+};
+
+const content = sanitizeHtml(attributes.content || '', {
+  allowedTags: ['div', 'iframe', 'script'],
+  allowVulnerableTags: true,
+  allowedAttributes: {
+    div: ['data-zeffy-embed', 'data-form-url', 'data-zeffy-embed-fallback', 'style'],
+    iframe: ['title', 'style', 'src', 'data-zeffy-embed-src', 'allowpaymentrequest', 'allowtransparency'],
+    script: ['src', { name: 'onerror', values: [ZEFFY_ONERROR] }],
+  },
+  allowedStyles: {
+    '*': {
+      position: STYLE_VALUE,
+      overflow: STYLE_VALUE,
+      display: STYLE_VALUE,
+      border: STYLE_VALUE,
+      height: STYLE_VALUE,
+      width: STYLE_VALUE,
+      top: STYLE_VALUE,
+      right: STYLE_VALUE,
+      bottom: STYLE_VALUE,
+      left: STYLE_VALUE,
+    },
+  },
+  allowedSchemes: ['https'],
+  allowedIframeHostnames: [TRUSTED_HOST],
+  allowedScriptHostnames: [TRUSTED_HOST],
+  allowProtocolRelative: false,
+  exclusiveFilter: (frame) => {
+    if (frame.tag === 'script') {
+      return !isTrustedUrl(frame.attribs.src) || frame.text.trim() !== '';
+    }
+    if (frame.tag === 'iframe') {
+      return !isTrustedUrl(frame.attribs.src || frame.attribs['data-zeffy-embed-src']);
+    }
+    return false;
+  },
+});
+---
+{content && <div class="wp-block-html" set:html={content}></div>}

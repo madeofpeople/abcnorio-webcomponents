@@ -11,6 +11,7 @@ import HeroBlock from './hero/hero.astro';
 import GalleryBlock from './gallery/gallery.astro';
 import ButtonsBlock from './buttons/buttons.astro';
 import GroupBlock from './group/group.astro';
+import HtmlBlock from './html/html.astro';
 import NewsletterSignupBlock from './newsletter-signup/newsletter-signup.astro';
 import AnnouncementToutBlock from './announcement-tout/announcement-tout.astro';
 import PressItemBlock from './press-item/press-item.astro';
@@ -31,6 +32,7 @@ export const CORE_BLOCK_KEYS = {
   GALLERY: 'core/gallery',
   BUTTONS: 'core/buttons',
   GROUP: 'core/group',
+  HTML: 'core/html',
 };
 
 export const CUSTOM_BLOCK_KEYS = {
@@ -55,6 +57,7 @@ export const CORE_BLOCK_REGISTRY = {
   [CORE_BLOCK_KEYS.GALLERY]: GalleryBlock,
   [CORE_BLOCK_KEYS.BUTTONS]: ButtonsBlock,
   [CORE_BLOCK_KEYS.GROUP]: GroupBlock,
+  [CORE_BLOCK_KEYS.HTML]: HtmlBlock,
 };
 
 export const CUSTOM_BLOCK_REGISTRY = {
