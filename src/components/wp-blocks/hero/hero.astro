@@ -19,6 +19,30 @@ const sizesData = attributes?.sizes_data || {};
 const rawVariant = String(attributes?.variant ?? 'default').toLowerCase();
 const variant = rawVariant === 'short' || rawVariant === 'thin' ? rawVariant : 'default';
 
+type ImageVariant = {
+  source_url?: string;
+  url?: string;
+  src?: string;
+  width: number;
+  height?: number;
+};
+
+const isImageVariant = (candidate: unknown): candidate is ImageVariant => {
+  if (typeof candidate !== 'object' || candidate === null || !('width' in candidate)) {
+    return false;
+  }
+
+  const hasSource = (
+    'source_url' in candidate && typeof candidate.source_url === 'string'
+  ) || (
+    'url' in candidate && typeof candidate.url === 'string'
+  ) || (
+    'src' in candidate && typeof candidate.src === 'string'
+  );
+
+  return hasSource && typeof candidate.width === 'number';
+};
+
 const getSizeUrl = (...keys: string[]) => {
   for (const key of keys) {
     const candidate = sizesData?.[key];
@@ -46,26 +70,41 @@ const getSizeUrl = (...keys: string[]) => {
   return '';
 };
 
-const defaultBg = getSizeUrl('full', 'large', 'medium', 'small', 'thumbnail') || srcset?.[0] || '';
-const bgXs = getSizeUrl('thumbnail', 'small', 'medium') || defaultBg;
-const bgSm = getSizeUrl('medium') || bgXs;
-const bgMd = getSizeUrl('large') || bgSm;
-const bgLg = getSizeUrl('full') || bgMd;
-
-const toCssBackground = (url: string) => (url ? `url("${url}")` : 'none');
+const imageVariant = ['large', 'medium', 'small', 'thumbnail', 'full']
+  .map((key) => sizesData[key])
+  .find(isImageVariant);
+const imageSrc = getSizeUrl('large', 'medium', 'small', 'thumbnail', 'full') || attributes?.url || '';
+const imageVariants = Object.values(sizesData)
+  .filter(isImageVariant)
+  .sort((a, b) => Number(a.width) - Number(b.width));
+const attributeSrcSet = typeof attributes?.srcset === 'string' ? attributes.srcset : '';
+const propSrcSet = typeof srcset === 'string' ? srcset : '';
+const variantSrcSet = imageVariants
+  .map((candidate) => `${candidate.source_url || candidate.url || candidate.src} ${candidate.width}w`)
+  .join(', ');
+const imageSrcSet = attributeSrcSet || propSrcSet || variantSrcSet;
+const imageWidth = Number(imageVariant?.width || attributes?.width) || undefined;
+const imageHeight = Number(imageVariant?.height || attributes?.height) || undefined;
 
 ---
 <div class:list={["abcnorio-hero", variant !== 'default' ? variant : undefined, attributes?.className]}>
 
-<div
-  class="abcnorio-hero__image-wrapper"
-  style={{
-    '--cover-bg-xs': toCssBackground(bgXs),
-    '--cover-bg-sm': toCssBackground(bgSm),
-    '--cover-bg-md': toCssBackground(bgMd),
-    '--cover-bg-lg': toCssBackground(bgLg),
-  }}
-></div>
+<div class="abcnorio-hero__image-wrapper">
+  {imageSrc && (
+    <img
+      class="abcnorio-hero__image"
+      src={imageSrc}
+      srcset={imageSrcSet || undefined}
+      sizes="100vw"
+      width={imageWidth}
+      height={imageHeight}
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+    />
+  )}
+</div>
   <div class="abcnorio-hero__content-wrapper">
       <div class="abcnorio-hero__content">
         {RecursiveBlock && innerBlocks.map((block: any) => (
