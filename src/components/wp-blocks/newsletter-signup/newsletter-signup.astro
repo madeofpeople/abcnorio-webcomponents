@@ -277,7 +277,10 @@ for (const block of groupBlocks) {
 
   <form class="abcnorio-newsletter-signup__form" data-newsletter-signup-form data-submit-endpoint={submitEndpoint} novalidate>
     <input type="hidden" name="mailchimp_template" value={template} />
-    <input type="text" name="newsletter_signup_website" value="" tabindex="-1" autocomplete="off" class="abcnorio-newsletter-signup__honeypot" aria-hidden="true" />
+    <div class="abcnorio-newsletter-signup__honeypot" aria-hidden="true">
+      <label for="newsletter_signup_website">Leave this field empty</label>
+      <input type="text" id="newsletter_signup_website" name="newsletter_signup_website" value="" tabindex="-1" autocomplete="off" />
+    </div>
 
     {visibleFieldTags.map((tag) => (
       <input type="hidden" name="mailchimp_visible_fields[]" value={tag} />
