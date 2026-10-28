@@ -42,10 +42,9 @@ const sourceItems = Array.isArray(items) ? items : [];
 
 const eventItems = sourceItems
   .filter((item: any) => isEvent(item))
-  .map((item: any, index: number) => buildEventTeaserPayload(
+  .map((item: any) => buildEventTeaserPayload(
     {
       ...item,
-      priority: item?.priority ?? index < 5,
       event_start_date: item?.event_start_date ?? item?.acf?.event_start_date ?? '',
       event_end_date: item?.event_end_date ?? item?.acf?.event_end_date ?? '',
       event_effective_end: item?.event_effective_end ?? item?.acf?.event_effective_end ?? '',

@@ -3,7 +3,6 @@ const {
   class: className,
   href = '#',
   title = 'Untitled event',
-  priority = false,
   isPastEvent = false,
   startLabelDate = '',
   startLabelTime = '',
@@ -24,8 +23,7 @@ const imageProps = featured_image && typeof featured_image === 'object' ? featur
         width={Number(imageProps.width || 290)}
         height={Number(imageProps.height || 9999)}
         decoding="async"
-        fetchpriority={priority ? 'high' : undefined}
-        loading={priority ? undefined : 'lazy'}
+        loading="lazy"
       />
     )}
 

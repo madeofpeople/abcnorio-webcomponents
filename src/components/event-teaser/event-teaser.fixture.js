@@ -21,7 +21,6 @@ export default {
           width: 900,
           height: 1200,
         },
-        priority: true,
       },
       { hrefBase: '/events' },
     ),

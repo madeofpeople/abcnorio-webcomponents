@@ -6,7 +6,6 @@ export function buildCollectiveTeaserPayload(attributes = {}, options = {}) {
     slug = '',
     title: titleSource = {},
     excerpt: excerptSource = {},
-    priority = false,
   } = attributes;
 
   const hrefBase = options.hrefBase || '/facilities';
@@ -22,7 +21,6 @@ export function buildCollectiveTeaserPayload(attributes = {}, options = {}) {
     slug,
     title,
     excerpt,
-    priority,
     featured_image: resolveFeaturedImage(attributes, {
       size: 'abcnorio-collective-thumb',
       defaultWidth: 290,

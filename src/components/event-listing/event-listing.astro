@@ -24,7 +24,6 @@ interface EventTeaserItem {
   slug?: string;
   title?: string;
   excerpt?: string;
-  priority?: boolean;
   isPastEvent?: boolean;
   startLabelDate?: string;
   startLabelTime?: string;
@@ -81,7 +80,7 @@ const sourceItems = (Array.isArray(items) ? items : []) as any[];
 const looksLikeTeaserPayload = (item: any) =>
   typeof item?.href === "string" || typeof item?.startLabelDate === "string";
 
-const normalizedItems = sourceItems.map((item: any, index: number) => {
+const normalizedItems = sourceItems.map((item: any) => {
   if (looksLikeTeaserPayload(item)) {
     const normalizedFeaturedImage = resolveFeaturedImage(
       { featured_image: item?.featured_image ?? null },
@@ -102,7 +101,6 @@ const normalizedItems = sourceItems.map((item: any, index: number) => {
   return buildEventTeaserPayload(
     {
       ...item,
-      priority: item?.priority ?? index < 5,
       event_start_date:
         item?.event_start_date ?? item?.meta?.event_start_date ?? "",
       event_end_date: item?.event_end_date ?? item?.meta?.event_end_date ?? "",

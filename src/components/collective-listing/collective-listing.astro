@@ -34,11 +34,8 @@ const sourceItems = Array.isArray(items) ? items : [];
 
 const collectiveItems = sourceItems
   .filter((item: any) => isFacility(item))
-  .map((item: any, index: number) => buildCollectiveTeaserPayload(
-    {
-      ...item,
-      priority: item?.priority ?? index < 5,
-    },
+  .map((item: any) => buildCollectiveTeaserPayload(
+    item,
     { hrefBase: collectiveHrefBase, cmsUrl },
   ));
 
