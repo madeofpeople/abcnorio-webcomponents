@@ -8,7 +8,7 @@ BLOCK_REGISTRY_PATH="$ROOT_DIR/src/components/wp-blocks/block-registry.js"
 TYPES_INDEX_PATH="$ROOT_DIR/src/types/index.d.ts"
 
 usage() {
-  echo "Usage: just create-webcomponent component-name [--scope components|wp-blocks] [--wp-block namespace/block]" >&2
+  echo "Usage: just wc-create component-name [--scope components|wp-blocks] [--wp-block namespace/block]" >&2
 }
 
 COMPONENT_NAME="${1:-}"

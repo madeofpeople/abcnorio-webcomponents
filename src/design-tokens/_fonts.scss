@@ -46,15 +46,6 @@ $font-url-root: '/assets';
 }
 
 @font-face {
-    font-family: 'Geist Mono';
-    src:
-        url('#{$font-url-root}/GeistMono-Regular.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
     font-family: 'Impact Label Reversed';
     src:
         url('#{$font-url-root}/Impact_Label_Reversed.woff2') format('woff2');
@@ -66,6 +57,5 @@ $font-url-root: '/assets';
 :root {
     --font-source-sans: 'Source Sans 3';
     --font-super-elite: 'Special Elite';
-    --font-geist: 'Geist Mono';
     --font-impact-label-reversed: 'Impact Label Reversed';
 }

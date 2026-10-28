@@ -16,7 +16,7 @@ Current package scripts:
 : Builds fixtures into [dist](dist) and generates [dist/manifest.json](dist/manifest.json).
 
 - `npm run check:manifest`
-: Validates the manifest contract against dist assets without rebuilding. Also available as `just verify-webcomponents`.
+: Validates the manifest contract against dist assets without rebuilding. Also available as `just wc-verify`.
 
 - `npm run check`
 : Runs Astro type/content checks.
