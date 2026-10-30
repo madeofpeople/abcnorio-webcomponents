@@ -17,6 +17,21 @@
 	}
 }
 
+.wp-block-group {
+	
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0.25rem 0;
+	
+		li {
+			border-bottom: 1px var(--color-grey--dark) solid;
+			margin: 0;
+			margin-bottom: 0.5rem;
+		}
+	}
+}
+
 .wp-block-group.dark {
 	.wp-block-group {
 		@include ui.inverted();

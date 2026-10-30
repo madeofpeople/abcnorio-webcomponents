@@ -17,3 +17,7 @@ const formattedDate = formatDate(String(date));
   {title && <h3>{title}</h3>}
   {sourceUrl && source ? <p>— <a class="source" href={sourceUrl} target="_blank" rel="noopener">{source}</a></p> : source && <p>— <span class="source">{source}</span></p>}
 </article>
+
+<style is:global lang="scss">
+  @use './press-item.scss';
+</style>
