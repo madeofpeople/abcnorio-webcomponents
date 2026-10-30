@@ -10,7 +10,7 @@ const {
 { terms.length > 0 && (
     <div class="taxonomy-links">
         {terms.map((term) => (
-          <a href={`${urlBase}${term.slug}/`}>{term.name}</a>
+          <a href={term.url ?? `${urlBase}${term.slug}/`}>{term.name}</a>
         ))}
     </div>
   )
