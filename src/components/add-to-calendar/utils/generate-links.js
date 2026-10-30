@@ -19,7 +19,7 @@ const normalizeEvent = (event = {}) => {
   const description = asText(event.description);
   const start = asText(event.start ?? event.event_start_date);
   const end = asText(event.end ?? event.event_end_date ?? start);
-  const location = asText(event.location ?? event.event_venue_name);
+  const location = asText(event.location);
   const timeZone = asText(event.timeZone ?? event.timeZoneName ?? event.event_timezone);
   const url = asText(event.url);
   const details = [description, location ? `Location: ${location}` : '', url ? `URL: ${url}` : '']
