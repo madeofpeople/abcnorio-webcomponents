@@ -103,11 +103,38 @@ const altText = src
   : 'No source URL was available from attributes.url, attributes.src, or attributes.sizes_data.';
 
 const caption = attributes?.caption || '';
+const href = attributes?.href;
+const target = attributes?.linkTarget;
+const rel = attributes?.rel;
+const Link = href ? 'a' : Fragment;
+const linkProps = href ? { href, target, rel } : {};
 ---
 
 {src && caption && (
   <figure class:list={["abcnorio-image", attributes?.className]}>
+    <Link {...linkProps}>
+      <img
+        src={src}
+        srcset={rawSrcset || undefined}
+        sizes={sizes}
+        alt={altText}
+        data-lightbox-src={lightboxSrc}
+        data-lightbox-width={lightboxWidth}
+        data-lightbox-height={lightboxHeight}
+        width={width}
+        height={height}
+        loading={loading}
+        decoding={decoding}
+      />
+    </Link>
+    <figcaption set:html={caption} />
+  </figure>
+)}
+
+{src && !caption && (
+  <Link {...linkProps}>
     <img
+      class:list={["abcnorio-image", attributes?.className]}
       src={src}
       srcset={rawSrcset || undefined}
       sizes={sizes}
@@ -120,25 +147,7 @@ const caption = attributes?.caption || '';
       loading={loading}
       decoding={decoding}
     />
-    <figcaption set:html={caption} />
-  </figure>
-)}
-
-{src && !caption && (
-  <img
-    class:list={["abcnorio-image", attributes?.className]}
-    src={src}
-    srcset={rawSrcset || undefined}
-    sizes={sizes}
-    alt={altText}
-    data-lightbox-src={lightboxSrc}
-    data-lightbox-width={lightboxWidth}
-    data-lightbox-height={lightboxHeight}
-    width={width}
-    height={height}
-    loading={loading}
-    decoding={decoding}
-  />
+  </Link>
 )}
 
 <style lang="scss">
