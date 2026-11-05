@@ -1,13 +1,31 @@
 @use "sass:map";
+@use "sass:string";
 
 $spacing: (
-    sm: 1rem,
-    lg: 2rem,
+    0.25rem: 0.25rem,
+    0.5rem: 0.5rem,
+    0.75rem: 0.75rem,
+    1rem: 1rem,
+    2rem: 2rem,
+    3rem: 3rem,
+    4rem: 4rem,
 );
+
+@function css-name($name) {
+    $name: "#{$name}";
+    $decimal: string.index($name, ".");
+
+    @if $decimal == null {
+        @return $name;
+    }
+
+    $unit: string.index($name, "rem");
+    @return "#{string.slice($name, 1, $decimal - 1)}-#{string.slice($name, $decimal + 1, $unit - 1)}rem";
+}
 
 :root {
     @each $sp_name, $val in $spacing {
-        --spacing-#{$sp_name}: #{$val};
+        --spacing-#{css-name($sp_name)}: #{$val};
     }
 }
 

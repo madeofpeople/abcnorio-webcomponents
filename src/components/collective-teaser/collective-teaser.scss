@@ -1,10 +1,11 @@
 @use '@tokens/mixins/ui';
 @use '@tokens/breakpoints';
+@use "@tokens/spacing" as spacing;
 
 .collective-teaser {
 
     background-color: #eee;
-    margin-bottom: 2rem;
+    margin-bottom: spacing.get(2rem);
     border: 3px transparent solid;
 
     a {
@@ -29,16 +30,16 @@
         position: relative;
         top: 3rem;
         padding-left: 30%;
-        padding-top: 3rem;
+        padding-top: spacing.get(3rem);
         line-height: 1;
-        margin-right: 2rem;
+        margin-right: spacing.get(2rem);
         transition-property: top;
         transition-duration: 170ms;
         transition-timing-function:cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .collective-teaser__title {
-        padding: 0.25rem 0.5rem;
+        padding: spacing.get(0.25rem) spacing.get(0.5rem);
         display: inline;
         background-color: var(--color-accent--secondary);
         color: var(--color-page-bg);
@@ -49,8 +50,8 @@
 
     .collective-teaser__excerpt {
 
-        margin-top: 1rem;
-        padding: 0.5rem 0.75rem;
+        margin-top: spacing.get(1rem);
+        padding: spacing.get(0.5rem) spacing.get(0.75rem);
         color: var(--color-page-bg);
         background-color: var(--color-text);
         font-size: 1rem;

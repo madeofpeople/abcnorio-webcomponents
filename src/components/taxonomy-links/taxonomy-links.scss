@@ -1,11 +1,12 @@
+@use "@tokens/spacing" as spacing;
 /* Component styles */
 .taxonomy-links {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: spacing.get(1rem);
+    margin-bottom: spacing.get(1rem);
     display: flex;
     flex-wrap: wrap;
     width: fit-content;
-    gap: 0.5rem;
+    gap: spacing.get(0.5rem);
 
     a {
         font-family: var(--font-impact-label-reversed);
@@ -13,7 +14,7 @@
         display: inline-block;
         line-height: 1;
         color: #dedede;
-        padding: 0.25rem 0.75rem;
+        padding: spacing.get(0.25rem) spacing.get(0.75rem);
         border-radius: 0.125rem;
         font-size: 0.875rem;
         text-decoration: none;

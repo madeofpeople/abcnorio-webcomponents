@@ -1,6 +1,7 @@
 @use 'mixins/slider';
 @use 'blaze-slider/dist/blaze.css';
 @use '@tokens/breakpoints';
+@use "@tokens/spacing" as spacing;
 
 $slide-duration: 0.2s;
 
@@ -25,14 +26,14 @@ $slide-duration: 0.2s;
 
   &.gallery--paged-grid {
 
-    padding: 2rem;
+    padding: spacing.get(2rem);
     min-height: var(--gallery-paged-grid-min-height, 0px);
 
     :global(.images) {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1rem;
-      padding: 2rem;
+      gap: spacing.get(1rem);
+      padding: spacing.get(2rem);
     }
 
     :global(.images > *) {
@@ -77,18 +78,18 @@ $slide-duration: 0.2s;
   }
 
   &.gallery--masonry {
-    padding: 2rem;
+    padding: spacing.get(2rem);
 
     :global(.images) {
       column-count: 2;
-      column-gap: 1rem;
+      column-gap: spacing.get(1rem);
     }
 
     :global(.gallery-item),
     :global(.images > .wp-block-image) {
       display: inline-block;
       width: 100%;
-      margin: 0 0 1rem;
+      margin: 0 0 spacing.get(1rem);
       break-inside: avoid;
       vertical-align: top;
     }
@@ -121,11 +122,11 @@ $slide-duration: 0.2s;
 
     background-color: var(--color-text);
     margin-bottom: 0;
-    padding-top: 2rem;
-    padding-bottom: 1rem;
+    padding-top: spacing.get(2rem);
+    padding-bottom: spacing.get(1rem);
 
     :global(.images.blaze-track) {
-      padding: 0 1rem;
+      padding: 0 spacing.get(1rem);
       width: auto
     }
 
@@ -185,10 +186,10 @@ $slide-duration: 0.2s;
   align-items: center;
   list-style: none;
   padding: 0;
-  gap: 0.5rem;
+  gap: spacing.get(0.5rem);
   width: fit-content;
-  margin: 1rem auto 0 auto;
-  padding-bottom: 2rem;
+  margin: spacing.get(1rem) auto 0 auto;
+  padding-bottom: spacing.get(2rem);
 }
 
 :global(gallery-listing.gallery--paged-grid .gallery-pagination li) {
@@ -202,7 +203,7 @@ $slide-duration: 0.2s;
   align-items: center;
   justify-content: center;
   min-width: 2.25rem;
-  padding: 0.5rem 0.75rem;
+  padding: spacing.get(0.5rem) spacing.get(0.75rem);
   border: 1px solid var(--color-link, #1f6ea7);
   border-radius: 2px;
   color: var(--color-link, #1f6ea7);
@@ -233,7 +234,7 @@ $slide-duration: 0.2s;
   font-size: 0.95rem;
   line-height: 1.4;
   max-width: min(42rem, calc(100% - 2rem));
-  padding: 0.5rem 0.75rem;
+  padding: spacing.get(0.5rem) spacing.get(0.75rem);
   border-radius: 0.25rem;
   position: absolute;
   left: 50%;

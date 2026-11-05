@@ -1,13 +1,8 @@
 @use "./visibility";
 @use "../breakpoints";
+@use "@tokens/spacing" as spacing;
 
 @mixin slider() {
-
-    // Margin, not track padding: blaze translates by container width + gap,
-    // so track padding drifts the slides by 2rem per step.
-    .blaze-track-container {
-        margin-left: 2rem;
-    }
 
     // Teaser max-width/height would leave slides narrower than blaze's computed
     // width, so neighbouring slides peek in. :global because teasers are child components.
@@ -18,7 +13,7 @@
 
     .actions {
         display: flex;
-        padding: 2rem;
+        padding: spacing.get(2rem);
     }
 
     .blaze-slide-dots {
@@ -26,7 +21,7 @@
         flex-grow: 2;
         justify-content: center;
         align-items: center;
-        gap: 0.5rem;
+        gap: spacing.get(0.5rem);
     }
 
     :global(button.blaze-slide-dot) {

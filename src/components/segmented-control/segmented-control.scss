@@ -1,9 +1,10 @@
+@use "@tokens/spacing" as spacing;
 segmented-control {
   display: inline-flex;
   flex-direction: column;
 
   .segmented-control__legend {
-    margin-bottom: 0.25rem;
+    margin-bottom: spacing.get(0.25rem);
     font-size: 0.925rem;
   }
 

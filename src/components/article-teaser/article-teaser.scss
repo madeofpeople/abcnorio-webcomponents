@@ -2,6 +2,7 @@
 @use "mixins/teasers";
 @use "@tokens/colors";
 @use "@tokens/typography";
+@use "@tokens/spacing" as spacing;
 
 .article-teaser {
 
@@ -18,7 +19,7 @@
   &__date {
     line-height: 2;
     font-size: 1rem;
-    padding: 0.25rem 0.5rem;
+    padding: spacing.get(0.25rem) spacing.get(0.5rem);
     position: absolute;
     transform: none;
     top: 0;
@@ -28,8 +29,8 @@
   &__title {
     display: absolute;
     box-sizing: border-box;
-    padding: 0.5rem;
-    margin: 0 0.5rem;
+    padding: spacing.get(0.5rem);
+    margin: 0 spacing.get(0.5rem);
     @include ui.inverted();
     font-weight: 900;
     font-size: 1rem;
@@ -38,7 +39,7 @@
   &__excerpt {
     font-size: 1rem;
     color: var(--color-text);
-    padding: 1rem;
+    padding: spacing.get(1rem);
   }
 
   &__image {

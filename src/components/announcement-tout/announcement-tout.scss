@@ -1,4 +1,5 @@
 @use '@tokens/breakpoints';
+@use "@tokens/spacing" as spacing;
 
 @mixin announcement-tout-list-container {
   list-style: none;
@@ -8,7 +9,7 @@
   li {
     margin: 0;
     display: block;
-    padding: 0.25rem 0.5rem;
+    padding: spacing.get(0.25rem) spacing.get(0.5rem);
     border-bottom: 1px #444 solid;
   }
 
@@ -19,9 +20,9 @@
   background: var(--color-text);
   color: var(--color-page-bg);
   position: relative;
-  padding: 1rem;
-  gap: 1rem;
-  margin-top: 1rem;
+  padding: spacing.get(1rem);
+  gap: spacing.get(1rem);
+  margin-top: spacing.get(1rem);
 
   .announcement-tout__toast {
     font-family: var(--font-impact-label-reversed), monospace;
@@ -31,8 +32,8 @@
     font-weight: 400;
     display: inline-block;
     margin: 0;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: spacing.get(0.5rem);
+    padding-right: spacing.get(0.5rem);
     position: relative;
     top: -1.75rem;
     text-align: center;
@@ -44,10 +45,10 @@
   }
 
   .announcement-tout__content {
-    column-gap: 2rem;
+    column-gap: spacing.get(2rem);
     color: var(--color-page-bg);
     margin: -1.75rem 0 0 0;
-    padding: 0rem 0.5rem 0.5rem 0.5rem;
+    padding: 0rem spacing.get(0.5rem) spacing.get(0.5rem) spacing.get(0.5rem);
   }
 
   .list,
@@ -57,7 +58,7 @@
 
   .button {
     display: inline-block;
-    margin-bottom: 0.5rem;
+    margin-bottom: spacing.get(0.5rem);
   }
 
   @media (min-width: breakpoints.get(md)) {
@@ -69,7 +70,7 @@
       left: 1rem;
     }
     .announcement-tout__content {
-        padding: 0 1rem 0rem 1rem;
+        padding: 0 spacing.get(1rem) 0rem spacing.get(1rem);
     }
   }
 }

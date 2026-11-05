@@ -3,6 +3,7 @@
 @use "mixins/layout";
 @use "mixins/slider";
 @use "../pagination/pagination.scss";
+@use "@tokens/spacing" as spacing;
 
 $event-teaser-out-duration: 0.2s;
 $event-teaser-in-duration: 0.2s;
@@ -63,7 +64,7 @@ $stagger-step: 23ms;
 
 .event-listing {
   .event-listing__title {
-    margin: 0 0 1rem;
+    margin: 0 0 spacing.get(1rem);
   }
 
   &.card-grid {
@@ -74,6 +75,10 @@ $stagger-step: 23ms;
 
   &.blaze-slider {
     @include slider.slider();
+
+    &.few-items .blaze-track {
+      --slide-width: min(100%, 24rem);
+    }
   }
 
   .teaser-list {

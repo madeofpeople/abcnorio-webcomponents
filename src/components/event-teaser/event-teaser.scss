@@ -1,4 +1,5 @@
 @use "mixins/teasers";
+@use "@tokens/spacing" as spacing;
 
 .event-teaser {
 
@@ -32,7 +33,7 @@
       position: absolute;
       box-sizing: border-box;
       content: 'Past Event';
-      padding: 1rem 0.5rem;
+      padding: spacing.get(1rem) spacing.get(0.5rem);
       font-size: 1.2rem;
       width: 100%;
       text-align: center;
@@ -60,7 +61,7 @@
       font-size: 16px;
       left: -1rem;
       line-height: 1.25;
-      padding: 1rem 2rem 0.75rem 1rem;
+      padding: spacing.get(1rem) spacing.get(2rem) spacing.get(0.75rem) spacing.get(1rem);
     }
   }
 }

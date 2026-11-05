@@ -1,3 +1,4 @@
+@use "@tokens/spacing" as spacing;
 .abcnorio-image {
     max-width: 100%;
     object-fit: fill;
@@ -19,7 +20,7 @@ figure.abcnorio-image {
     figcaption {
     display: block;
     line-height: 1.5;
-    padding: 1rem 0.5rem 0.5rem 0.5rem;
+    padding: spacing.get(1rem) spacing.get(0.5rem) spacing.get(0.5rem) spacing.get(0.5rem);
     font-size: 0.875rem;
     }
 }

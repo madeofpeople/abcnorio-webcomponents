@@ -1,5 +1,6 @@
 @use '../design-tokens';
 @use '../button/button';
+@use "@tokens/spacing" as spacing;
 
 .add-to-calendar {
   display: block;
@@ -15,19 +16,19 @@
     transition-duration: 0.175s;
     transition-timing-function: ease-in-out;
     background-color: var(--color-ui-panel);
-    padding: 0 1rem;
+    padding: 0 spacing.get(1rem);
     
     a {
       display: inline-block;
-      margin-right: 1rem;
+      margin-right: spacing.get(1rem);
       cursor: pointer;
     }
 
     &.active {
-      padding-left: 1rem;
-      padding-right: 1rem;
-      padding-top: 1rem;
-      padding-bottom: 1rem;
+      padding-left: spacing.get(1rem);
+      padding-right: spacing.get(1rem);
+      padding-top: spacing.get(1rem);
+      padding-bottom: spacing.get(1rem);
       max-height: 12rem;
       box-shadow: 2px 2px 4px inset rgba(0, 0, 0, 0.1);
     }

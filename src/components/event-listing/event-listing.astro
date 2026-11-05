@@ -119,7 +119,7 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
 {itemCount > 0 && (
   <event-listing
     id={mountId}
-    class:list={['event-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
+    class:list={['event-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid', isSlider === true && itemCount < 3 && 'few-items']}
     data-component={EVENT_LISTING_KEY}
     data-slider-preset={sliderPreset}
     data-style-deps={
