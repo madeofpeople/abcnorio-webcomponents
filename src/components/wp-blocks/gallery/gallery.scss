@@ -129,7 +129,7 @@ $slide-duration: 0.2s;
       container-type: inline-size;
     }
 
-:global(gallery-listing.gallery.blaze-slider .gallery-item) {
+:global(.gallery.blaze-slider .gallery-item) {
   height: 300px;
 
   @container (min-width: 400px) {
@@ -142,20 +142,20 @@ $slide-duration: 0.2s;
   }
 }
 
-:global(gallery-listing.gallery.blaze-slider .gallery-item > a),
-:global(gallery-listing.gallery.blaze-slider .gallery-item > figure),
-:global(gallery-listing.gallery.blaze-slider .gallery-item > img) {
+:global(.gallery.blaze-slider .gallery-item > a),
+:global(.gallery.blaze-slider .gallery-item > figure),
+:global(.gallery.blaze-slider .gallery-item > img) {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-:global(gallery-listing.gallery.blaze-slider .gallery-item figure) {
+:global(.gallery.blaze-slider .gallery-item figure) {
   margin: 0;
   padding: 0;
 }
 
-:global(gallery-listing.gallery.blaze-slider .gallery-item img) {
+:global(.gallery.blaze-slider .gallery-item img) {
   display: block;
   object-fit: contain;
   width: 100%;
