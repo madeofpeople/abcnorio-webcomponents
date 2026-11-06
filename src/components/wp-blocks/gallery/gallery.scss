@@ -1,5 +1,4 @@
 @use 'mixins/slider';
-@use 'blaze-slider/dist/blaze.css';
 @use '@tokens/breakpoints';
 
 $slide-duration: 0.2s;
@@ -131,6 +130,8 @@ $slide-duration: 0.2s;
     }
 
     :global(.gallery-item) {
+      height: 300px;
+      
       @container (min-width: 400px) {
         height: 300px;
       }
