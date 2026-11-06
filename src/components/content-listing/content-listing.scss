@@ -1,12 +1,11 @@
 @use "mixins/layout";
 @use "mixins/slider";
-@use "@tokens/spacing" as spacing;
 
 .content-listing {
   display: block;
 
   .content-listing__title {
-    margin: 0 0 spacing.get(1rem);
+    margin: 0 0 1rem;
   }
 
   &.card-grid {   

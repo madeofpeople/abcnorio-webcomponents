@@ -2,11 +2,10 @@
 @use '@tokens/breakpoints';
 @use '@tokens/typography';
 @use 'mixins/layout';
-@use "@tokens/spacing" as spacing;
 
 .abcnorio-hero {
     padding: 0;
-    margin: 0 0 spacing.get(3rem) 0;
+    margin: 0 0 3rem 0;
     height: max-content;
     position: relative;
 
@@ -70,17 +69,17 @@
         height: fit-content;
         border: 2px var(--color-text) solid;
         background-color: var(--color-page-bg);
-        padding: 0 spacing.get(2rem) spacing.get(1rem) spacing.get(2rem);
+        padding: 0 2rem 1rem 2rem;
 
         .button {
-            margin-right: spacing.get(0.25rem);
-            margin-bottom: spacing.get(0.25rem);
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
         }
 
         h1, h2, h3, h4, h5, h6 {
             display: inline-block;
             font-family: var(--font-impact-label-reversed);
-            padding: spacing.get(0.25rem) spacing.get(0.5rem);
+            padding: 0.25rem 0.5rem;
             @include ui.inverted();
             transform: rotate3d(0, 0, 1, -1deg);
             position: relative;

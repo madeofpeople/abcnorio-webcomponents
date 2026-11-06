@@ -1,4 +1,3 @@
-@use "@tokens/spacing" as spacing;
 @mixin teaser() {
 
     display: block;
@@ -37,7 +36,7 @@
 
     &__date {
         position: relative;
-        padding: spacing.get(0.25rem) spacing.get(0.5rem);
+        padding: 0.25rem 0.5rem;
         transform: rotate3d(0, 0, 1, -7deg);
         font-family: var(--font-impact-label-reversed), monospace;
         line-height: 1;
@@ -51,13 +50,13 @@
     }
 
     &__title {
-        margin-top: spacing.get(1rem);
+        margin-top: 1rem;
         display: block;
         width: border-box;
         position: relative;
         color: var(--color-event-teaser-bg);
         background-color:  var(--color-text);
-        padding: spacing.get(0.5rem) 0 spacing.get(0.75rem) spacing.get(0.5rem);
+        padding: 0.5rem 0 0.75rem 0.5rem;
         font-weight: 400;
         font-size: 0.825rem;
         line-height: 1.2;

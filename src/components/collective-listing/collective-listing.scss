@@ -1,6 +1,5 @@
 @use "@tokens/breakpoints";
 @use "mixins/layout";
-@use "@tokens/spacing" as spacing;
 
 .collective-listing {
   display: block;
@@ -9,7 +8,7 @@
 .collective-listing__items {
   @include layout.max-width();
   display: grid;
-  gap: spacing.get(1rem);
+  gap: 1rem;
   position: relative;
   grid-template-columns: repeat(1, minmax(0, 1fr));
 
@@ -18,7 +17,7 @@
   }
 
   @media (min-width: breakpoints.get(md)) {
-    gap: spacing.get(2rem);
+    gap: 2rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

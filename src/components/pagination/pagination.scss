@@ -1,12 +1,11 @@
-@use "@tokens/spacing" as spacing;
 .pagination ul {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     list-style: none;
     padding: 0;
-    gap: spacing.get(0.5rem);
-    margin: spacing.get(1rem) 0;
+    gap: 0.5rem;
+    margin: 1rem 0;
 }
 
 .pagination li {
@@ -20,7 +19,7 @@
     align-items: center;
     justify-content: center;
     min-width: 2.25rem;
-    padding: spacing.get(0.5rem) spacing.get(0.75rem);
+    padding: 0.5rem 0.75rem;
     border: 1px solid var(--color-link, #1f6ea7);
     border-radius: 2px;
     text-decoration: none;

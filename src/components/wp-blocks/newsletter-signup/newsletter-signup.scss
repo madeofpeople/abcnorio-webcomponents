@@ -1,10 +1,9 @@
 @use "@tokens/mixins/ui";
 @use 'abcnorio-webcomponents/styles/button';
-@use "@tokens/spacing" as spacing;
 
 .abcnorio-newsletter-signup {
     position: relative;
-    padding: spacing.get(1rem);
+    padding: 1rem;
     background-color: var(--color-grey--dark);
     color: white;
     overflow: hidden;
@@ -49,7 +48,7 @@
         top: calc(100% - 2rem);
         left: 50%;
         transform: translate3d(-50%, 0, 0);
-        padding: 0 spacing.get(0.5rem);
+        padding: 0 0.5rem;
         border: 0;
         background: none;
         color: inherit;
@@ -79,7 +78,7 @@
         right: 0;
         width: 100%;
         box-sizing: border-box;
-        padding: spacing.get(0.25rem) spacing.get(0.5rem);
+        padding: 0.25rem 0.5rem;
         line-height: 2;
         margin-top: 0.35rem;
         background-color: #8b0000;
@@ -103,7 +102,7 @@
 
     label {
         display: inline-block;
-        padding: spacing.get(0.25rem) spacing.get(0.5rem);
+        padding: 0.25rem 0.5rem;
         font-size: 14px;
         @include ui.inverted();
     }
@@ -112,7 +111,7 @@
         box-sizing: border-box;
         display: block;
         width: 100%;
-        padding: spacing.get(0.5rem);
+        padding: 0.5rem;
     }
 
     .button {

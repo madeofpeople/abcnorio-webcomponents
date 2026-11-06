@@ -1,8 +1,7 @@
-@use "@tokens/spacing" as spacing;
 .sidebar-cta {
   display: grid;
-  gap: spacing.get(1rem);
-  margin-bottom: spacing.get(2rem);
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .sidebar-tout__figure {
@@ -19,7 +18,7 @@
 
 .sidebar-tout__content {
   display: grid;
-  gap: spacing.get(1rem);
+  gap: 1rem;
 }
 
 .sidebar-tout__title {
@@ -33,7 +32,7 @@
 
 .sidebar-tout__actions {
   display: flex;
-  gap: spacing.get(0.5rem);
+  gap: 0.5rem;
 }
 
 .sidebar-tout__button {

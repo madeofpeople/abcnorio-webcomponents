@@ -1,11 +1,10 @@
 @use "@tokens/breakpoints" as bp;
-@use "@tokens/spacing" as spacing;
 segmented-control {
   display: inline-flex;
   flex-direction: column;
 
   .segmented-control__legend {
-    margin-bottom: spacing.get(0.25rem);
+    margin-bottom: 0.25rem;
     font-size: 0.925rem;
   }
 
@@ -81,7 +80,7 @@ segmented-control {
     border-radius: 2em;
   }
 
-  @media (min-width: bp.get(md)) {
-      display: inline-flex;
+  @media (min-width: bp.get(lg)) {
+      display: flex;
   }
 }

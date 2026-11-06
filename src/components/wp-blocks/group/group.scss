@@ -1,10 +1,9 @@
 @use "@tokens/mixins/ui";
 @use '@tokens/breakpoints';
-@use "@tokens/spacing" as spacing;
 
 .prefooter > .wp-block-group {
 	box-sizing: border-box;
-	padding: spacing.get(2rem);
+	padding: 2rem;
 	margin: 0 auto;
 	display: flex;
 	flex-direction: row;
@@ -14,7 +13,7 @@
 	> div {
 		min-width: 0;
 		flex: 1;
-		padding: spacing.get(1rem);
+		padding: 1rem;
 	}
 }
 
@@ -23,12 +22,12 @@
 	ul {
 		list-style: none;
 		margin: 0;
-		padding: spacing.get(0.25rem) 0;
+		padding: 0.25rem 0;
 	
 		li {
 			border-bottom: 1px var(--color-grey--dark) solid;
 			margin: 0;
-			margin-bottom: spacing.get(0.5rem);
+			margin-bottom: 0.5rem;
 		}
 	}
 }
@@ -44,32 +43,32 @@
 }
 
 .wp-block-group.dark.emphasis {
-	gap: spacing.get(1rem);
+	gap: 1rem;
 	justify-content: left;
 
 	.wp-block-group {
 		h2 {
 			font-size: 1.5rem;
 		}
-		padding: spacing.get(1rem);
+		padding: 1rem;
 	}
 }
 
 .wp-block-group.gallery.dark {
 
-	padding-top: spacing.get(2rem);
+	padding-top: 2rem;
 
 	p,
 	h2 {
 		display: block;
 		margin: 0;
 		width: fit-content;
-		padding: spacing.get(1rem) spacing.get(2rem) spacing.get(1rem) spacing.get(1rem);
+		padding: 1rem 2rem 1rem 1rem;
 	}
 
 	gallery-listing.gallery.gallery--paged-grid,
 	.images {
-		padding: spacing.get(0.5rem);
+		padding: 0.5rem;
 	}
 }
 
@@ -80,7 +79,7 @@
 }
 
 .wp-block-group.gallery {
-	margin-bottom: spacing.get(3rem);
+	margin-bottom: 3rem;
 }
 
 .wp-block-group.is-layout-flex {
@@ -88,7 +87,7 @@
 	flex-direction: row;
 	align-items: flex-start;
 	flex-wrap: wrap;
-	gap: spacing.get(2rem);
+	gap: 2rem;
 
 	> * {
 		flex: 1;
