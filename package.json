@@ -45,6 +45,7 @@
     "./wp-blocks/list": "./src/components/wp-blocks/list/list.astro",
     "./wp-blocks/list-item": "./src/components/wp-blocks/list-item/list-item.astro",
     "./wp-blocks/gallery": "./src/components/wp-blocks/gallery/gallery.astro",
+    "./wp-blocks/gallery/element": "./src/components/wp-blocks/gallery/gallery.js",
     "./wp-blocks/youtube": "./src/components/wp-blocks/youtube/youtube.astro",
     "./wp-blocks/matterport": "./src/components/wp-blocks/matterport/matterport.astro",
     "./wp-blocks/buttons": "./src/components/wp-blocks/buttons/buttons.astro",
