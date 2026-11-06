@@ -3,23 +3,23 @@
     object-fit: contain;
 }
 
-figure.abcnorio-image {
+figure.abcnorio-image:not(.gallery__image) {
     border: 1rem white solid;
     margin: 1.5rem 0;
     display: inline-block;
-    background-color: #fff; /*var(--color-panel-bg);*/
+    background-color: #fff;
     box-shadow: 3px 3px 12px #00000033;
 
     img {
-    max-width: 100%;
-    display: block;
-    border: 1px #efefef solid;
+        max-width: 100%;
+        display: block;
+        border: 1px #efefef solid;
     }
 
     figcaption {
-    display: block;
-    line-height: 1.5;
-    padding: 1rem 0.5rem 0.5rem 0.5rem;
-    font-size: 0.875rem;
+        display: block;
+        line-height: 1.5;
+        padding: 1rem 0.5rem 0.5rem 0.5rem;
+        font-size: 0.875rem;
     }
 }

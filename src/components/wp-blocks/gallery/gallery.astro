@@ -80,6 +80,7 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
                 component={block.name}
                 attributes={imageAttributes}
                 innerBlocks={block.innerBlocks || null}
+                additionalClasses="gallery__image"
               />
             </div>
           );
