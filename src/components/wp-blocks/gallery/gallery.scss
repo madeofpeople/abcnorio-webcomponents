@@ -126,11 +126,19 @@ $slide-duration: 0.2s;
 
     :global(.images.blaze-track) {
       padding: 0 1rem;
-      width: auto
+      width: auto;
+      container-type: inline-size;
     }
 
     :global(.gallery-item) {
-      height: 300px;
+      @container (min-width: 400px) {
+        height: 300px;
+      }
+
+      @container (min-width: 768px) {
+        height: 400px;
+        width: fit-content;
+      }
     }
 
     :global(.gallery-item > a),
@@ -151,25 +159,11 @@ $slide-duration: 0.2s;
       object-fit: contain;
       width: 100%;
       height: 100%;
-    }
 
-    :global(.gallery-item--ghost) {
-      opacity: 0;
-      pointer-events: none;
-      user-select: none;
-    }
-
-    @media (min-width: breakpoints.get(md)) {
-      :global(.gallery-item) {
-        height: 400px;
-        width: fit-content;
-      }
-
-      :global(.gallery-item img) {
+      @container (min-width: 768px) {
         width: auto;
         height: 400px;
       }
-
     }
   }
 
