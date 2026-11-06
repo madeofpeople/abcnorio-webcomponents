@@ -1,3 +1,4 @@
+@use "@tokens/breakpoints" as bp;
 @use "@tokens/spacing" as spacing;
 segmented-control {
   display: inline-flex;
@@ -78,5 +79,9 @@ segmented-control {
     outline: 2px solid currentColor;
     outline-offset: 2px;
     border-radius: 2em;
+  }
+
+  @media (min-width: bp.get(md)) {
+      display: inline-flex;
   }
 }
