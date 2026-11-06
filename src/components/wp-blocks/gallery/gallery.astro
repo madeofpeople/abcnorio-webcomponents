@@ -6,6 +6,7 @@ const {
   attributes = {},
   innerBlocks = [],
   variant,
+  additionalClasses = '',
   ...routerProps
 } = Astro.props;
 
@@ -41,6 +42,7 @@ const galleryClass = [
   usesBlaze && 'blaze-slider',
   `gallery--${resolvedVariant}`,
   `gallery--nav-${navigationMode}`,
+  additionalClasses,
   ...classes,
 ].filter(Boolean).join(' ');
 
@@ -52,7 +54,7 @@ const recursiveProps = {
 
 const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 ---
-<gallery-listing class={galleryClass} data-variant={resolvedVariant} data-navigation-mode={navigationMode} data-items-per-page={itemsPerPage}>
+<gallery-listing class:list={[galleryClass]} data-variant={resolvedVariant} data-navigation-mode={navigationMode} data-items-per-page={itemsPerPage}>
   <div class:list={{ 'blaze-container': usesBlaze }}>
     <div class:list={{ 'blaze-track-container': usesBlaze }}>
       <div class:list={['images', usesBlaze && 'blaze-track']}>
@@ -101,6 +103,6 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
   import './gallery.js';
 </script>
 
-<style lang="scss">
+<style is:global lang="scss">
   @use './gallery.scss';
 </style>

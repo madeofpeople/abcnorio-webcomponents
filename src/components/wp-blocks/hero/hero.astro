@@ -1,11 +1,10 @@
 ---
-import './hero.scss';
-
 const {
   component: _component,
   srcset,
   attributes,
   innerBlocks = [],
+  additionalClasses = '',
   ...routerProps
 } = Astro.props;
 
@@ -87,7 +86,7 @@ const imageWidth = Number(imageVariant?.width || attributes?.width) || undefined
 const imageHeight = Number(imageVariant?.height || attributes?.height) || undefined;
 
 ---
-<div class:list={["abcnorio-hero", variant !== 'default' ? variant : undefined, attributes?.className]}>
+<div class:list={["abcnorio-hero", variant !== 'default' ? variant : undefined, additionalClasses, attributes?.className]}>
 
 <div class="abcnorio-hero__image-wrapper">
   {imageSrc && (
@@ -122,3 +121,7 @@ const imageHeight = Number(imageVariant?.height || attributes?.height) || undefi
 <script>
   import './hero.js';
 </script>
+
+<style is:global lang="scss">
+  @import './hero.scss';
+</style>

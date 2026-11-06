@@ -1,12 +1,15 @@
 export const metadata = {
-  deps: {
-    css: [],
-    js: [],
-  },
+  name: 'hero',
+  label: 'Hero',
 };
 
 export default {
   default: {
-    props: {},
+    props: {
+      attributes: {
+        variant: 'default',
+      },
+      innerBlocks: [],
+    },
   },
 };
