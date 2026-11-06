@@ -1,0 +1,15 @@
+ul.list,
+ol.list {
+    margin-block: 1rem;
+    padding-inline: 1.5rem;
+
+    li {
+        margin-block: 0.5rem;
+        line-height: 1.6;
+    }
+
+    ul,
+    ol {
+        margin-block: 0.5rem;
+    }
+}

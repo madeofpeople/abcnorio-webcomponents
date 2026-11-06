@@ -1,0 +1,17 @@
+blockquote.quote {
+    border-left: 4px var(--color-accent, #1f6ea7) solid;
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    background-color: rgba(0, 0, 0, 0.03);
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--color-text, inherit);
+
+    p {
+        margin-block: 0.5rem;
+
+        &:last-child {
+            margin-block-end: 0;
+        }
+    }
+}

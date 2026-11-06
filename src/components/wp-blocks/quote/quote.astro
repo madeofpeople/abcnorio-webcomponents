@@ -3,6 +3,7 @@ const {
   component: _component,
   attributes,
   innerBlocks = [],
+  additionalClasses = '',
   ...routerProps
 } = Astro.props;
 const RecursiveBlock = routerProps.Block || null;
@@ -11,7 +12,7 @@ const recursiveProps = {
   Block: RecursiveBlock,
 };
 ---
-<blockquote class:list={["quote", attributes?.className]}>
+<blockquote class:list={["quote", additionalClasses, attributes?.className]}>
   {RecursiveBlock && innerBlocks.length > 0 && innerBlocks.map((innerBlock: any) => (
     <RecursiveBlock
       {...recursiveProps}
@@ -21,3 +22,7 @@ const recursiveProps = {
     />
   ))}
 </blockquote>
+
+<style is:global lang="scss">
+  @import './quote.scss';
+</style>
