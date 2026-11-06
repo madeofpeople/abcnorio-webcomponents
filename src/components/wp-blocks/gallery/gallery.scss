@@ -129,43 +129,43 @@ $slide-duration: 0.2s;
       container-type: inline-size;
     }
 
-    :global(.gallery-item) {
-      height: 300px;
-      
-      @container (min-width: 400px) {
-        height: 300px;
-      }
+:global(gallery-listing.gallery.blaze-slider .gallery-item) {
+  height: 300px;
 
-      @container (min-width: 768px) {
-        height: 400px;
-        width: fit-content;
-      }
-    }
+  @container (min-width: 400px) {
+    height: 300px;
+  }
 
-    :global(.gallery-item > a),
-    :global(.gallery-item > figure),
-    :global(.gallery-item > img) {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+  @container (min-width: 768px) {
+    height: 400px;
+    width: fit-content;
+  }
+}
 
-    :global(.gallery-item figure) {
-      margin: 0;
-      padding: 0;
-    }
+:global(gallery-listing.gallery.blaze-slider .gallery-item > a),
+:global(gallery-listing.gallery.blaze-slider .gallery-item > figure),
+:global(gallery-listing.gallery.blaze-slider .gallery-item > img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 
-    :global(.gallery-item img) {
-      display: block;
-      object-fit: contain;
-      width: 100%;
-      height: 100%;
+:global(gallery-listing.gallery.blaze-slider .gallery-item figure) {
+  margin: 0;
+  padding: 0;
+}
 
-      @container (min-width: 768px) {
-        width: auto;
-        height: 400px;
-      }
-    }
+:global(gallery-listing.gallery.blaze-slider .gallery-item img) {
+  display: block;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+
+  @container (min-width: 768px) {
+    width: auto;
+    height: 400px;
+  }
+}
   }
 
   :global(button.blaze-slide-dot:hover),
