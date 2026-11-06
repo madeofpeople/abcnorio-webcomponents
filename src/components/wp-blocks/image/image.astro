@@ -1,5 +1,5 @@
 ---
-const { attributes, loading = 'lazy', decoding = 'async', cmsUrl = '' } = Astro.props;
+const { attributes, loading = 'lazy', decoding = 'async', cmsUrl = '', additionalClasses = '' } = Astro.props;
 const alt = attributes?.alt ?? '';
 const sizeSlug = attributes?.sizeSlug ?? '';
 const rawSrcset = attributes?.srcset ?? '';
@@ -111,7 +111,7 @@ const linkProps = href ? { href, target, rel } : {};
 ---
 
 {src && caption && (
-  <figure class:list={["abcnorio-image", attributes?.className]}>
+  <figure class:list={["abcnorio-image", additionalClasses, attributes?.className]}>
     <Link {...linkProps}>
       <img
         src={src}
@@ -134,7 +134,7 @@ const linkProps = href ? { href, target, rel } : {};
 {src && !caption && (
   <Link {...linkProps}>
     <img
-      class:list={["abcnorio-image", attributes?.className]}
+      class:list={["abcnorio-image", additionalClasses, attributes?.className]}
       src={src}
       srcset={rawSrcset || undefined}
       sizes={sizes}
@@ -150,6 +150,6 @@ const linkProps = href ? { href, target, rel } : {};
   </Link>
 )}
 
-<style lang="scss">
-  @use './image.scss';
+<style is:global lang="scss">
+  @import './image.scss';
 </style>
