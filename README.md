@@ -51,5 +51,10 @@ just wc-verify          # Check the existing manifest
 just plugin-dev-assets  # Build and refresh local WP preview assets
 ```
 
+The Blaze fork is bundled from `vendor/blaze-slider-1.9.3-9def7d5.tgz` so
+consumer installs do not build the fork. To update it, build the Blaze workspace
+in the fork, pack its `blaze-slider` workspace, replace the tarball, and update
+the dependency path and lockfile. Keep the fork commit in the tarball filename.
+
 See [reference](docs/reference.md) for fixture and manifest contracts, block
 routing, editor styling, data normalization and design tokens.
