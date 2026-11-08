@@ -1,0 +1,28 @@
+@use '../../button/button-rules' as rules;
+
+.editor-styles-wrapper .wp-block-buttons .wp-block-button > .wp-block-button__link {
+    @include rules.base;
+
+    &:focus-visible,
+    &:hover {
+        @include rules.hover;
+    }
+}
+
+.editor-styles-wrapper .wp-block-buttons .wp-block-button.reversed > .wp-block-button__link {
+    @include rules.reversed;
+
+    &:focus-visible,
+    &:hover {
+        @include rules.reversed-hover;
+    }
+}
+
+.editor-styles-wrapper .wp-block-buttons .wp-block-button.dark > .wp-block-button__link {
+    @include rules.dark;
+
+    &:focus-visible,
+    &:hover {
+        @include rules.dark-hover;
+    }
+}

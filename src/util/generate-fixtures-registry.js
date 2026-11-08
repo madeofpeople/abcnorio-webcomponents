@@ -389,9 +389,7 @@ const finalizeComponentAssets = (manifest, elementAssets) => {
 
     component.css = assets.css;
     component.js = assets.js;
-    const componentAssetSet = new Set([...component.css, ...component.js]);
-    // deps are fixture-linked assets that are not part of the component's direct compiled css/js bundles.
-    component.deps = Array.from(new Set(component.deps.filter((assetPath) => !componentAssetSet.has(assetPath)))).sort();
+    component.deps = Array.from(new Set(component.deps)).sort();
     component.fixtures.sort();
     component.css.sort();
     component.js.sort();

@@ -7,9 +7,14 @@ export default {
     props: {
       toast: 'Announcement toast',
       title: 'Announcement Title',
-      details: 'Add details here.',
-      buttonLabel: 'Register Here',
-      buttonUrl: '#',
+    },
+  },
+  secondary: {
+    props: {
+      class: 'announcement-tout--secondary',
+      toast: 'Secondary announcement',
+      toastHeadingLevel: 4,
+      title: 'Secondary Title',
     },
   },
 };

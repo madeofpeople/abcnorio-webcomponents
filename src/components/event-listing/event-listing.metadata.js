@@ -16,6 +16,6 @@ export const EVENT_LISTING_FIXTURE_METADATA = {
       `styles/${EVENT_LISTING_TAG}.css`,
       'styles/event-teaser.css',
     ],
-    js: [],
+    js: [`elements/${EVENT_LISTING_TAG}.js`],
   },
 };

@@ -118,6 +118,8 @@ export class EventListing extends HTMLElement {
       return;
     }
 
+    this.unsubscribeSlide?.();
+    this.unsubscribeSlide = null;
     const totalPages = slider.states?.length ?? 0;
     if (totalPages <= 1) {
       dotsEl.innerHTML = '';
@@ -154,7 +156,7 @@ export class EventListing extends HTMLElement {
     this.activeSlideIndex = slider.states?.[slider.stateIndex]?.page?.[0] ?? 0;
     this.updateActiveState(slider, dots);
     this.updateArrowVisibility(slider);
-    slider.onSlide(() => {
+    this.unsubscribeSlide = slider.onSlide(() => {
       const currentStateIndex = slider.stateIndex;
       const currentState = slider.states?.[currentStateIndex];
 
@@ -186,65 +188,91 @@ export class EventListing extends HTMLElement {
 
     if( this.classList.contains('blaze-slider')) {
       const dotsEl = this.querySelector('.blaze-slide-dots');
-      // sliderPreset 'default' (events-list block, wide layouts): up to 4 slides, 3.5 at lg.
-      const defaultConfig = {
+      const baseSlidesPerPage = {
+        all: 1,
+        xs: 2,
+        sm: 3,
+        md: 4,
+        lg: 3.5,
+      };
+      const presetOverrides = this.dataset.sliderPreset === 'content-width'
+        ? {
+        sm: 2,
+        md: 3,
+        lg: 4,
+        }
+        : {};
+      const slidesPerPageDefaults = { ...baseSlidesPerPage, ...presetOverrides };
+      const slidesPerPage = Object.fromEntries(
+        Object.entries({
+          all: 'slidesPerPage',
+          xs: 'slidesPerPageXs',
+          sm: 'slidesPerPageSm',
+          md: 'slidesPerPageMd',
+          lg: 'slidesPerPageLg',
+        }).map(([breakpoint, dataKey]) => {
+          const parsed = Number.parseFloat(this.dataset[dataKey] || '');
+          const count = Number.isFinite(parsed) ? parsed : slidesPerPageDefaults[breakpoint];
+          return [breakpoint, Math.max(1, Math.min(6, count))];
+        }),
+      );
+      const config = {
         'all': {
-          slidesToShow: 1,  
+          slidesToShow: slidesPerPage.all,
           loop: false,
-          slidesToScroll: 1,
+          slidesToScroll: slidesPerPage.all,
           enablePagination: false,
           transitionDuration: 300,
         },
         [`(min-width: ${bp("xs")}px)`]: {
-          slidesToShow: 2,
-          slidesToScroll: 2
+          slidesToShow: slidesPerPage.xs,
+          slidesToScroll: slidesPerPage.xs,
         },
         [`(min-width: ${bp("sm")}px)`]: {
-          slidesToShow: 3,
-          slidesToScroll: 3
+          slidesToShow: slidesPerPage.sm,
+          slidesToScroll: slidesPerPage.sm,
         },
         [`(min-width: ${bp("md")}px)`]: {
-          slidesToShow: 4,
-          slidesToScroll: 4
+          slidesToShow: slidesPerPage.md,
+          slidesToScroll: slidesPerPage.md,
         },
         [`(min-width: ${bp("lg")}px)`]: {
-          slidesToShow: 3.5,
-          slidesToScroll: 3.5
+          slidesToShow: slidesPerPage.lg,
+          slidesToScroll: slidesPerPage.lg,
         }
       };
-      // sliderPreset 'content-width' (UpcomingEventsSlider in the event page prefooter): max 3 slides.
-      const contentWidthConfig = {
-        'all': {
-          slidesToShow: 1,
-          loop: false,
-          slidesToScroll: 1,
-          enablePagination: false,
-          transitionDuration: 300,
-        },
-        [`(min-width: ${bp("xs")}px)`]: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-        [`(min-width: ${bp("sm")}px)`]: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-        },
-        [`(min-width: ${bp("md")}px)`]: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-        },
-        [`(min-width: ${bp("lg")}px)`]: {
-          slidesToShow: 4,
-          slidesToScroll: 4,
-        }
-      };
-      const config = this.dataset.sliderPreset === 'content-width' ? contentWidthConfig : defaultConfig;
 
       const slider = new BlazeSlider(this, config);
+      this.slider = slider;
       this.updateArrowVisibility(slider);
       this.initSlideDots(slider, dotsEl);
+      let width = window.innerWidth;
+      this.onResize = () => {
+        if (width === window.innerWidth) return;
+        width = window.innerWidth;
+        clearTimeout(this.resizeTimer);
+        this.resizeTimer = setTimeout(() => {
+          slider.refresh();
+          this.initSlideDots(slider, dotsEl);
+        }, 250);
+      };
+      window.addEventListener('resize', this.onResize);
     }
     
+  }
+
+  disconnectedCallback() {
+    if (this.onResize) {
+      window.removeEventListener('resize', this.onResize);
+      this.onResize = null;
+    }
+    clearTimeout(this.resizeTimer);
+    this.unsubscribeSlide?.();
+    this.unsubscribeSlide = null;
+    this.slider?.destroy();
+    this.slider = null;
+    delete this.dataset.upgraded;
+    this.classList.remove('is-upgraded');
   }
 }
 

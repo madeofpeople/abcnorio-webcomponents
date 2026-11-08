@@ -1,7 +1,63 @@
 @use "./visibility";
 @use "../breakpoints";
 
-@mixin slider() {
+@mixin slide-count($attribute) {
+    @each $count in 1, 2, 3, 3.5, 4, 5, 6 {
+        &[#{$attribute}="#{$count}"] {
+            --slides-to-show: #{$count};
+        }
+    }
+}
+
+@mixin slider($global-arrows: false) {
+
+    --slides-to-show: 1;
+    --slide-gap: 1rem;
+    direction: ltr;
+
+    :global(.blaze-container) {
+        position: relative;
+    }
+
+    :global(.blaze-track-container) {
+        overflow: hidden;
+    }
+
+    :global(.blaze-track) {
+        display: flex;
+        gap: var(--slide-gap);
+        box-sizing: border-box;
+        will-change: transform;
+        touch-action: pan-y;
+        --slide-width: calc(
+            (100% - (var(--slides-to-show) - 1) * var(--slide-gap)) /
+            var(--slides-to-show)
+        );
+    }
+
+    :global(.blaze-track > *) {
+        box-sizing: border-box;
+        width: var(--slide-width);
+        flex-shrink: 0;
+    }
+
+    @include slide-count(data-slides-per-page);
+
+    @media (min-width: breakpoints.get(xs)) {
+        @include slide-count(data-slides-per-page-xs);
+    }
+
+    @media (min-width: breakpoints.get(sm)) {
+        @include slide-count(data-slides-per-page-sm);
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+        @include slide-count(data-slides-per-page-md);
+    }
+
+    @media (min-width: breakpoints.get(lg)) {
+        @include slide-count(data-slides-per-page-lg);
+    }
 
     // Teaser max-width/height would leave slides narrower than blaze's computed
     // width, so neighbouring slides peek in. :global because teasers are child components.
@@ -50,8 +106,27 @@
         border: 2px var(--color-text) solid;
     }
 
-    .blaze-prev,
-    .blaze-next {
+    @include arrows($global-arrows);
+
+    @media (min-width: breakpoints.get(md)) {
+        margin-left: -2rem;
+        margin-right: -2rem;
+    }
+}
+
+@mixin arrows($global: false) {
+    $prev: '.blaze-prev';
+    $next: '.blaze-next';
+    $label: 'span';
+
+    @if $global {
+        $prev: ':global(.blaze-prev)';
+        $next: ':global(.blaze-next)';
+        $label: ':global(span)';
+    }
+
+    #{$prev},
+    #{$next} {
 
         position: absolute;
         top: 40%;
@@ -62,7 +137,7 @@
         text-decoration: none;
         display: inline-block;
 
-        span {
+        #{$label} {
             @include visibility.sr-only;
         }
 
@@ -77,22 +152,22 @@
         }
     }
 
-    .blaze-prev:hover,
-    .blaze-prev:focus-visible,
-    .blaze-next:hover,
-    .blaze-next:focus-visible {
+    #{$prev}:hover,
+    #{$prev}:focus-visible,
+    #{$next}:hover,
+    #{$next}:focus-visible {
         background-color: var(--color-text);
         box-shadow: 1px 1px 4px #00000066; 
     }
 
-    .blaze-prev {
+    #{$prev} {
         left: 0;
         &::after {
             content: '‹';
         }
     }
 
-    .blaze-next {
+    #{$next} {
         right: 0;
         &::after {
             content: '›';
@@ -101,8 +176,8 @@
 
     @media (min-width: breakpoints.get(sm)) {
 
-        .blaze-prev,
-        .blaze-next {
+        #{$prev},
+        #{$next} {
             width: 3rem;
             height: 3rem;
 
@@ -116,18 +191,14 @@
     }
 
     @media (min-width: breakpoints.get(md)) {
-
-        margin-left: -2rem;
-        margin-right: -2rem;
-
-        .blaze-prev {
+        #{$prev} {
             left: -0.75rem;
             &:hover {
                 left: 0;
             }
         }
 
-        .blaze-next {
+        #{$next} {
             right: -0.75rem;
             &:hover {
                 right: 0rem;

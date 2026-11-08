@@ -74,6 +74,13 @@ export default {
       isSlider: false,
     },
   },
+  slider: {
+    props: {
+      title: 'Featured events',
+      items: defaultItems,
+      isSlider: true,
+    },
+  },
   empty: {
     props: {
       items: [],

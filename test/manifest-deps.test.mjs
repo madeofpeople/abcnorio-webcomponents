@@ -1,0 +1,49 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import test from 'node:test';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+test('preserves a declared WP dependency even when it is a direct asset', (t) => {
+  const project = fs.mkdtempSync(path.join(os.tmpdir(), 'manifest-deps-'));
+  t.after(() => fs.rmSync(project, { recursive: true }));
+  for (const dir of ['src/util', 'src/components/sample', 'dist/elements/.vite']) {
+    fs.mkdirSync(path.join(project, dir), { recursive: true });
+  }
+  for (const script of ['generate-fixtures-registry.js', 'validate-manifest.js']) {
+    fs.copyFileSync(path.join(root, 'src/util', script), path.join(project, 'src/util', script));
+  }
+  const write = (file, value) => fs.writeFileSync(path.join(project, file), value);
+  write('package.json', JSON.stringify({
+    type: 'module',
+    exports: { './sample/element': './src/components/sample/sample.js' },
+  }));
+  write('src/components/sample/sample.fixture.js', "export const metadata = { deps: { css: [], js: ['elements/sample.js'] } };\n");
+  write('dist/sample.html', '<p>Sample</p>');
+  write('dist/gallery-image-sizes.json', '{"default":"large"}');
+  write('dist/elements/sample.js', 'export {};\n');
+  write('dist/elements/.vite/manifest.json', JSON.stringify({
+    'src/components/sample/sample.js': {
+      isEntry: true, file: 'sample.js', src: 'src/components/sample/sample.js',
+    },
+  }));
+  for (const script of ['generate-fixtures-registry.js', 'validate-manifest.js']) {
+    const result = spawnSync(process.execPath, [`src/util/${script}`], { cwd: project, encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+  }
+  const manifest = JSON.parse(fs.readFileSync(path.join(project, 'dist/manifest.json')));
+  assert.deepEqual(manifest.components.sample.js, ['elements/sample.js']);
+  assert.deepEqual(manifest.components.sample.deps, ['elements/sample.js']);
+
+  manifest.components.sample.deps = [];
+  write('dist/manifest.json', JSON.stringify(manifest));
+  const validation = spawnSync(process.execPath, ['src/util/validate-manifest.js'], {
+    cwd: project, encoding: 'utf8',
+  });
+  assert.notEqual(validation.status, 0);
+  assert.match(validation.stderr, /deps do not match fixture metadata/);
+});

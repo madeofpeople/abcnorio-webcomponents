@@ -1,5 +1,6 @@
 ---
 import imageSizes from './image-sizes.json';
+import 'blaze-slider/dist/blaze.css';
 
 const {
   component: _component,
@@ -54,7 +55,12 @@ const recursiveProps = {
 
 const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 ---
-<gallery-listing class:list={[galleryClass]} data-variant={resolvedVariant} data-navigation-mode={navigationMode} data-items-per-page={itemsPerPage}>
+<gallery-listing
+  class:list={[galleryClass]}
+  data-variant={resolvedVariant}
+  data-navigation-mode={navigationMode}
+  data-items-per-page={itemsPerPage}
+>
   <div class:list={{ 'blaze-container': usesBlaze }}>
     <div class:list={{ 'blaze-track-container': usesBlaze }}>
       <div class:list={['images', usesBlaze && 'blaze-track']}>
@@ -103,6 +109,6 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
   import './gallery.js';
 </script>
 
-<style is:global lang="scss">
+<style lang="scss">
   @use './gallery.scss';
 </style>

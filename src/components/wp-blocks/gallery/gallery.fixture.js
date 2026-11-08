@@ -3,9 +3,7 @@ export const metadata = {
   label: 'Gallery',
   deps: {
     css: [],
-    js: [
-      'elements/wp-blocks/gallery.js',
-    ],
+    js: [],
   },
 };
 

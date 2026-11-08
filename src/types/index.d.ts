@@ -311,3 +311,13 @@ declare module 'abcnorio-webcomponents/user-card/element' {
   const Component: any;
   export default Component;
 }
+
+declare module 'abcnorio-webcomponents/public-form' {
+  const Component: any;
+  export default Component;
+}
+
+declare module 'abcnorio-webcomponents/wp-blocks/gallery/element' {
+  const Component: any;
+  export default Component;
+}

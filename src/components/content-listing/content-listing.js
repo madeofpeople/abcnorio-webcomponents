@@ -149,29 +149,42 @@ export class ContentListing extends HTMLElement {
 
     if (this.classList.contains('blaze-slider')) {
       const dotsEl = this.querySelector('.blaze-slide-dots');
+      const slidesPerPage = Object.fromEntries(
+        Object.entries({
+          all: ['slidesPerPage', 1],
+          xs: ['slidesPerPageXs', 2],
+          sm: ['slidesPerPageSm', 3],
+          md: ['slidesPerPageMd', 3],
+          lg: ['slidesPerPageLg', 4],
+        }).map(([breakpoint, [dataKey, fallback]]) => {
+          const parsed = Number.parseFloat(this.dataset[dataKey] || '');
+          const count = Number.isFinite(parsed) ? parsed : fallback;
+          return [breakpoint, Math.max(1, Math.min(6, count))];
+        }),
+      );
       const config = {
         'all': {
-          slidesToShow: 1,
+          slidesToShow: slidesPerPage.all,
           loop: false,
-          slidesToScroll: 1,
+          slidesToScroll: slidesPerPage.all,
           enablePagination: false,
           transitionDuration: 300,
         },
         [`(min-width: ${bp('xs')}px)`]: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToShow: slidesPerPage.xs,
+          slidesToScroll: slidesPerPage.xs,
         },
         [`(min-width: ${bp('sm')}px)`]: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToShow: slidesPerPage.sm,
+          slidesToScroll: slidesPerPage.sm,
         },
         [`(min-width: ${bp('md')}px)`]: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToShow: slidesPerPage.md,
+          slidesToScroll: slidesPerPage.md,
         },
         [`(min-width: ${bp('lg')}px)`]: {
-          slidesToShow: 4,
-          slidesToScroll: 4,
+          slidesToShow: slidesPerPage.lg,
+          slidesToScroll: slidesPerPage.lg,
         },
       };
 

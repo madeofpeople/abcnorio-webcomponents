@@ -1,6 +1,14 @@
 ---
 import { Debug } from 'astro:components';
 
+interface Props {
+  terms: Array<{ name: string } & (
+    { url: string; slug?: string } |
+    { slug: string; url?: null }
+  )>;
+  urlBase?: string;
+}
+
 const {
   terms,
   urlBase,

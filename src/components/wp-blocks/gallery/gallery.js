@@ -9,6 +9,52 @@ export class GalleryListing extends HTMLElement {
     lightbox = null;
     photoswipeLoadAttempted = false;
     pagedGridResizeObserver = null;
+    slider = null;
+    unsubscribeSlideDots = null;
+    unsubscribeAlignTrack = null;
+    alignTrack = null;
+    sliderResizeHandler = null;
+    trackResizeHandler = null;
+    trackAlignmentEvents = [];
+    renderedPages = 0;
+    getSliderConfig() {
+        return {
+            all: {
+                loop: false,
+                enablePagination: false,
+                transitionDuration: 200,
+                slidesToShow: 2,
+                slideGap: '1rem',
+                slidesToScroll: 2,
+            },
+            [`(min-width: ${bp('xs')}px)`]: {
+                slidesToShow: 2,
+                slidesToScroll: 2,
+            },
+            [`(min-width: ${bp('sm')}px)`]: {
+                slidesToShow: 3,
+                slidesToScroll: 3,
+            },
+            [`(min-width: ${bp('md')}px)`]: {
+                slidesToShow: 3,
+                slidesToScroll: 3,
+            },
+            [`(min-width: ${bp('lg')}px)`]: {
+                slidesToShow: 4,
+                slidesToScroll: 4,
+            }
+        };
+    }
+    updateSliderDots() {
+        if (!this.slider) {
+            return;
+        }
+        const pageCount = this.slider.states.length;
+        if (pageCount !== this.renderedPages) {
+            this.renderedPages = pageCount;
+            this.initSlideDots(this.slider, this.querySelector('.blaze-slide-dots'));
+        }
+    }
     getNavigationMode() {
         return this.dataset.navigationMode === 'page' ? 'page' : 'item';
     }
@@ -255,6 +301,8 @@ export class GalleryListing extends HTMLElement {
         });
     }
     initSlideDots(slider, dotsEl) {
+        this.unsubscribeSlideDots?.();
+        this.unsubscribeSlideDots = null;
         if (!slider || !dotsEl) {
             return;
         }
@@ -281,7 +329,7 @@ export class GalleryListing extends HTMLElement {
         }
         this.updateActiveState(slider, dots);
         this.updateArrowVisibility(slider);
-        slider.onSlide(() => {
+        this.unsubscribeSlideDots = slider.onSlide(() => {
             this.updateActiveState(slider, dots);
             this.updateArrowVisibility(slider);
         });
@@ -299,16 +347,21 @@ export class GalleryListing extends HTMLElement {
             const offset = isLastPage ? maxOffset : Math.min(firstSlideOnPage.offsetLeft - trackStart, maxOffset);
             track.style.transform = `translate3d(${slider.dragged - offset}px, 0, 0)`;
         };
-        slider.onSlide(align);
-        ['pointermove', 'pointerup', 'touchmove', 'touchend'].forEach((eventName) => {
+        this.unsubscribeAlignTrack?.();
+        this.unsubscribeAlignTrack = slider.onSlide(align);
+        this.alignTrack = align;
+        this.trackAlignmentEvents = ['pointermove', 'pointerup', 'touchmove', 'touchend'];
+        this.trackAlignmentEvents.forEach((eventName) => {
             track.addEventListener(eventName, align);
         });
         // Blaze refreshes 200ms after a width change (e.g. scrollbar removed when lightbox opens) and resets the transform
-        window.addEventListener('resize', () => {
+        this.trackResizeHandler = () => {
             requestAnimationFrame(align);
             setTimeout(align, 250);
-        });
+        };
+        window.addEventListener('resize', this.trackResizeHandler);
         window.addEventListener('load', align);
+        this.track = track;
         track.addEventListener('load', align, true); // lazy images change slide widths
         align();
     }
@@ -438,52 +491,40 @@ export class GalleryListing extends HTMLElement {
         if (!this.classList.contains('blaze-slider')) {
             return;
         }
-        const dotsEl = this.querySelector('.blaze-slide-dots');
-        const shouldLoop = false;
-        this.prepareSlideTrack(1);
-        const config = {
-            all: {
-                loop: shouldLoop,
-                enablePagination: false,
-                transitionDuration: 200,
-                slidesToShow: 2,
-                slideGap: '1rem',
-                slidesToScroll: 2,
-            },
-            [`(min-width: ${bp('xs')}px)`]: {
-                slidesToShow: 2,
-                slidesToScroll: 2,
-            },
-            [`(min-width: ${bp('sm')}px)`]: {
-                slidesToShow: 3,
-                slidesToScroll: 3,
-            },
-            [`(min-width: ${bp('md')}px)`]: {
-                slidesToShow: 3,
-                slidesToScroll: 3,
-            },
-            [`(min-width: ${bp('lg')}px)`]: {
-                slidesToShow: 4,
-                slidesToScroll: 4,
-            }
-        };
-        const slider = new BlazeSlider(this, config);
+        this.prepareSlideTrack(4);
+        const slider = new BlazeSlider(this, this.getSliderConfig());
+        this.slider = slider;
         this.updateArrowVisibility(slider);
-        this.initSlideDots(slider, dotsEl);
         this.alignTrackToSlides(slider);
-        // page count changes at breakpoints; rebuild dots when it does
-        let renderedPages = slider.states.length;
-        window.addEventListener('resize', () => {
-            if (slider.states.length === renderedPages) {
-                return;
-            }
-            renderedPages = slider.states.length;
-            this.initSlideDots(slider, dotsEl);
-        });
+        this.updateSliderDots();
+        this.sliderResizeHandler = () => this.updateSliderDots();
+        window.addEventListener('resize', this.sliderResizeHandler);
     }
     disconnectedCallback() {
         this.pagedGridResizeObserver?.disconnect();
         this.pagedGridResizeObserver = null;
+        if (this.sliderResizeHandler) {
+            window.removeEventListener('resize', this.sliderResizeHandler);
+            this.sliderResizeHandler = null;
+        }
+        if (this.trackResizeHandler) {
+            window.removeEventListener('resize', this.trackResizeHandler);
+            this.trackResizeHandler = null;
+        }
+        window.removeEventListener('load', this.alignTrack);
+        this.trackAlignmentEvents.forEach((eventName) => {
+            this.track?.removeEventListener(eventName, this.alignTrack);
+        });
+        this.track?.removeEventListener('load', this.alignTrack, true);
+        this.trackAlignmentEvents = [];
+        this.track = null;
+        this.alignTrack = null;
+        this.unsubscribeSlideDots?.();
+        this.unsubscribeSlideDots = null;
+        this.unsubscribeAlignTrack?.();
+        this.unsubscribeAlignTrack = null;
+        this.slider?.destroy();
+        this.slider = null;
         if (!this.lightbox) {
             return;
         }

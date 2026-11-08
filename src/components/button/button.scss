@@ -1,45 +1,28 @@
-@use "@tokens/mixins/ui";
+@use './button-rules' as rules;
+
 .button {
-    border-radius: 0;
-    border: 1px var(--color-link) solid;
-    color: var(--color-link);
-    background-color: var(--color-page-bg);
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    vertical-align: bottom;
-    cursor: pointer;
-    font-family: var(--font-impact-label-reversed), monospace;
-    font-size: 1.12rem;
-    line-height: 1.25;
-    text-decoration: none;
+    @include rules.base;
 
     &:focus-visible,
     &:hover {
-        background-color: var(--color-link);
-        color: var(--color-page-bg);
+        @include rules.hover;
     }
 
     &.reversed {
-        background-color: var(--color-link);
-        color: var(--color-page-bg);
+        @include rules.reversed;
 
         &:focus-visible,
         &:hover {
-            background-color: var(--color-page-bg);
-            border-color: var(--color-link);
-            color: var(--color-link);
+            @include rules.reversed-hover;
         }
-
     }
 
     &.dark {
-        @include ui.inverted();
+        @include rules.dark;
 
         &:focus-visible,
         &:hover {
-            background-color: var(--color-accent);
-            border-color: var(--color-accent);
-            color: var(--color-page-bg);
+            @include rules.dark-hover;
         }
     }
 
@@ -50,8 +33,4 @@
         height: 16px;
         vertical-align: top;
     }
-
-
 }
-
-

@@ -9,6 +9,7 @@ const {
   registry = {},
   embedRegistry = {},
   showDebug = true,
+  additionalClasses = '',
   ...routerProps
 } = Astro.props;
 
@@ -38,6 +39,13 @@ if (component === 'core/embed' && providerName) {
 
 const shouldRenderDebug = !Component && showDebug;
 
+const coreBlockClasses: Record<string, string> = {
+  'core/image': 'wp-block-image',
+  'core/list': 'wp-block-list',
+  'core/quote': 'wp-block-quote',
+};
+const componentClasses = [additionalClasses, coreBlockClasses[component]].filter(Boolean).join(' ');
+
 const passThroughProps = {
   ...routerProps,
   Block: RecursiveBlock,
@@ -52,6 +60,7 @@ const passThroughProps = {
     attributes={attributes}
     component={component}
     innerBlocks={innerBlocks || null}
+    additionalClasses={componentClasses}
     {...passThroughProps}
   />
 )}

@@ -7,12 +7,18 @@ const {
   ...routerProps
 } = Astro.props;
 const RecursiveBlock = routerProps.Block || null;
+const Tag = attributes?.ordered ? 'ol' : 'ul';
 const recursiveProps = {
   ...routerProps,
   Block: RecursiveBlock,
 };
 ---
-<ul class:list={["list", additionalClasses, attributes?.className]}>
+<Tag
+  class:list={["list", additionalClasses, attributes?.className]}
+  start={attributes?.ordered ? attributes?.start : undefined}
+  reversed={attributes?.ordered ? attributes?.reversed : undefined}
+  style={attributes?.ordered && attributes?.type && attributes.type !== 'decimal' ? { 'list-style-type': attributes.type } : undefined}
+>
   {RecursiveBlock && innerBlocks.length > 0 && innerBlocks.map((block: any) => (
     <RecursiveBlock
       {...recursiveProps}
@@ -21,7 +27,7 @@ const recursiveProps = {
       innerBlocks={block.innerBlocks || null}
     />
   ))}
-</ul>
+</Tag>
 
 <style is:global lang="scss">
   @import './list.scss';

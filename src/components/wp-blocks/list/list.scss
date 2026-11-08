@@ -1,15 +1,23 @@
 ul.list,
-ol.list {
+ol.list,
+ul.wp-block-list,
+ol.wp-block-list {
     margin-block: 1rem;
     padding-inline: 1.5rem;
 
     li {
-        margin-block: 0.5rem;
-        line-height: 1.6;
+        margin: 0;
+        display: block;
+        padding: 0.5rem 0.5rem;
+        border-bottom: 1px #dedede solid;
     }
 
     ul,
     ol {
         margin-block: 0.5rem;
+    }
+
+    &:is(ol) > li {
+        display: list-item;
     }
 }

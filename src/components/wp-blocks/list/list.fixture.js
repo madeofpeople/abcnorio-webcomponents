@@ -33,4 +33,15 @@ export default {
       ],
     },
   },
+  ordered: {
+    props: {
+      attributes: {
+        ordered: true,
+        start: 5,
+        reversed: true,
+        type: 'upper-roman',
+      },
+      innerBlocks: [],
+    },
+  },
 };

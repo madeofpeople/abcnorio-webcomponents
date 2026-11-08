@@ -28,6 +28,11 @@ const {
   busy = false,
   items = [],
   isSlider = CONTENT_LISTING_DEFAULTS.isSlider,
+  slidesPerPage = 1,
+  slidesPerPageXs = 2,
+  slidesPerPageSm = 3,
+  slidesPerPageMd = 3,
+  slidesPerPageLg = 4,
   mountId = CONTENT_LISTING_DEFAULTS.mountId,
   listId = CONTENT_LISTING_DEFAULTS.listId,
   hasCta = false,
@@ -60,6 +65,10 @@ const itemCount = eventItems.length + articleItems.length;
 const resolvedCtaLabel = String(ctaLabel || '').trim();
 const resolvedCtaUrl = String(ctaUrl || '').trim();
 const hasRenderableCta = Boolean(hasCta) && resolvedCtaLabel !== '' && resolvedCtaUrl !== '';
+const normalizeSlidesPerPage = (value: unknown, fallback: number) => {
+  const parsed = Number.parseFloat(String(value ?? fallback));
+  return Math.max(1, Math.min(6, Number.isFinite(parsed) ? parsed : fallback));
+};
 ---
 
 {itemCount > 0 && (
@@ -67,6 +76,11 @@ const hasRenderableCta = Boolean(hasCta) && resolvedCtaLabel !== '' && resolvedC
     id={mountId}
     class:list={['content-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid']}
     data-component={CONTENT_LISTING_KEY}
+    data-slides-per-page={normalizeSlidesPerPage(slidesPerPage, 1)}
+    data-slides-per-page-xs={normalizeSlidesPerPage(slidesPerPageXs, 2)}
+    data-slides-per-page-sm={normalizeSlidesPerPage(slidesPerPageSm, 3)}
+    data-slides-per-page-md={normalizeSlidesPerPage(slidesPerPageMd, 3)}
+    data-slides-per-page-lg={normalizeSlidesPerPage(slidesPerPageLg, 4)}
     data-style-deps={
     `${contentListingStylesHref},${eventTeaserStylesHref},${articleTeaserStylesHref}`
     }

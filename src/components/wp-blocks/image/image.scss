@@ -3,7 +3,8 @@
     object-fit: contain;
 }
 
-figure.abcnorio-image:not(.gallery__image) {
+figure.abcnorio-image:not(.gallery__image),
+figure.wp-block-image:has(> figcaption):not(.gallery__image):not(:where(gallery-listing *, .wp-block-gallery *)) {
     border: 1rem white solid;
     margin: 1.5rem 0;
     display: inline-block;
@@ -11,7 +12,8 @@ figure.abcnorio-image:not(.gallery__image) {
     box-shadow: 3px 3px 12px #00000033;
 
     img {
-        max-width: 100%;
+        width: 100%;
+        height: auto;
         display: block;
         border: 1px #efefef solid;
     }

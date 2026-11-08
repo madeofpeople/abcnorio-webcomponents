@@ -1,18 +1,5 @@
 @use '@tokens/breakpoints';
 
-@mixin announcement-tout-list-container {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 0;
-
-  li {
-    margin: 0;
-    display: block;
-    padding: 0.25rem 0.5rem;
-    border-bottom: 1px #444 solid;
-  }
-
-}
 
 .block-editor-iframe__body .announcement-tout,
 .announcement-tout {
@@ -48,11 +35,6 @@
     color: var(--color-page-bg);
     margin: -1.75rem 0 0 0;
     padding: 0rem 0.5rem 0.5rem 0.5rem;
-  }
-
-  .list,
-  .wp-block-list {
-    @include announcement-tout-list-container;
   }
 
   .button {

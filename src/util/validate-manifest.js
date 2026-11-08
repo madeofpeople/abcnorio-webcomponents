@@ -263,15 +263,11 @@ const checkComponentFixtureLinks = (componentId, component, manifestFixtures) =>
 };
 
 const checkComponentDeps = (componentId, component, expectedMetadataDeps) => {
-  const ownAssets = new Set([...component.css, ...component.js]);
-
   if (!Array.isArray(expectedMetadataDeps)) {
     fail(`component "${componentId}" is missing fixture metadata.deps declaration.`);
   }
 
-  const normalizedMetadataDeps = toSortedUnique(
-    expectedMetadataDeps.filter((depPath) => !ownAssets.has(depPath)),
-  );
+  const normalizedMetadataDeps = toSortedUnique(expectedMetadataDeps);
   const normalizedComponentDeps = toSortedUnique(component.deps);
 
   if (!sameStringSet(normalizedComponentDeps, normalizedMetadataDeps)) {
@@ -279,12 +275,6 @@ const checkComponentDeps = (componentId, component, expectedMetadataDeps) => {
       `component "${componentId}" deps do not match fixture metadata declaration. `
       + `expected [${normalizedMetadataDeps.join(', ')}], got [${normalizedComponentDeps.join(', ')}].`,
     );
-  }
-
-  for (const depPath of component.deps) {
-    if (ownAssets.has(depPath)) {
-      fail(`component "${componentId}" dep duplicates direct asset: ${depPath}`);
-    }
   }
 };
 
