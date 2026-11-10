@@ -1,5 +1,6 @@
 import BlazeSlider from 'blaze-slider';
 import { bp } from '@util/breakpoints';
+import { normalizeFractionalSlides } from '../_utils/carousel.js';
 
 export class ContentListing extends HTMLElement {
   activeSlideIndex = 0;
@@ -187,6 +188,9 @@ export class ContentListing extends HTMLElement {
           slidesToScroll: slidesPerPage.lg,
         },
       };
+
+      // Normalize fractional slides-per-page for proper alignment
+      normalizeFractionalSlides(config);
 
       const slider = new BlazeSlider(this, config);
       this.initSlideDots(slider, dotsEl);

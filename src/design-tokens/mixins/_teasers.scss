@@ -2,7 +2,7 @@
 
     display: block;
     position: relative;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 345 / 460;
     max-width: 345px;
     max-height: 460px;
     background-color: var(--color-event-teaser-bg);
@@ -36,11 +36,12 @@
 
     &__date {
         position: relative;
-        padding: 0.25rem 0.5rem;
+        font-size: 1.5rem;
         transform: rotate3d(0, 0, 1, -7deg);
         font-family: var(--font-impact-label-reversed), monospace;
         line-height: 1;
         span {
+            padding: 0.25rem 0.5rem;
             display: table;
             color: var(--color-event-teaser-bg);
             background-color: var(--color-text);
@@ -58,7 +59,6 @@
         background-color:  var(--color-text);
         padding: 0.5rem 0 0.75rem 0.5rem;
         font-weight: 400;
-        font-size: 0.825rem;
         line-height: 1.2;
     }
 
@@ -74,13 +74,6 @@
 
     &:focus-visible,
     &:hover {
-        .event-teaser__date {
-            span {
-                color: var(--color-event-teaser-bg);
-                background-color: var(--color-text);
-            }
-        }
-
         .event-teaser__title {
             color: var(--color-event-teaser-bg);
             background-color: var(--color-text);
