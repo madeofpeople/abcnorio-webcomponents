@@ -1,3 +1,4 @@
+@use '@tokens/breakpoints';
 @use '@tokens/mixins/ui';
 @use '@tokens/mixins/visibility';
 
@@ -10,8 +11,8 @@
     padding: 2rem;
 
     .field {
+        display: block;
         margin-bottom: 1rem;
-        display: flex;
     }
 
     label, input {
@@ -22,7 +23,6 @@
 
     .field-group {
         border: none;
-        display: flex;
         gap: 1rem;
         padding: 0;
         margin: 0 0 0.5rem;
@@ -33,7 +33,6 @@
     }
 
     .field-group .field {
-        margin-bottom: 0;
         flex: 1;
         width: 100%;
     }
@@ -64,6 +63,27 @@
         width: 100%;
         min-height: 9rem;
         max-height: 30rem;
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+
+        .field {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .field-group {
+            border: none;
+            display: flex;
+            gap: 1rem;
+            padding: 0;
+            margin: 0 0 0.5rem;
+
+            > legend {
+                @include visibility.sr-only;
+            }
+        }
+
     }
 }
 
