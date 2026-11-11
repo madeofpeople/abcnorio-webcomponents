@@ -1,4 +1,5 @@
 @use '@tokens/breakpoints';
+@use '../button/button-rules' as rules;
 
 
 .block-editor-iframe__body .announcement-tout,
@@ -78,11 +79,9 @@
   }
 
   .button {
+    @include rules.reversed;
     box-sizing: border-box;
     text-align: center;
-    color: var(--color-page-bg);
-    background-color: var(--color-text);
-    border-color: var(--color-text);
     width: 100%;
   }
 
