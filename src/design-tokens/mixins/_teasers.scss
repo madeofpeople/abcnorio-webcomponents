@@ -30,23 +30,26 @@
 
     &__content {
         position: absolute;
-        top: 0.5rem;
-        left: 0;
+        top: 4px;
+        left: 4px;
+        width: calc( 100% - 8px );
     }
 
     &__date {
         position: relative;
+        top: 0;
         font-size: 1.5rem;
+        margin-top: 0;
         transform: rotate3d(0, 0, 1, -7deg);
         font-family: var(--font-impact-label-reversed), monospace;
-        line-height: 1;
+        line-height: 0.875;
         span {
             padding: 0.25rem 0.5rem;
             display: table;
             color: var(--color-event-teaser-bg);
-            background-color: var(--color-text);
-            border-left: 0.25rem var(--color-text) solid;
-            border-right: 0.25rem var(--color-text) solid;
+            background-color: var(--color-teaser-time);
+            border-left: 0.25rem var(----color-teaser-time) solid;
+            border-right: 0.25rem var(----color-teaser-time) solid;
         }
     }
 
@@ -55,8 +58,8 @@
         display: block;
         width: border-box;
         position: relative;
-        color: var(--color-event-teaser-bg);
-        background-color:  var(--color-text);
+        color: var(--color-event-teaser-title);
+        background-color:  var(--color-event-teaser-bg);
         padding: 0.5rem 0 0.75rem 0.5rem;
         font-weight: 400;
         line-height: 1.2;

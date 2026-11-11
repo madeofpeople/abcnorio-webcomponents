@@ -3,6 +3,6 @@
 }
 
 @mixin inverted() {
-    background-color: var(--color-text);
-    color: var(--color-page-bg);
+    background-color: var(--color-gray-6);
+    color: var(--color-gray-2);
 }

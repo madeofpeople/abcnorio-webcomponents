@@ -1,4 +1,5 @@
 @use 'mixins/slider';
+@use 'blaze-slider/dist/blaze.css';
 @use '@tokens/breakpoints';
 
 $slide-duration: 0.2s;
@@ -25,13 +26,11 @@ $slide-duration: 0.2s;
   &.gallery--paged-grid {
 
     padding: 2rem;
-    min-height: var(--gallery-paged-grid-min-height, 0px);
 
     :global(.images) {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
-      padding: 2rem;
     }
 
     :global(.images > *) {
@@ -75,48 +74,9 @@ $slide-duration: 0.2s;
     }
   }
 
-  &.gallery--masonry {
-    padding: 2rem;
-
-    :global(.images) {
-      column-count: 2;
-      column-gap: 1rem;
-    }
-
-    :global(.gallery-item),
-    :global(.images > .wp-block-image) {
-      display: inline-block;
-      width: 100%;
-      margin: 0 0 1rem;
-      break-inside: avoid;
-      vertical-align: top;
-    }
-
-    :global(.gallery-item figure) {
-      margin: 0;
-    }
-
-    :global(.gallery-item img),
-    :global(.images > .wp-block-image img) {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    :global(.images > .block-list-appender) {
-      column-span: all;
-    }
-
-    @media (min-width: breakpoints.get(sm)) {
-      :global(.images) {
-        column-count: 4;
-      }
-    }
-  }
-
   &.blaze-slider {
 
-    @include slider.slider($global-arrows: true);
+    @include slider.slider();
 
     background-color: var(--color-text);
     margin-bottom: 0;
@@ -125,30 +85,12 @@ $slide-duration: 0.2s;
 
     :global(.images.blaze-track) {
       padding: 0 1rem;
-      width: auto;
-      container-type: inline-size;
-    }
-
-    :global(button.blaze-prev),
-    :global(button.blaze-next) {
-      border: 0;
-      padding: 0;
-      cursor: pointer;
-    }
-
-    :global(.blaze-prev)::after,
-    :global(.blaze-next)::after {
-      font-family: var(--font-source-sans), sans-serif;
     }
 
     :global(.gallery-item) {
       height: 300px;
-
-      @container (min-width: 768px) {
-        height: 400px;
-        width: fit-content;
-      }
     }
+
 
     :global(.gallery-item > a),
     :global(.gallery-item > figure),
@@ -158,23 +100,35 @@ $slide-duration: 0.2s;
       height: 100%;
     }
 
-    :global(.gallery-item figure),
-    :global(.blaze-track > .wp-block figure) {
+    :global(.gallery-item figure) {
       margin: 0;
       padding: 0;
     }
 
-    :global(.gallery-item img),
-    :global(.blaze-track > .wp-block img) {
+    :global(.gallery-item img) {
       display: block;
       object-fit: contain;
       width: 100%;
       height: 100%;
+    }
 
-      @container (min-width: 768px) {
+    :global(.gallery-item--ghost) {
+      opacity: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+      :global(.gallery-item) {
+        height: 400px;
+        width: fit-content;
+      }
+
+      :global(.gallery-item img) {
         width: auto;
         height: 400px;
       }
+
     }
   }
 
@@ -185,82 +139,14 @@ $slide-duration: 0.2s;
   }
 }
 
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor:not(.abcnorio-gallery--paged-grid):not(.abcnorio-gallery--masonry) > gallery-listing) {
-  margin-left: -2rem;
-  margin-right: -2rem;
-  padding-bottom: 2rem;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor:not(.abcnorio-gallery--paged-grid) > gallery-listing .blaze-track) {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor:not(.abcnorio-gallery--paged-grid) > gallery-listing .gallery-item) {
-  height: 400px;
-  min-width: fit-content;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor:not(.abcnorio-gallery--paged-grid) > gallery-listing .blaze-track > .wp-block) {
-  height: 400px;
-  width: auto;
-  margin-block-start: 0;
-  margin-block-end: 0;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor:not(.abcnorio-gallery--paged-grid) > gallery-listing .blaze-track > .wp-block figure) {
-  height: 100%;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor:not(.abcnorio-gallery--paged-grid) > gallery-listing .blaze-slide-dots) {
-  margin: 1.5rem 0 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor:not(.abcnorio-gallery--paged-grid) > gallery-listing .blaze-slide-dots)::before {
-  content: '';
-  width: 0.625rem;
-  height: 0.625rem;
-  border-radius: 50%;
-  border: 2px var(--color-accent) solid;
-  background: var(--color-accent);
-  box-shadow: 1.125rem 0 0 0 var(--color-grey--light), 2.25rem 0 0 0 var(--color-grey--light);
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor:not(.abcnorio-gallery--paged-grid) > gallery-listing .gallery-item--ghost) {
-  opacity: 0;
-  pointer-events: none;
-  user-select: none;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery--paged-grid gallery-listing .images > .wp-block) {
-  margin-block: 0;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery--paged-grid gallery-listing .images > .block-list-appender) {
-  grid-column: 1 / -1;
-  height: auto;
-}
-
-:global(.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-gallery.abcnorio-gallery-editor > gallery-listing.blaze-slider .blaze-track > .wp-block img) {
-  height: 100% !important;
-  width: auto;
-  max-width: none;
-}
-
 :global(gallery-listing.gallery--paged-grid .gallery-pagination ul) {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   list-style: none;
   padding: 0;
   gap: 0.5rem;
-  width: fit-content;
-  margin: 1rem auto 0 auto;
-  padding-bottom: 2rem;
+  margin: 1rem 0;
 }
 
 :global(gallery-listing.gallery--paged-grid .gallery-pagination li) {
@@ -269,7 +155,6 @@ $slide-duration: 0.2s;
 }
 
 :global(gallery-listing.gallery--paged-grid .gallery-pagination button) {
-  font-family: var(--font-impact-label-reversed), monospace;
   display: inline-flex;
   align-items: center;
   justify-content: center;

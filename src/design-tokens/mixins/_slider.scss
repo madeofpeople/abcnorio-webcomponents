@@ -83,12 +83,12 @@
 
     :global(button.blaze-slide-dot) {
         box-sizing: border-box;
-        width: 1rem;
-        height: 1rem;
+        width: 1.25rem;
+        height: 1.25rem;
         display: inline-block;
         border-radius: 50%;
-        border: 2px var(--color-grey--light) solid;
-        background: var(--color-grey--light);
+        border: 2px var(--color-gray-4) solid;
+        background: var(--color-gray-4);
         outline: none;
         padding: 0;
         cursor: pointer;

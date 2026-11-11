@@ -1,31 +1,106 @@
-$c_text: #222;
-$c_page_bg: #fafafa;
-$c_link: #cd1c12;
-$c_accent--secondary: #008A09;
-$c_subnav_link:  color-mix(in oklch, $c_link, black 25%);
-$c_panel: #fffef3;
-$c_ui_panel: #eee;
+// id colors
+$c_accent-primary: #cd1c12;
+$c_accent-secondary: #008A09;
+$c_accent-primary--dark:  color-mix(in oklch, $c_accent-primary, black 25%);
+$c_accent-secondary--dark:  color-mix(in oklch, $c_accent-secondary, black 25%);
+// greys
+$c_gray--lightest: #fafafa;
+$c_gray--lighter: #eee;
+$c_gray--light: #ccc;
+$c_gray--mid: #999;
+$c_gray--dark: #666;
+$c_gray--darker: #333;
+$c_gray--darkest: #222;
+// other colors
+$c_sheet: #fffef3;
+$c_panel: #eee;
+$c_panel--dark: #000;
 $c_teaser__bg: #ffbaba;
+$c_teaser__bg--dark: #583030;
+$c_nav-bg: rgba($c_gray--darkest, 0.95);
+$c_nav-bg--dark: rgba($c_gray--lightest, 0.95);
 
+$c_gallery-pager--idle: $c-gray--darker;
+
+/* light by default */
 :root {
-
-    --color-page-bg: #{$c_page_bg};
-    --color-text: #{$c_text};
-    --color-link: #{$c_link};
-    --color-accent: #{$c_link};
-    --color-accent--secondary: #{$c_accent--secondary};
+    /* not overriden */
+    --color-accent: #{$c_accent-primary};
+    --color-accent--secondary: #{$c_accent-secondary};
+    --color-button--idle: 
+    --color-link: #{$c_accent-primary};
+    --color-shadow: rgba( $c_gray--darkest 0.4);
+    --color-innershadow: rgba( colors.$c_gray--darkes , 0.7);
     --color-panel: #{$c_panel};
-    --color-panel-bg: #ececec;
-    --color-menu-submenu-bg: rgba(#000, 0.9);
-    --color-nav-link: #{$c_link};
+    --color-panel--dark: #{$c_panel--dark};
+    --color-panel-bg: #{$c_gray--lighter};
+    --color-nav-link: #{$c_accent-primary};
     --color-nav-bg: transparent;
-    --color-nav-link-hover: #222;
-    --color-subnav-link: #{$c_subnav_link};
-    --color-footer-bg: #{$c_text};
-    --color-footer-link: #{$c_link};
-    --color-ui-panel: #{$c_ui_panel};
-    --color-grey--dark: #444;
-    --color-grey-mid: color-mix(in oklch, var(--color-text), white 20%);
-    --color-grey--light: #ccc;
-    --color-event-teaser-bg: #{$c_teaser__bg}
+    /* light mode */
+    --color-page-bg: #{$c_gray--lightest};
+    --color-sheet: #{$c_sheet};
+    --color-nav-link-hover: #{$c_gray--darkest};
+    --color-nav-bg: #{$c_nav-bg};
+    --color-subnav-link: #{$c_accent-primary--dark};
+    --color-footer-bg: #{$c_gray--darkest};
+    --color-footer-link: #{$c_accent-primary};
+    --color-text: #{$c_gray--darkest};
+    --color-text--reversed: #{$c_gray--lightest};
+    /* ui */
+    --color-filters-panel: #{$c_gray--darker};
+    --color-ui-panel: #{$c_gray--darker};
+    --color-filter-text: #{$c_gray--lightest};
+    /* teasers */
+    --color-teaser-time: #{$c_gray--darkest};
+    --color-event-teaser-bg: #{$c_teaser__bg};
+    --color-event-teaser-title: #{$c_gray--darkest};
+    /* Groups & Galleries */
+    --color-group-bg--dark: #{$c_gray--darkest};
+    --color-gallery-pager--idle: #{$c_gallery-pager--idle};  
+    /* Grayscale */
+    --color-gray-0: #{$c_gray--darkest};
+    --color-gray-1: #{$c_gray--darker};
+    --color-gray-2: #{$c_gray--dark};
+    --color-gray-3: #{$c_gray--mid};
+    --color-gray-4: #{$c_gray--light};
+    --color-gray-5: #{$c_gray--lighter};
+    --color-gray-6: #{$c_gray--lightest};
+}
+
+/* dark mode overrides */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* darkmode */
+        --color-page-bg: #1a1a1a;
+        --color-sheet: #{$c_gray--darker};
+        --color-panel: #{$c_panel--dark};
+        --color-panel-bg: #{$c_gray--dark};
+        --color-nav-link-hover:  #{$c_gray--darkest};;
+        --color-nav-bg: #{$c_nav-bg--dark};
+        --color-footer-bg: #{$c_gray--lightest};
+        --color-footer-link: #{$c_accent-primary};
+        --color-ui-panel: #{$c_gray--darker};
+        --color-nav-link-hover: #{$c_gray--lightest};
+        --color-text: #{$c_gray--lightest};
+        --color-text--reversed: #{$c_gray--darkest};
+        /* ui */
+        --color-filters-panel: #{$c_gray--darker};
+        --color-ui-panel: #{$c_gray--darker};
+        --color-filter-text: #{$c_gray--lightest};
+        /* Teasers */
+        --color-event-teaser-bg: #{$c_teaser__bg--dark};
+        --color-teaser-time: #{$c_teaser__bg};
+        --color-event-teaser-title: #{$c_teaser__bg};
+        --color-event-teaser-title-color: #{$c_gray--darkest};
+        /* Galleries */
+        --color-group-bg--dark: #{$c_gray--darkest};
+        /* Grayscale */
+        --color-gray-0: #{$c_gray--lightest};
+        --color-gray-1: #{$c_gray--lighter};
+        --color-gray-2: #{$c_gray--light};
+        --color-gray-3: #{$c_gray--mid};
+        --color-gray-4: #{$c_gray--dark};
+        --color-gray-5: #{$c_gray--darker};
+        --color-gray-6: #{$c_gray--darkest};
+    }
 }

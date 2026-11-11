@@ -25,7 +25,7 @@
 		padding: 0.25rem 0;
 	
 		li {
-			border-bottom: 1px var(--color-grey--dark) solid;
+			border-bottom: 1px var(--color-gray--dark) solid;
 			margin: 0;
 			margin-bottom: 0.5rem;
 		}
@@ -34,12 +34,13 @@
 
 .wp-block-group.dark {
 	.wp-block-group {
-		@include ui.inverted();
+		background-color: --color-group-bg--dark;
 	}
 }
 
 .wp-block-group.dark :where(*) {
-		@include ui.inverted();
+	background-color: var(--color-group-bg--dark);
+	color: var(--color-gray--lightest);
 }
 
 .wp-block-group.dark.emphasis {

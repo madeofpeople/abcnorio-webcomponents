@@ -27,9 +27,9 @@
 
     .collective-teaser__content {
         position: relative;
-        top: 3rem;
-        padding-left: 30%;
-        padding-top: 3rem;
+        top: 0;
+        padding-left: 2rem;
+        padding-top: 2rem;
         line-height: 1;
         margin-right: 2rem;
         transition-property: top;
@@ -40,6 +40,7 @@
     .collective-teaser__title {
         padding: 0.25rem 0.5rem;
         display: inline;
+        font-size: 1.2rem;
         background-color: var(--color-accent--secondary);
         color: var(--color-page-bg);
         font-family: var(--font-impact-label-reversed), monospace;
