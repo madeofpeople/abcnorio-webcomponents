@@ -27,7 +27,7 @@ $c_gallery-pager--idle: $c-gray--darker;
     /* not overriden */
     --color-accent: #{$c_accent-primary};
     --color-accent--secondary: #{$c_accent-secondary};
-    --color-button--idle: 
+    --color-button--idle:  #{$c_accent-primary};
     --color-link: #{$c_accent-primary};
     --color-shadow: rgba( $c_gray--darkest 0.4);
     --color-innershadow: rgba( colors.$c_gray--darkes , 0.7);

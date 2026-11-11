@@ -2,7 +2,7 @@
 @use '@tokens/breakpoints';
 @use '@tokens/typography';
 @use 'mixins/layout';
-@use '../../button/button-rules' as rules;
+@use '../../button/button-rules' as buttons;
 
 .abcnorio-hero {
     padding: 0;
@@ -75,10 +75,7 @@
         .button {
             margin-right: 0.25rem;
             margin-bottom: 0.25rem;
-            @include rules.base;
-            &:hover {
-                @include rules.hover;
-            }
+            @include buttons.standard;
         }
 
         h1, h2, h3, h4, h5, h6 {

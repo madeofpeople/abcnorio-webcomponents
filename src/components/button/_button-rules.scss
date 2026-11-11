@@ -3,8 +3,8 @@
 @mixin base {
     border-radius: 0;
     border: 1px var(--color-link) solid;
-    color: var(--color-link);
-    background-color: var(--color-page-bg);
+    color: var(--color-text);
+    background-color: var(--color-link);
     display: inline-block;
     padding: 0.5rem 1rem;
     vertical-align: bottom;
@@ -16,8 +16,8 @@
 }
 
 @mixin hover {
-    background-color: var(--color-link);
-    color: var(--color-page-bg);
+    background-color: var(--color-page-bg);
+    color: var(--color-link);
 }
 
 @mixin reversed {
@@ -39,4 +39,11 @@
     background-color: var(--color-accent);
     border-color: var(--color-accent);
     color: var(--color-page-bg);
+}
+
+@mixin standard {
+    @include base;
+    &:hover {
+        @include hover;
+    }
 }

@@ -54,6 +54,7 @@ const {
   items = [],
   totalPages,
   isSlider = false,
+  variant = 'grid',
   sliderPreset = 'default',
   slidesPerPage,
   slidesPerPageXs,
@@ -146,7 +147,7 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
 {itemCount > 0 && (
   <event-listing
     id={mountId}
-    class:list={['event-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid', isSlider === true && itemCount < 3 && 'few-items']}
+    class:list={['event-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid', isSlider !== true && (variant === 'grid-3' || variant === 'grid-4') && variant, isSlider === true && itemCount < 3 && 'few-items']}
     data-component={EVENT_LISTING_KEY}
     data-slider-preset={sliderPreset}
     data-slides-per-page={resolvedSlidesPerPage.all}

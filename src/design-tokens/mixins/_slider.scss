@@ -1,5 +1,6 @@
 @use "./visibility";
 @use "../breakpoints";
+@use '../../components/button/button-rules' as buttons;
 
 @mixin slide-count($attribute) {
     @each $count in 1, 2, 3, 3.5, 4, 5, 6 {
@@ -69,6 +70,9 @@
     .actions {
         display: flex;
         padding: 2rem;
+        .button {
+            @include buttons.standard;
+        }
     }
 
     .blaze-slide-dots {
