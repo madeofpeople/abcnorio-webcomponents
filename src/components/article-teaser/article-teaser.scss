@@ -6,7 +6,7 @@
 .article-teaser {
 
   @include teasers.teaser();
-  background-color: #fafafa;
+  background-color: var(--color-page-bg);
   
   &__content {
     position: relative;

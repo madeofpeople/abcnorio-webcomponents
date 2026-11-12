@@ -12,6 +12,7 @@ const {
 
 const requestedPage = Math.max(1, Number.parseInt(String(attributes?.blockPage ?? attributes?.page ?? 1), 10) || 1);
 const variant = String(attributes?.variant || 'grid').toLowerCase();
+const gridColumns = String(attributes?.gridColumns || variant).toLowerCase();
 const isPaged = variant === 'paged-grid';
 const resolvedIsSlider =
   typeof isSlider === 'boolean'
@@ -105,6 +106,7 @@ const totalPages = Number.parseInt(response?.headers?.get('X-WP-TotalPages') || 
 const paginationConfig = {
   title,
   itemCount,
+  gridColumns,
   dateFilter,
   order: sortOrder,
   eventType,
@@ -125,6 +127,7 @@ const paginationPathPrefix = `/events/listing/block/${encodeURIComponent(blockIn
   page={currentPage}
   isSlider={effectiveIsSlider}
   variant={variant}
+  gridColumns={gridColumns}
   slidesPerPage={attributes?.slidesPerPage}
   slidesPerPageXs={attributes?.slidesPerPageXs}
   slidesPerPageSm={attributes?.slidesPerPageSm}

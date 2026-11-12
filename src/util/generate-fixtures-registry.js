@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
+import * as sass from 'sass-embedded';
 
 // Setup paths relative to the execution root
 const distDir = path.resolve('./dist');
@@ -12,6 +13,7 @@ const fixtureSourceDir = path.resolve('./src/components');
 const defaultStyleFile = path.join(distDir, 'styles', '_..css');
 const stableStyleRelativePath = 'styles/components.css';
 const stableStyleFile = path.join(distDir, stableStyleRelativePath);
+const fontStyleRelativePath = 'styles/fonts.css';
 
 const fail = (message) => {
   console.error(`Error: ${message}`);
@@ -192,6 +194,14 @@ const createManifest = () => {
   if (fs.existsSync(stableStyleFile)) {
     manifest.shared.css.push(stableStyleRelativePath);
   }
+
+  const fontCss = sass.compileString('@use "fonts" with ($font-url-root: "../assets");', {
+    loadPaths: [path.resolve('./src/design-tokens')],
+    style: 'compressed',
+  }).css;
+  fs.mkdirSync(path.join(distDir, 'styles'), { recursive: true });
+  fs.writeFileSync(path.join(distDir, fontStyleRelativePath), fontCss);
+  manifest.shared.css.push(fontStyleRelativePath);
 
   return manifest;
 };

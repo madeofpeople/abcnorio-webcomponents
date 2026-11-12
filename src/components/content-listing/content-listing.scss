@@ -9,14 +9,16 @@
   }
 
   &.card-grid {   
+    .teaser-list {
+      @include layout.card-grid-4();
+    }
+
     &.grid-3 .teaser-list {
-      @include layout.card-grid-3();
-      border: 2px solid red;
+      @include layout.card-grid-4();
     }
 
     &.grid-4 .teaser-list {
       @include layout.card-grid-4();
-      border: 2px solid blue;
     }
   }
   

@@ -24,4 +24,23 @@ for (const variant of ['event-listing.html', 'event-listing/slider.html']) {
   }
 }
 
-console.log('Event listing fixtures preserve scoped grid and slider markup.');
+for (const component of ['event-listing', 'content-listing']) {
+  const listingCss = readFileSync(new URL(`../dist/styles/${component}.css`, import.meta.url), 'utf8');
+  for (const variant of ['', '.grid-3', '.grid-4']) {
+    const selector = `.${component}.card-grid${variant} .teaser-list`;
+    assert.ok(
+      listingCss.includes(`@media (width>=1250px){${selector}{grid-template-columns:repeat(4,minmax(0,1fr))}}`),
+      `${component} ${variant || 'default'} uses four desktop columns`,
+    );
+    assert.ok(
+      listingCss.includes(`@media (width>=720px){${selector}{grid-template-columns:repeat(3,minmax(0,1fr))}}`),
+      `${component} ${variant || 'default'} retains three tablet columns`,
+    );
+    assert.ok(
+      listingCss.includes(`${selector}{grid-template-columns:repeat(2,minmax(0,1fr));`),
+      `${component} ${variant || 'default'} retains two mobile columns`,
+    );
+  }
+}
+
+console.log('Listing fixtures preserve scoped markup and responsive four-column defaults.');

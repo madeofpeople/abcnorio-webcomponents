@@ -307,6 +307,22 @@ const checkSharedAssets = ({ manifest, assertAssetFilesExist }) => {
   assertStringArray(manifest.shared.js, 'manifest.shared.js');
   assertAssetFilesExist(manifest.shared.css, 'manifest.shared.css');
   assertAssetFilesExist(manifest.shared.js, 'manifest.shared.js');
+  if (!manifest.shared.css.includes('styles/fonts.css')) {
+    fail('manifest.shared.css must include styles/fonts.css.');
+  }
+  const fontCss = fs.readFileSync(path.join(distDir, 'styles/fonts.css'), 'utf8');
+  for (const required of ['@font-face', '--font-source-sans:', '--font-super-elite:', '--font-impact-label-reversed:']) {
+    if (!fontCss.includes(required)) {
+      fail(`styles/fonts.css missing ${required}`);
+    }
+  }
+  const fontUrls = [...fontCss.matchAll(/url\(["']?\.\.\/assets\/([^"')]+)["']?\)/g)];
+  if (fontUrls.length !== 6) {
+    fail('styles/fonts.css must reference all six font assets.');
+  }
+  for (const match of fontUrls) {
+    assertAssetFilesExist([`assets/${match[1]}`], 'styles/fonts.css');
+  }
 };
 
 const runChecks = (context) => {

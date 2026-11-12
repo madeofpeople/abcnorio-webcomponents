@@ -29,6 +29,7 @@ const {
   items = [],
   isSlider = CONTENT_LISTING_DEFAULTS.isSlider,
   variant = 'grid',
+  gridColumns = '',
   slidesPerPage = 1,
   slidesPerPageXs = 2,
   slidesPerPageSm = 3,
@@ -75,7 +76,7 @@ const normalizeSlidesPerPage = (value: unknown, fallback: number) => {
 {itemCount > 0 && (
   <content-listing
     id={mountId}
-    class:list={['content-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid', isSlider !== true && (variant === 'grid-3' || variant === 'grid-4') && variant]}
+    class:list={['content-listing', className, isSlider === true ? 'blaze-slider' : 'card-grid', isSlider !== true && ['grid-3', 'grid-4'].includes(gridColumns || variant) && (gridColumns || variant)]}
     data-component={CONTENT_LISTING_KEY}
     data-slides-per-page={normalizeSlidesPerPage(slidesPerPage, 1)}
     data-slides-per-page-xs={normalizeSlidesPerPage(slidesPerPageXs, 2)}

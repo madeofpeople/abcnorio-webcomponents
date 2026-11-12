@@ -11,13 +11,19 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 test('preserves a declared WP dependency even when it is a direct asset', (t) => {
   const project = fs.mkdtempSync(path.join(os.tmpdir(), 'manifest-deps-'));
   t.after(() => fs.rmSync(project, { recursive: true }));
-  for (const dir of ['src/util', 'src/components/sample', 'dist/elements/.vite']) {
+  for (const dir of ['src/util', 'src/components/sample', 'src/design-tokens', 'dist/elements/.vite']) {
     fs.mkdirSync(path.join(project, dir), { recursive: true });
   }
   for (const script of ['generate-fixtures-registry.js', 'validate-manifest.js']) {
     fs.copyFileSync(path.join(root, 'src/util', script), path.join(project, 'src/util', script));
   }
   const write = (file, value) => fs.writeFileSync(path.join(project, file), value);
+  fs.symlinkSync(path.join(root, 'node_modules'), path.join(project, 'node_modules'), 'dir');
+  fs.copyFileSync(path.join(root, 'src/design-tokens/_fonts.scss'), path.join(project, 'src/design-tokens/_fonts.scss'));
+  fs.mkdirSync(path.join(project, 'dist/assets'));
+  for (const name of ['SourceSans3-Regular', 'SourceSans3-Bold', 'SourceSans3-Italic', 'SourceSans3-BoldItalic', 'SpecialElite-Regular', 'Impact_Label_Reversed']) {
+    write(`dist/assets/${name}.woff2`, '');
+  }
   write('package.json', JSON.stringify({
     type: 'module',
     exports: { './sample/element': './src/components/sample/sample.js' },
@@ -38,6 +44,16 @@ test('preserves a declared WP dependency even when it is a direct asset', (t) =>
   const manifest = JSON.parse(fs.readFileSync(path.join(project, 'dist/manifest.json')));
   assert.deepEqual(manifest.components.sample.js, ['elements/sample.js']);
   assert.deepEqual(manifest.components.sample.deps, ['elements/sample.js']);
+  assert.ok(manifest.shared.css.includes('styles/fonts.css'));
+
+  const fontCss = fs.readFileSync(path.join(project, 'dist/styles/fonts.css'), 'utf8');
+  write('dist/styles/fonts.css', fontCss.replace('--font-impact-label-reversed:', '--missing-font:'));
+  const fontValidation = spawnSync(process.execPath, ['src/util/validate-manifest.js'], {
+    cwd: project, encoding: 'utf8',
+  });
+  assert.notEqual(fontValidation.status, 0);
+  assert.match(fontValidation.stderr, /styles\/fonts.css missing --font-impact-label-reversed/);
+  write('dist/styles/fonts.css', fontCss);
 
   manifest.components.sample.deps = [];
   write('dist/manifest.json', JSON.stringify(manifest));
@@ -46,4 +62,5 @@ test('preserves a declared WP dependency even when it is a direct asset', (t) =>
   });
   assert.notEqual(validation.status, 0);
   assert.match(validation.stderr, /deps do not match fixture metadata/);
+
 });
