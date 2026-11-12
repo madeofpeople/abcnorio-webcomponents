@@ -1,4 +1,5 @@
 @use "@tokens/mixins/ui";
+@use '@tokens/colors';
 @use '@tokens/breakpoints';
 @use '@tokens/typography';
 @use 'mixins/layout';
@@ -81,8 +82,9 @@
         h1, h2, h3, h4, h5, h6 {
             display: inline-block;
             font-family: var(--font-impact-label-reversed);
+            background-color: var(--color-gray-0);
+            color: var(--color-gray-5);
             padding: 0.25rem 0.5rem;
-            @include ui.inverted();
             transform: rotate3d(0, 0, 1, -1deg);
             position: relative;
             left: -1rem;

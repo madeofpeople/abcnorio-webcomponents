@@ -2,6 +2,30 @@
 
 Shared Astro components and fixtures for the frontend and WordPress editor.
 
+Each component can own an optional `editor.scss` beside its normal stylesheet.
+The build emits `dist/styles/editor/<component>.css` and records it as
+`components[component].editorCss` in the manifest. WordPress loads these files
+only in the block editor. Never import `editor.scss` from Astro or frontend JS.
+
+Keep content component styling in those files, not plugin admin overrides.
+Do not target every editor `button`: WordPress controls and block appenders
+retain their native styles. Components with no editor-specific presentation
+need no `editor.scss`.
+
+For fully global component Sass, use Astro's `<style lang="scss" is:global>`
+and normal nested selectors anchored to the component root. Keep targeted
+`:global(...)` escapes when a stylesheet intentionally mixes scoped elements
+with child-component or dynamically generated markup. A Sass `:global { ... }`
+block is not a substitute for Astro's `is:global`.
+
+Announcement Tout shares Sass mixins between its normal stylesheet and
+`editor.scss`, preserving editor selector specificity without duplicating
+declarations.
+
+Event/Content Listing editor wrappers expose responsive `--listing-preview-slides*`
+values from block settings. Their editor styles preserve configured card widths
+when Blaze clamps its slide count to the number of available items.
+
 ## Create a component
 
 Run recipes from [abcnorio-meta](../abcnorio-meta):
@@ -30,6 +54,11 @@ Names must start with a letter. Fixture names must be unique, even across
 components and WP block wrappers.
 
 ## Preview and build
+
+Gallery includes a `captioned` variant ("Captioned Gallery" in WordPress).
+It uses slider navigation, renders each image in a figure with its optional
+caption beneath, and does not initialize PhotoSwipe. Captions use the existing
+core/image caption field; empty captions render no caption block.
 
 From this package:
 

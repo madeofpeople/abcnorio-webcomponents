@@ -1,0 +1,24 @@
+@use '../../button/button-rules' as button-rules;
+@use '@tokens/mixins/ui';
+
+.abcnorio-newsletter-signup {
+  &__preview-label {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 14px;
+    @include ui.inverted();
+  }
+
+  &__preview-input {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+  }
+}
+
+.editor-styles-wrapper .abcnorio-newsletter-signup .abcnorio-newsletter-signup__preview-button {
+  @include button-rules.base;
+  @include button-rules.reversed;
+  width: 100%;
+}

@@ -293,6 +293,18 @@ const checkComponents = ({ manifest, metadataDepsByComponent, assertAssetFilesEx
     assertStringArray(component.css, `component "${componentId}" css`);
     assertStringArray(component.js, `component "${componentId}" js`);
     assertStringArray(component.deps, `component "${componentId}" deps`);
+    if (component.editorCss !== undefined) {
+      assertStringArray(component.editorCss, `component "${componentId}" editorCss`);
+      assertAssetFilesExist(component.editorCss, `component "${componentId}" editorCss`);
+      for (const asset of component.editorCss) {
+        if (!asset.startsWith('styles/editor/') || !asset.endsWith('.css')) {
+          fail(`component "${componentId}" editorCss must reference styles/editor/*.css.`);
+        }
+        if (component.css.includes(asset) || component.deps.includes(asset) || manifest.shared.css.includes(asset)) {
+          fail(`Editor stylesheet must not be a shared asset: ${asset}`);
+        }
+      }
+    }
 
     checkComponentFixtureLinks(componentId, component, manifest.fixtures);
     assertAssetFilesExist(component.css, `component "${componentId}" css`);

@@ -434,6 +434,34 @@ const buildFixtureManifest = (context) => {
 
 const finalizeManifest = (context) => {
   finalizeComponentAssets(context.manifest, context.elementAssets);
+  for (const fixtureModulePath of collectFixtureModuleEntries(fixtureSourceDir)) {
+    const source = path.join(fixtureSourceDir, path.dirname(fixtureModulePath), 'editor.scss');
+    if (!fs.existsSync(source)) {
+      continue;
+    }
+
+    const componentId = componentIdFromFixtureModulePath(fixtureModulePath);
+    const component = context.manifest.components[componentId];
+    if (!component) {
+      fail(`Editor styles have no fixture component: ${componentId}`);
+    }
+    const relativePath = `styles/editor/${componentId}.css`;
+    const css = sass.compile(source, {
+      loadPaths: [path.resolve('./src/design-tokens')],
+      importers: [{
+        findFileUrl(url) {
+          if (url.startsWith('@tokens/')) {
+            return pathToFileURL(path.resolve('./src/design-tokens', url.slice('@tokens/'.length)));
+          }
+          return null;
+        },
+      }],
+      style: 'compressed',
+    }).css;
+    fs.mkdirSync(path.join(distDir, 'styles/editor'), { recursive: true });
+    fs.writeFileSync(path.join(distDir, relativePath), css);
+    component.editorCss = [relativePath];
+  }
 };
 
 const removeLegacyManifest = () => {

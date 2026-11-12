@@ -16,4 +16,10 @@ export default {
       innerBlocks: [],
     },
   },
+  captioned: {
+    props: {
+      attributes: { variant: 'captioned' },
+      innerBlocks: [],
+    },
+  },
 };

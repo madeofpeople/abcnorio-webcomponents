@@ -1,6 +1,5 @@
 @use "@tokens/mixins/ui";
 @use 'abcnorio-webcomponents/styles/button';
-@use '../../button/button-rules' as button-rules;
 
 .abcnorio-newsletter-signup {
     position: relative;
@@ -101,16 +100,14 @@
         font-size: 1.25rem;
     }
 
-    label,
-    &__preview-label {
+    label {
         display: inline-block;
         padding: 0.25rem 0.5rem;
         font-size: 14px;
         @include ui.inverted();
     }
 
-    input,
-    &__preview-input {
+    input {
         box-sizing: border-box;
         display: block;
         width: 100%;
@@ -120,10 +117,4 @@
     .button {
         width: 100%;
     }
-}
-
-.editor-styles-wrapper .abcnorio-newsletter-signup .abcnorio-newsletter-signup__preview-button {
-    @include button-rules.base;
-    @include button-rules.reversed;
-    width: 100%;
 }

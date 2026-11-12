@@ -1,7 +1,7 @@
 // id colors
 $c_accent-primary: #cd1c12;
 $c_accent-secondary: #008A09;
-$c_accent-primary--dark:  color-mix(in oklch, $c_accent-primary, black 25%);
+$c_accent-primary--dark:  color-mix(in oklch, $c_accent-primary, black 12%);
 $c_accent-secondary--dark:  color-mix(in oklch, $c_accent-secondary, black 25%);
 // greys
 $c_gray--lightest: #fafafa;
@@ -18,7 +18,6 @@ $c_panel--dark: #000;
 $c_teaser__bg: #ffbaba;
 $c_teaser__bg--dark: #583030;
 $c_nav-bg: rgba($c_gray--darkest, 0.95);
-$c_nav-bg--dark: rgba($c_gray--lightest, 0.95);
 
 $c_gallery-pager--idle: $c-gray--darker;
 
@@ -26,6 +25,7 @@ $c_gallery-pager--idle: $c-gray--darker;
 :root {
     /* not overriden */
     --color-accent: #{$c_accent-primary};
+    --color-accent-primary--dark: #{$c_accent-primary--dark}; 
     --color-accent--secondary: #{$c_accent-secondary};
     --color-button--idle:  #{$c_accent-primary};
     --color-link: #{$c_accent-primary};
@@ -35,12 +35,11 @@ $c_gallery-pager--idle: $c-gray--darker;
     --color-panel--dark: #{$c_panel--dark};
     --color-panel-bg: #{$c_gray--lighter};
     --color-nav-link: #{$c_accent-primary};
-    --color-nav-bg: transparent;
+    --color-nav-bg: #{$c_nav-bg};
     /* light mode */
     --color-page-bg: #{$c_gray--lightest};
     --color-sheet: #{$c_sheet};
     --color-nav-link-hover: #{$c_gray--darkest};
-    --color-nav-bg: #{$c_nav-bg};
     --color-subnav-link: #{$c_accent-primary--dark};
     --color-footer-bg: #{$c_gray--darkest};
     --color-footer-link: #{$c_accent-primary};
@@ -58,6 +57,9 @@ $c_gallery-pager--idle: $c-gray--darker;
     --color-group-bg--dark: #{$c_gray--darkest};
     --color-gallery-pager--idle: #{$c_gallery-pager--idle};  
     /* Grayscale */
+    --color-gray--lightest: #{$c_gray--lightest};
+    --color-gray--darkest: #{$c_gray--darkest};
+
     --color-gray-0: #{$c_gray--darkest};
     --color-gray-1: #{$c_gray--darker};
     --color-gray-2: #{$c_gray--dark};
@@ -67,16 +69,13 @@ $c_gallery-pager--idle: $c-gray--darker;
     --color-gray-6: #{$c_gray--lightest};
 }
 
-/* dark mode overrides */
-@media (prefers-color-scheme: dark) {
-    :root {
+@mixin dark-mode {
         /* darkmode */
         --color-page-bg: #1a1a1a;
         --color-sheet: #{$c_gray--darker};
         --color-panel: #{$c_panel--dark};
         --color-panel-bg: #{$c_gray--dark};
         --color-nav-link-hover:  #{$c_gray--darkest};;
-        --color-nav-bg: #{$c_nav-bg--dark};
         --color-footer-bg: #{$c_gray--lightest};
         --color-footer-link: #{$c_accent-primary};
         --color-ui-panel: #{$c_gray--darker};
@@ -102,5 +101,15 @@ $c_gallery-pager--idle: $c-gray--darker;
         --color-gray-4: #{$c_gray--dark};
         --color-gray-5: #{$c_gray--darker};
         --color-gray-6: #{$c_gray--darkest};
+}
+
+:root[data-theme='dark'] {
+    @include dark-mode;
+}
+
+/* Preserve system preference for consumers without an explicit theme. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        @include dark-mode;
     }
 }

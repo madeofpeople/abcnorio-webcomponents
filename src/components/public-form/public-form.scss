@@ -86,32 +86,3 @@
 
     }
 }
-
-.editor-styles-wrapper .abcnorio-form {
-    position: relative;
-
-    select {
-        font-size: 1rem;
-        line-height: 2;
-        padding: 0.125rem 0.5rem;
-        box-sizing: border-box;
-        width: 100%;
-        display: inline-block;
-    }
-}
-
-.abcnorio-form__preview-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.7);
-
-    span {
-        background: var(--color-text);
-        color: var(--color-page-bg);
-        padding: 0.5rem 1rem;
-    }
-}

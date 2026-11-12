@@ -1,0 +1,10 @@
+.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-hero {
+  // Let wrapper padding pass clicks through to the media placeholder.
+  .abcnorio-hero__content-wrapper {
+    pointer-events: none;
+  }
+
+  .abcnorio-hero__content {
+    pointer-events: auto;
+  }
+}

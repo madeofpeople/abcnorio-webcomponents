@@ -1,93 +1,9 @@
-@use '@tokens/breakpoints';
-@use '../button/button-rules' as rules;
+@use './announcement-tout-rules' as rules;
 
-
-.block-editor-iframe__body .announcement-tout,
 .announcement-tout {
-  background: var(--color-text);
-  color: var(--color-page-bg);
-  position: relative;
-  padding: 1rem;
-  gap: 1rem;
-  margin-top: 1rem;
-
-  .announcement-tout__toast {
-    font-family: var(--font-impact-label-reversed), monospace;
-    color: #fff;
-    font-size: 1.5rem;
-    background-color: var(--color-link);
-    font-weight: 400;
-    display: inline-block;
-    margin: 0;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    position: relative;
-    top: -1.75rem;
-    text-align: center;
-  }
-
-  .announcement-tout__title {
-    font-size: 2rem;
-    margin: 0;
-  }
-
-  .announcement-tout__content {
-    column-gap: 2rem;
-    color: var(--color-page-bg);
-    margin: -1.75rem 0 0 0;
-    padding: 0rem 0.5rem 0.5rem 0.5rem;
-  }
-
-  .button {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-  }
-
-  @media (min-width: breakpoints.get(md)) {
-  }
-
-  @media (min-width: breakpoints.get(lg)) {
-    .announcement-tout__toast {
-      max-width: 80%;
-      left: 1rem;
-    }
-    .announcement-tout__content {
-        padding: 0 1rem 0rem 1rem;
-    }
-  }
+  @include rules.base;
 }
 
-.block-editor-iframe__body .announcement-tout--secondary,
 .announcement-tout--secondary {
-  background: var(--color-page-bg);
-  color: var(--color-text);
-  border: 2px solid var(--color-accent--secondary);
-
-  .announcement-tout__content {
-    flex-direction: column;
-    color: var(--color-text);
-
-    > .wp-block-buttons,
-    > .announcement-tout__actions {
-      align-self: stretch;
-    }
-  }
-
-  .announcement-tout__toast {
-    background-color: var(--color-accent--secondary);
-    color: var(--color-page-bg);
-  }
-
-  .button {
-    @include rules.reversed;
-    box-sizing: border-box;
-    text-align: center;
-    width: 100%;
-  }
-
-  .button,
-  .wp-block-button,
-  .wp-block-button__link {
-    width: 100%;
-  }
+  @include rules.secondary;
 }

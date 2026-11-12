@@ -1,0 +1,11 @@
+@use './announcement-tout-rules' as rules;
+
+.block-editor-iframe__body {
+  .announcement-tout {
+    @include rules.base;
+  }
+
+  .announcement-tout--secondary {
+    @include rules.secondary;
+  }
+}

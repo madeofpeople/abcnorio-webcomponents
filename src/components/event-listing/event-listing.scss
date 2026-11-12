@@ -72,12 +72,13 @@ $stagger-step: 23ms;
     }
 
     &.grid-3 .teaser-list {
-      @include layout.card-grid-4();
+      @include layout.card-grid-3();
     }
 
     &.grid-4 .teaser-list {
       @include layout.card-grid-4();
     }
+
   }
 
   &.blaze-slider {

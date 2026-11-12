@@ -24,6 +24,10 @@ if (rawVariant === 'paged-grid') {
 if (rawVariant === 'masonry') {
   resolvedVariant = 'masonry';
 }
+if (rawVariant === 'captioned') {
+  resolvedVariant = 'captioned';
+}
+const isCaptioned = resolvedVariant === 'captioned';
 const isPagedGrid = resolvedVariant === 'paged-grid';
 const isMasonry = resolvedVariant === 'masonry';
 const usesBlaze = !isPagedGrid && !isMasonry;
@@ -83,13 +87,24 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
           };
           return (
             <div class="gallery-item">
-              <RecursiveBlock
+              {isCaptioned ? (
+                <figure class="gallery__image">
+                  <RecursiveBlock
+                    {...recursiveProps}
+                    component={block.name}
+                    attributes={{ ...imageAttributes, caption: '' }}
+                    innerBlocks={block.innerBlocks || null}
+                    additionalClasses="gallery__image"
+                  />
+                  {block.attributes.caption && <figcaption set:html={block.attributes.caption} />}
+                </figure>
+              ) : <RecursiveBlock
                 {...recursiveProps}
                 component={block.name}
                 attributes={imageAttributes}
                 innerBlocks={block.innerBlocks || null}
                 additionalClasses="gallery__image"
-              />
+              />}
             </div>
           );
         })}
@@ -110,5 +125,16 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 </script>
 
 <style lang="scss">
+  @use 'mixins/slider';
+  @use 'blaze-slider/dist/blaze.css';
+
+  :global(gallery-listing.gallery) {
+    &.blaze-slider {
+      @include slider.slider();
+    }
+  }
+</style>
+
+<style lang="scss" is:global>
   @use './gallery.scss';
 </style>

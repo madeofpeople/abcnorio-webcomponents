@@ -146,6 +146,9 @@ export class GalleryListing extends HTMLElement {
         document.head.appendChild(link);
     }
     async initPhotoSwipe() {
+        if (this.dataset.variant === 'captioned') {
+            return;
+        }
         if (this.lightbox) {
             return;
         }

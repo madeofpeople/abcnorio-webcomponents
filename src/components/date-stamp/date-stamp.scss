@@ -1,3 +1,4 @@
+@use "@tokens/breakpoints";
 @use "@tokens/mixins/ui";
 
 .date-stamp {
@@ -9,12 +10,16 @@
   div {
     padding: 0 0.5rem;
     font-size: 1.5rem;
-    line-height: 1.5;
+    line-height: 1; 
     margin-bottom: 1px;
     display: block;
     white-space: nowrap;
     width: fit-content;
     font-family: var(--font-impact-label-reversed), monospace;
     @include ui.inverted();
+  }
+
+  @media (min-width: breakpoints.get(sm)) {
+    line-height: 1.5;
   }
 }

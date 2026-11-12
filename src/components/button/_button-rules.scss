@@ -3,7 +3,7 @@
 @mixin base {
     border-radius: 0;
     border: 1px var(--color-link) solid;
-    color: var(--color-text);
+    color: var(--color-gray--lightest);
     background-color: var(--color-link);
     display: inline-block;
     padding: 0.5rem 1rem;

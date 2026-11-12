@@ -107,3 +107,13 @@ test('Gallery slider retains its built-in responsive slide counts', async () => 
   assert.equal(config['(min-width: 1024px)'].slidesToShow, 3);
   assert.equal(config['(min-width: 1250px)'].slidesToShow, 4);
 });
+
+test('Captioned gallery does not prepare lightbox links or load PhotoSwipe', async () => {
+  const Gallery = await loadGallery();
+  const gallery = new Gallery();
+  gallery.dataset.variant = 'captioned';
+  gallery.querySelectorAll = () => { throw new Error('Captioned gallery must not prepare lightbox images'); };
+  await gallery.initPhotoSwipe();
+  assert.equal(gallery.lightbox, null);
+  assert.equal(gallery.photoswipeLoadAttempted, false);
+});

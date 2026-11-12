@@ -1,74 +1,71 @@
-@use 'mixins/slider';
-@use 'blaze-slider/dist/blaze.css';
-@use '@tokens/breakpoints';
+@use "@tokens/breakpoints";
 
 $slide-duration: 0.2s;
 
-:global {
-  @keyframes gallery-item-out {
-    to {
-      opacity: 0;
-      transform: translate3d(calc(var(--gallery-slide-dir, 1) * -4rem), 0, 0);
-    }
-  }
-
-  @keyframes gallery-item-in {
-    from {
-      opacity: 0;
-      transform: translate3d(calc(var(--gallery-slide-dir, 1) * 4rem), 0, 0);
-    }
+@keyframes gallery-item-out {
+  to {
+    opacity: 0;
+    transform: translate3d(calc(var(--gallery-slide-dir, 1) * -4rem), 0, 0);
   }
 }
 
-:global(gallery-listing.gallery) {
+@keyframes gallery-item-in {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(var(--gallery-slide-dir, 1) * 4rem), 0, 0);
+  }
+}
+
+gallery-listing.gallery {
   display: block;
 
   &.gallery--paged-grid {
-
     padding: 2rem;
 
-    :global(.images) {
+    .images {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
     }
 
-    :global(.images > *) {
+    .images > * {
       min-width: 0;
     }
 
-    &[data-slide='next'] {
+    &[data-slide="next"] {
       --gallery-slide-dir: 1;
     }
 
-    &[data-slide='prev'] {
+    &[data-slide="prev"] {
       --gallery-slide-dir: -1;
     }
 
-    :global(.images > .is-leaving) {
-      animation: gallery-item-out $slide-duration cubic-bezier(0.4, 0, 0.2, 1) both;
+    .images > .is-leaving {
+      animation: gallery-item-out $slide-duration cubic-bezier(0.4, 0, 0.2, 1)
+        both;
     }
 
-    :global(.images > .is-entering) {
-      animation: gallery-item-in $slide-duration cubic-bezier(0.4, 0, 0.2, 1) both;
+    .images > .is-entering {
+      animation: gallery-item-in $slide-duration cubic-bezier(0.4, 0, 0.2, 1)
+        both;
     }
 
-    :global(.images > [hidden]) {
+    .images > [hidden] {
       display: none !important;
     }
 
-    :global(.images figure) {
+    .images figure {
       margin: 0;
     }
 
-    :global(.images img) {
+    .images img {
       display: block;
       width: 100%;
       height: auto;
     }
 
     @media (min-width: breakpoints.get(sm)) {
-      :global(.images) {
+      .images {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
@@ -77,13 +74,13 @@ $slide-duration: 0.2s;
   &.gallery--masonry {
     padding: 2rem;
 
-    :global(.images) {
+    .images {
       column-count: 2;
       column-gap: 1rem;
     }
 
-    :global(.gallery-item),
-    :global(.images > .wp-block-image) {
+    .gallery-item,
+    .images > .wp-block-image {
       display: inline-block;
       width: 100%;
       margin: 0 0 1rem;
@@ -91,138 +88,169 @@ $slide-duration: 0.2s;
       vertical-align: top;
     }
 
-    :global(.gallery-item figure) {
+    .gallery-item figure {
       margin: 0;
     }
 
-    :global(.gallery-item img),
-    :global(.images > .wp-block-image img) {
+    .gallery-item img,
+    .images > .wp-block-image img {
       display: block;
       width: 100%;
       height: auto;
     }
 
-    :global(.images > .block-list-appender) {
+    .images > .block-list-appender {
       column-span: all;
     }
 
     @media (min-width: breakpoints.get(sm)) {
-      :global(.images) {
+      .images {
         column-count: 4;
       }
     }
   }
 
   &.blaze-slider {
-
-    @include slider.slider();
-
+    background-color: var(--color-gray--darkest);
     margin-bottom: 0;
     padding-top: 2rem;
     padding-bottom: 1rem;
 
-    :global(.images.blaze-track) {
+    .images.blaze-track {
       padding: 0 1rem;
     }
 
-    :global(.gallery-item) {
+    .gallery-item {
       height: 300px;
     }
 
-
-    :global(.gallery-item > a),
-    :global(.gallery-item > figure),
-    :global(.gallery-item > img) {
+    .gallery-item > a,
+    .gallery-item > figure,
+    .gallery-item > img {
       display: block;
       width: 100%;
       height: 100%;
     }
 
-    :global(.gallery-item figure) {
+    .gallery-item figure {
       margin: 0;
       padding: 0;
     }
 
-    :global(.gallery-item img) {
+    .gallery-item img {
       display: block;
       object-fit: contain;
       width: 100%;
       height: 100%;
     }
 
-    :global(.gallery-item--ghost) {
+    .gallery-item--ghost {
       opacity: 0;
       pointer-events: none;
       user-select: none;
     }
 
     @media (min-width: breakpoints.get(md)) {
-      :global(.gallery-item) {
+      .gallery-item {
         height: 400px;
         width: fit-content;
       }
 
-      :global(.gallery-item img) {
+      .gallery-item img {
         width: auto;
         height: 400px;
       }
-
     }
   }
 
-  :global(button.blaze-slide-dot:hover),
-  :global(button.blaze-slide-dot.active),
-  :global(button.blaze-slide-dot.is-active) {
+  &.gallery--captioned.blaze-slider {
+    .blaze-track {
+      align-items: flex-start;
+    }
+
+    .gallery-item,
+    .gallery-item > figure {
+      height: auto;
+    }
+
+    .gallery-item > figure {
+      display: table;
+      width: auto;
+    }
+
+    .gallery-item img {
+      width: auto;
+      height: 300px;
+    }
+
+    figcaption {
+      display: table-caption;
+      caption-side: bottom;
+      padding: 0.75rem 0;
+      color: var(--color-gray--lightest);
+      overflow-wrap: anywhere;
+    }
+
+    @media (min-width: breakpoints.get(md)) {
+      .gallery-item img {
+        height: 400px;
+      }
+    }
+  }
+
+  button.blaze-slide-dot:hover,
+  button.blaze-slide-dot.active,
+  button.blaze-slide-dot.is-active {
     background-color: var(--color-accent) !important;
   }
 }
 
-:global(gallery-listing.gallery--paged-grid .gallery-pagination ul) {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  list-style: none;
-  padding: 0;
-  gap: 0.5rem;
-  margin: 1rem 0;
+gallery-listing.gallery--paged-grid .gallery-pagination {
+  ul {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-link);
+    border-radius: 2px;
+    color: var(--color-link);
+    background-color: var(--color-gray--darkest);
+    &:hover,
+    &:focus-visible,
+    &.is-current {
+      border-color: var(--color-accent, var(--color-link, #1f6ea7));
+      color: var(--color-page-bg, #fff);
+      background-color: var(--color-accent);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
 }
 
-:global(gallery-listing.gallery--paged-grid .gallery-pagination li) {
-  margin: 0;
-  padding: 0;
-}
-
-:global(gallery-listing.gallery--paged-grid .gallery-pagination button) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2.25rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--color-link, #1f6ea7);
-  border-radius: 2px;
-  color: var(--color-link, #1f6ea7);
-  background-color: var(--color-page-bg, #fff);
-}
-
-:global(gallery-listing.gallery--paged-grid .gallery-pagination button:hover),
-:global(gallery-listing.gallery--paged-grid .gallery-pagination button:focus-visible),
-:global(gallery-listing.gallery--paged-grid .gallery-pagination button.is-current) {
-  border-color: var(--color-accent, var(--color-link, #1f6ea7));
-  color: var(--color-page-bg, #fff);
-  background-color: var(--color-accent, var(--color-link, #1f6ea7));
-
-}
-
-:global(gallery-listing.gallery--paged-grid .gallery-pagination button:disabled) {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-:global(.pswp__img) {
+.pswp__img {
   border: 4rem solid #00000066;
 }
 
-:global(.pswp__custom-caption) {
+.pswp__custom-caption {
   background: rgba(0, 0, 0, 0.72);
   color: #fff;
   font-size: 0.95rem;
@@ -234,8 +262,7 @@ $slide-duration: 0.2s;
   left: 50%;
   top: 1rem;
   transform: translateX(-50%);
-}
-
-:global(.pswp__custom-caption[hidden]) {
-  display: none;
+  &[hidden] {
+    display: none;
+  }
 }

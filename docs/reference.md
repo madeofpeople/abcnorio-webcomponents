@@ -70,7 +70,11 @@ apply (e.g. `<img class="article-teaser__image" data-astro-cid-a1b2c3>`).
 
 Include optional elements in fixtures when PHP will populate them, such as teaser images.
 
-Editor-only presentation exceptions belong with the component styles when possible.
+Editor-only presentation belongs in each component's optional `editor.scss`.
+The manifest generator compiles it separately to `styles/editor/<component>.css`
+and records it in that component's `editorCss` array. The plugin loads these
+styles only in the block editor; do not import them from Astro or frontend JS.
+Shared component SCSS must not import `editor.scss`.
 WordPress admin controls and interactions can require separate
 editor rules. `additionalClasses` passes context to a component; it does not
 add classes to editable WordPress blocks.

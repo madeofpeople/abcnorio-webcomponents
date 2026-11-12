@@ -29,6 +29,7 @@ test('preserves a declared WP dependency even when it is a direct asset', (t) =>
     exports: { './sample/element': './src/components/sample/sample.js' },
   }));
   write('src/components/sample/sample.fixture.js', "export const metadata = { deps: { css: [], js: ['elements/sample.js'] } };\n");
+  write('src/components/sample/editor.scss', '.editor-styles-wrapper .sample { color: red; }');
   write('dist/sample.html', '<p>Sample</p>');
   write('dist/gallery-image-sizes.json', '{"default":"large"}');
   write('dist/elements/sample.js', 'export {};\n');
@@ -45,6 +46,17 @@ test('preserves a declared WP dependency even when it is a direct asset', (t) =>
   assert.deepEqual(manifest.components.sample.js, ['elements/sample.js']);
   assert.deepEqual(manifest.components.sample.deps, ['elements/sample.js']);
   assert.ok(manifest.shared.css.includes('styles/fonts.css'));
+  assert.deepEqual(manifest.components.sample.editorCss, ['styles/editor/sample.css']);
+  assert.ok(!manifest.shared.css.includes('styles/editor/sample.css'));
+  assert.match(fs.readFileSync(path.join(project, 'dist/styles/editor/sample.css'), 'utf8'), /color:red/);
+
+  fs.renameSync(path.join(project, 'dist/styles/editor/sample.css'), path.join(project, 'dist/styles/editor/sample.css.bak'));
+  const editorValidation = spawnSync(process.execPath, ['src/util/validate-manifest.js'], {
+    cwd: project, encoding: 'utf8',
+  });
+  assert.notEqual(editorValidation.status, 0);
+  assert.match(editorValidation.stderr, /editorCss references missing file/);
+  fs.renameSync(path.join(project, 'dist/styles/editor/sample.css.bak'), path.join(project, 'dist/styles/editor/sample.css'));
 
   const fontCss = fs.readFileSync(path.join(project, 'dist/styles/fonts.css'), 'utf8');
   write('dist/styles/fonts.css', fontCss.replace('--font-impact-label-reversed:', '--missing-font:'));

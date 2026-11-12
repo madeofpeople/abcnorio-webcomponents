@@ -3,6 +3,11 @@ import { readFileSync } from 'node:fs';
 
 const html = readFileSync(new URL('../dist/hero.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../dist/styles/component-fixtures.css', import.meta.url), 'utf8');
+const editorCss = readFileSync(new URL('../dist/styles/editor/hero.css', import.meta.url), 'utf8');
+const editorRoot = '.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-hero';
+
+assert.equal(editorCss, `${editorRoot} .abcnorio-hero__content-wrapper{pointer-events:none}${editorRoot} .abcnorio-hero__content{pointer-events:auto}`);
+assert.ok(!css.includes(editorRoot), 'Hero editor selectors must not be in frontend CSS');
 
 assert.match(html, /class="abcnorio-hero"[^>]*><div class="abcnorio-hero__image-wrapper"><\/div><div class="abcnorio-hero__content-wrapper"><div class="abcnorio-hero__content"/);
 assert.match(css, /\.abcnorio-hero \.abcnorio-hero__image-wrapper\{(?=[^{}]*background-size:cover)(?=[^{}]*height:33rem)[^{}]*\}/);
