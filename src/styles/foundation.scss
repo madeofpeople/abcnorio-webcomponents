@@ -15,7 +15,7 @@ body {
     font-size: 16px;
 }
 
-body {
+body:not(.wp-admin) {
     box-sizing: border-box;
     padding: 0;
     background-color: var(--color-page-bg);
