@@ -69,7 +69,7 @@
 
     .actions {
         display: flex;
-        padding: 2rem;
+        padding: 0.5rem 0;
         .button {
             @include buttons.standard;
         }
@@ -87,8 +87,8 @@
 
     :global(button.blaze-slide-dot) {
         box-sizing: border-box;
-        width: 1.25rem;
-        height: 1.25rem;
+        width: 0.875rem;
+        height: 0.875rem;
         display: inline-block;
         border-radius: 50%;
         border: 2px var(--color-gray-4) solid;

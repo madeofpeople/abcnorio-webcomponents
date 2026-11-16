@@ -211,7 +211,7 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
     {(isSlider === true || showAllLink === true) && (
       <div class="actions">
         {showAllLink === true && (
-          <a href={resolvedShowAllLinkHref} class="show-all button">{resolvedShowAllLinkLabel}</a>
+          <button href={resolvedShowAllLinkHref} class="show-all button">{resolvedShowAllLinkLabel}</button>
         )}
         {isSlider === true && <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
       </div>
