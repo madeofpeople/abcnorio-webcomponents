@@ -63,8 +63,12 @@ Use `BLOCK_KEYS` and `BLOCK_REGISTRY` for all block lookup logic.
 
 Component SCSS is the source of shared frontend and WordPress editor styles.
 Match selectors to editor markup; editable core blocks can differ from Astro markup as needed. 
-PHP previews use fixture markup with Astro's scope attributes so component styles
-apply (e.g. `<img class="article-teaser__image" data-astro-cid-a1b2c3>`).
+Unmigrated PHP previews preserve fixture scope attributes where their styles require
+them. Hero, group, gallery, event listing, event teaser, content listing and
+article teaser instead use portable, namespaced stylesheet
+URLs with no generated scope hashes. Their separate packaged CSS appears in
+`shared.css`, and source-to-asset ownership appears in `styleEntries`; their rules
+are absent from the combined fixture stylesheet.
 `just wc-build` (`npm run build`) generates fixture HTML and styles together;
 `just plugin-dev-assets` rebuilds and ingests that output in the plugin.
 
@@ -75,6 +79,9 @@ The manifest generator compiles it separately to `styles/editor/<component>.css`
 and records it in that component's `editorCss` array. The plugin loads these
 styles only in the block editor; do not import them from Astro or frontend JS.
 Shared component SCSS must not import `editor.scss`.
+The existing development Astro server can serve migrated styles directly from SCSS.
+WordPress uses live URLs automatically in local/development and packaged URLs in
+staging/production; it never overlays both. See the [local workflow](../README.md#live-wordpress-styles-local-development).
 WordPress admin controls and interactions can require separate
 editor rules. `additionalClasses` passes context to a component; it does not
 add classes to editable WordPress blocks.

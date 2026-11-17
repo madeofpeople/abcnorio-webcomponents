@@ -1,6 +1,8 @@
 ---
+import stylesHref from './event-teaser.scss?url';
 const {
   class: className,
+  includeStyles = true,
   href = '#',
   title = 'Untitled event',
   isPastEvent = false,
@@ -13,6 +15,7 @@ const {
 const imageProps = featured_image && typeof featured_image === 'object' ? featured_image : null;
 ---
 
+{includeStyles && <link rel="stylesheet" href={stylesHref} />}
 <event-teaser class:list={['event-teaser', 'events', className, { 'event-teaser--past': isPastEvent }]} data-component="abcnorio/event-teaser">
   <a href={href}>
     {imageProps?.url && (
@@ -42,7 +45,3 @@ const imageProps = featured_image && typeof featured_image === 'object' ? featur
 <script>
   import './event-teaser.js';
 </script>
-
-<style lang="scss">
-  @use './event-teaser.scss';
-</style>

@@ -11,7 +11,6 @@ import {
 import contentListingStylesHref from './content-listing.scss?url';
 import eventTeaserStylesHref from '../event-teaser/event-teaser.scss?url';
 import articleTeaserStylesHref from '../article-teaser/article-teaser.scss?url';
-import 'blaze-slider/dist/blaze.css';
 
 const env = import.meta.env || {};
 const mode = process.env.MODE || 'development';
@@ -24,6 +23,7 @@ const defaultCmsUrl = (
 const {
   class: className,
   title = '',
+  showCount = false,
   ariaLabel = CONTENT_LISTING_DEFAULTS.ariaLabel,
   busy = false,
   items = [],
@@ -73,6 +73,9 @@ const normalizeSlidesPerPage = (value: unknown, fallback: number) => {
 };
 ---
 
+<link rel="stylesheet" href={eventTeaserStylesHref} />
+<link rel="stylesheet" href={articleTeaserStylesHref} />
+<link rel="stylesheet" href={contentListingStylesHref} />
 {itemCount > 0 && (
   <content-listing
     id={mountId}
@@ -88,6 +91,7 @@ const normalizeSlidesPerPage = (value: unknown, fallback: number) => {
     }
   >
     {title && <h2 class="content-listing__title">{title}</h2>}
+    {showCount && <p class="content-listing__count">Displaying {itemCount} {itemCount === 1 ? 'item' : 'items'}.</p>}
 
     {isSlider === true ? (
       <div class="blaze-container">
@@ -99,12 +103,12 @@ const normalizeSlidesPerPage = (value: unknown, fallback: number) => {
             aria-label={ariaLabel}
             aria-busy={busy ? 'true' : 'false'}
           >
-            {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
-            {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
+            {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} includeStyles={false} />)}
+            {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} includeStyles={false} />)}
           </section>
         </div>
-        <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
-        <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
+        <button type="button" class="blaze-prev"><span>Previous!</span></button>
+        <button type="button" class="blaze-next"><span>Next!</span></button>
         <div class="blaze-pagination"></div>
       </div>
     ) : (
@@ -115,8 +119,8 @@ const normalizeSlidesPerPage = (value: unknown, fallback: number) => {
         aria-label={ariaLabel}
         aria-busy={busy ? 'true' : 'false'}
       >
-        {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} />)}
-        {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} />)}
+        {eventItems.map((item: any) => <EventTeaser class="content-listing__item content-listing__item--event" {...item} includeStyles={false} />)}
+        {articleItems.map((item: any) => <ArticleTeaser class="content-listing__item content-listing__item--article" {...item} includeStyles={false} />)}
       </section>
     )}
     {(isSlider === true || hasRenderableCta) && (
@@ -131,7 +135,3 @@ const normalizeSlidesPerPage = (value: unknown, fallback: number) => {
 <script>
   import './content-listing.js';
 </script>
-
-<style lang="scss">
-  @use './content-listing.scss';
-</style>

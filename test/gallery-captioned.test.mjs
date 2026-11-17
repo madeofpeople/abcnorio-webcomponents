@@ -4,7 +4,7 @@ import test from 'node:test';
 
 test('captioned gallery retains slider markup and provides caption layout', () => {
   const html = readFileSync(new URL('../dist/gallery/captioned.html', import.meta.url), 'utf8');
-  const css = readFileSync(new URL('../dist/styles/component-fixtures.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../dist/styles/gallery.css', import.meta.url), 'utf8');
   const editor = readFileSync(new URL('../dist/styles/editor/gallery.css', import.meta.url), 'utf8');
   const sizes = JSON.parse(readFileSync(new URL('../src/components/wp-blocks/gallery/image-sizes.json', import.meta.url), 'utf8'));
 

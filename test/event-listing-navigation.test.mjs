@@ -25,27 +25,36 @@ class Element {
   set innerHTML(value) { if (value === '') this.children = []; }
 }
 
-test('Event slider dots navigate and hide arrows at edges', async () => {
+async function loadListing(component, context, Slider) {
+  const load = async (url) => {
+    const module = new vm.SourceTextModule(await readFile(url, 'utf8'), { context, identifier: url.href });
+    await module.link((specifier, parent) => {
+      if (specifier === 'blaze-slider') {
+        return new vm.SyntheticModule(['default'], function () { this.setExport('default', Slider); }, { context });
+      }
+      if (specifier === '@util/breakpoints') {
+        return new vm.SyntheticModule(['bp'], function () {
+          this.setExport('bp', (key) => ({ xs: 425, sm: 720, md: 1024, lg: 1250 })[key]);
+        }, { context });
+      }
+      return load(new URL(specifier, parent.identifier));
+    });
+    return module;
+  };
+  const module = await load(new URL(`../src/components/${component}/${component}.js`, import.meta.url));
+  await module.evaluate();
+  return module;
+}
+
+for (const [component, className] of [['event-listing', 'EventListing'], ['content-listing', 'ContentListing']]) {
+test(`${component} dots navigate and hide arrows at edges`, async () => {
   const context = vm.createContext({
     HTMLElement: Element,
     document: { createElement: () => new Element() },
     customElements: { get: () => true, define() {} },
   });
-  const source = await readFile(new URL('../src/components/event-listing/event-listing.js', import.meta.url), 'utf8');
-  const module = new vm.SourceTextModule(source, { context });
-  await module.link((specifier) => {
-    if (specifier === 'blaze-slider') {
-      return new vm.SyntheticModule(['default'], function () { this.setExport('default', class {}); }, { context });
-    }
-    if (specifier === '@util/breakpoints') {
-      return new vm.SyntheticModule(['bp'], function () {
-        this.setExport('bp', (key) => ({ xs: 450, sm: 720, md: 1024, lg: 1250 })[key]);
-      }, { context });
-    }
-    throw new Error(`Unexpected dependency: ${specifier}`);
-  });
-  await module.evaluate();
-  const listing = new module.namespace.EventListing();
+  const module = await loadListing(component, context, class {});
+  const listing = new module.namespace[className]();
   const previous = new Element();
   const next = new Element();
   const dots = new Element();
@@ -78,7 +87,7 @@ test('Event slider dots navigate and hide arrows at edges', async () => {
   assert.equal(next.attributes.get('aria-hidden'), 'false');
 });
 
-test('slider refreshes navigation on resize and cleans up on replacement', async () => {
+test(`${component} refreshes navigation on resize and cleans up on replacement`, async () => {
   const listeners = new Map();
   const timers = new Map();
   let nextTimer = 0;
@@ -113,21 +122,8 @@ test('slider refreshes navigation on resize and cleans up on replacement', async
     setTimeout(callback) { const id = ++nextTimer; timers.set(id, callback); return id; },
     clearTimeout(id) { timers.delete(id); },
   });
-  const source = await readFile(new URL('../src/components/event-listing/event-listing.js', import.meta.url), 'utf8');
-  const module = new vm.SourceTextModule(source, { context });
-  await module.link((specifier) => {
-    if (specifier === 'blaze-slider') {
-      return new vm.SyntheticModule(['default'], function () { this.setExport('default', Slider); }, { context });
-    }
-    if (specifier === '@util/breakpoints') {
-      return new vm.SyntheticModule(['bp'], function () {
-        this.setExport('bp', (key) => ({ xs: 450, sm: 720, md: 1024, lg: 1250 })[key]);
-      }, { context });
-    }
-    throw new Error(`Unexpected dependency: ${specifier}`);
-  });
-  await module.evaluate();
-  const listing = new module.namespace.EventListing();
+  const module = await loadListing(component, context, Slider);
+  const listing = new module.namespace[className]();
   const previous = new Element();
   const next = new Element();
   const dots = new Element();
@@ -139,13 +135,14 @@ test('slider refreshes navigation on resize and cleans up on replacement', async
   })[selector];
   listing.dataset.slidesPerPage = '1';
   listing.dataset.slidesPerPageXs = '2';
-  listing.dataset.slidesPerPageSm = '3';
+  listing.dataset.slidesPerPageSm = '2.333';
   listing.dataset.slidesPerPageMd = '4';
   listing.dataset.slidesPerPageLg = '5';
   listing.connectedCallback();
   const slider = listing.slider;
   assert.equal(slider.passedConfig.all.slidesToShow, 1);
-  assert.equal(slider.passedConfig['(min-width: 720px)'].slidesToShow, 3);
+  assert.equal(slider.passedConfig['(min-width: 720px)'].slidesToShow, 2.333);
+  assert.equal(slider.passedConfig['(min-width: 720px)'].slidesToScroll, 2);
   assert.equal(slider.passedConfig['(min-width: 1250px)'].slidesToShow, 5);
   assert.equal(dots.children.length, 2);
   assert.equal(slider.callbacks.size, 1);
@@ -171,7 +168,8 @@ test('slider refreshes navigation on resize and cleans up on replacement', async
   listing.dataset.sliderPreset = 'content-width';
   listing.connectedCallback();
   assert.notEqual(listing.slider, slider);
-  assert.equal(listing.slider.passedConfig['(min-width: 720px)'].slidesToShow, 2);
+  assert.equal(listing.slider.passedConfig['(min-width: 720px)'].slidesToShow, component === 'event-listing' ? 2 : 3);
   assert.equal(listing.slider.passedConfig['(min-width: 1024px)'].slidesToShow, 3);
   assert.equal(listing.slider.passedConfig['(min-width: 1250px)'].slidesToShow, 4);
 });
+}

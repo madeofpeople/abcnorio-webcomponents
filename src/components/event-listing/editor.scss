@@ -1,22 +1,44 @@
 @use '@tokens/breakpoints';
 
+.editor-styles-wrapper .wp-block-abcnorio-event-listing .event-listing {
+  display: block;
+}
+
 .editor-styles-wrapper .wp-block-abcnorio-event-listing .event-listing.card-grid {
+  --listing-preview-default-columns: 1;
+
+  @media (min-width: breakpoints.get(xs)) {
+    --listing-preview-default-columns: 2;
+  }
+
+  @media (min-width: breakpoints.get(sm)) {
+    --listing-preview-default-columns: 3;
+  }
+
+  @media (min-width: breakpoints.get(lg)) {
+    --listing-preview-default-columns: 4;
+
+    &.grid-3 {
+      --listing-preview-default-columns: 3;
+    }
+  }
+
   &.grid-3,
   &.grid-4,
   & {
     .teaser-list {
-      grid-template-columns: repeat(var(--listing-preview-columns), minmax(0, 1fr));
+      grid-template-columns: repeat(var(--listing-preview-columns, var(--listing-preview-default-columns)), minmax(0, 1fr));
     }
 
   }
 }
 
 .editor-styles-wrapper .wp-block-abcnorio-event-listing .event-listing.blaze-slider {
-  --listing-preview-slides-current: var(--listing-preview-slides);
+  --listing-preview-slides-current: var(--listing-preview-slides, 1);
 
-  @each $breakpoint in (xs, sm, md, lg) {
+  @each $breakpoint, $slides in (xs: 2, sm: 3, md: 4, lg: 3.5) {
     @media (min-width: breakpoints.get($breakpoint)) {
-      --listing-preview-slides-current: var(--listing-preview-slides-#{$breakpoint});
+      --listing-preview-slides-current: var(--listing-preview-slides-#{$breakpoint}, #{$slides});
     }
   }
 

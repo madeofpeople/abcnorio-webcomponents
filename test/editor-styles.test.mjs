@@ -24,3 +24,13 @@ test('editor styles are separate assets, not frontend dependencies', () => {
     }
   }
 });
+
+test('both listing previews apply column changes before server markup refreshes', () => {
+  for (const id of ['event-listing', 'content-listing']) {
+    const css = readFileSync(new URL(`../dist/styles/editor/${id}.css`, import.meta.url), 'utf8');
+    for (const variant of ['', '.grid-3', '.grid-4']) {
+      assert.ok(css.includes(`.${id}.card-grid${variant} .teaser-list`), `${id}${variant} must support immediate grid preview changes`);
+    }
+    assert.match(css, /grid-template-columns:repeat\(var\(--listing-preview-columns,/);
+  }
+});

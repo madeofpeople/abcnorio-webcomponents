@@ -2,6 +2,13 @@
 @use "../breakpoints";
 @use '../../components/button/button-rules' as buttons;
 
+@function child-selector($selector, $scoped) {
+    @if $scoped {
+        @return ':global(#{$selector})';
+    }
+    @return $selector;
+}
+
 @mixin slide-count($attribute) {
     @each $count in 1, 2, 3, 3.5, 4, 5, 6 {
         &[#{$attribute}="#{$count}"] {
@@ -10,21 +17,21 @@
     }
 }
 
-@mixin slider($global-arrows: false) {
+@mixin slider($global-arrows: false, $scoped: true) {
 
     --slides-to-show: 1;
     --slide-gap: 1rem;
     direction: ltr;
 
-    :global(.blaze-container) {
+    #{child-selector('.blaze-container', $scoped)} {
         position: relative;
     }
 
-    :global(.blaze-track-container) {
+    #{child-selector('.blaze-track-container', $scoped)} {
         overflow: hidden;
     }
 
-    :global(.blaze-track) {
+    #{child-selector('.blaze-track', $scoped)} {
         display: flex;
         gap: var(--slide-gap);
         box-sizing: border-box;
@@ -36,7 +43,7 @@
         );
     }
 
-    :global(.blaze-track > *) {
+    #{child-selector('.blaze-track > *', $scoped)} {
         box-sizing: border-box;
         width: var(--slide-width);
         flex-shrink: 0;
@@ -62,7 +69,7 @@
 
     // Teaser max-width/height would leave slides narrower than blaze's computed
     // width, so neighbouring slides peek in. :global because teasers are child components.
-    .blaze-track > :global(*) {
+    .blaze-track > #{child-selector('*', $scoped)} {
         max-width: none;
         max-height: none;
     }
@@ -85,7 +92,7 @@
         padding-bottom: 0.5rem;
     }
 
-    :global(button.blaze-slide-dot) {
+    #{child-selector('button.blaze-slide-dot', $scoped)} {
         box-sizing: border-box;
         width: 0.875rem;
         height: 0.875rem;
@@ -103,9 +110,9 @@
         }
     }
 
-    :global(button.blaze-slide-dot:hover),
-    :global(button.blaze-slide-dot.active),
-    :global(button.blaze-slide-dot.is-active) {
+    #{child-selector('button.blaze-slide-dot:hover', $scoped)},
+    #{child-selector('button.blaze-slide-dot.active', $scoped)},
+    #{child-selector('button.blaze-slide-dot.is-active', $scoped)} {
         background: var(--color-text);
         border: 2px var(--color-text) solid;
     }
@@ -138,6 +145,9 @@
         color: var(--color-page-bg);
         width: 3rem;
         height: 3rem;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
         text-decoration: none;
         display: inline-block;
 

@@ -1,5 +1,6 @@
 @use "mixins/layout";
 @use "mixins/slider";
+@use "blaze-slider/dist/blaze.css";
 
 .content-listing {
   display: block;
@@ -25,7 +26,7 @@
   }
   
   &.blaze-slider {
-    @include slider.slider();
+    @include slider.slider($scoped: false);
   }
 }
 

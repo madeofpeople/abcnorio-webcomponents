@@ -50,8 +50,7 @@
     "src": "src/components/content-listing/content-listing.js",
     "isEntry": true,
     "imports": [
-      "_breakpoints-sWZgTKLh.js",
-      "_carousel-hEELMurI.js"
+      "_listing-slider-DhHhkQqx.js"
     ]
   },
   "src/components/event-listing/event-listing.js": {
@@ -60,8 +59,7 @@
     "src": "src/components/event-listing/event-listing.js",
     "isEntry": true,
     "imports": [
-      "_breakpoints-sWZgTKLh.js",
-      "_carousel-hEELMurI.js"
+      "_listing-slider-DhHhkQqx.js"
     ]
   },
   "src/components/event-teaser/event-teaser.js": {
@@ -105,5 +103,12 @@
     "name": "wp-blocks/hero",
     "src": "src/components/wp-blocks/hero/hero.js",
     "isEntry": true
+  },
+  "_listing-slider-DhHhkQqx.js": {
+    "file": "chunks/listing-slider-DhHhkQqx.js",
+    "name": "listing-slider",
+    "imports": [
+      "_breakpoints-sWZgTKLh.js"
+    ]
   }
 }

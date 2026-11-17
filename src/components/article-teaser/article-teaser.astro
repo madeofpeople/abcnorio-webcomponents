@@ -1,4 +1,6 @@
 ---
+import stylesHref from './article-teaser.scss?url';
+
 const {
   class: className,
   href = '#',
@@ -6,12 +8,15 @@ const {
   dateLabel = '',
   dateTime = '',
   featured_image = null,
-  excerpt,
+  excerpt = '',
+  includeStyles = true,
 } = Astro.props;
 
 const imageProps = featured_image && typeof featured_image === 'object' ? featured_image : null;
+const excerptHtml = typeof excerpt === 'string' ? excerpt : excerpt?.rendered || '';
 ---
 
+{includeStyles && <link rel="stylesheet" href={stylesHref} />}
 <article-teaser
   class:list={[
     'article-teaser',
@@ -52,7 +57,7 @@ const imageProps = featured_image && typeof featured_image === 'object' ? featur
 
     <div class="article-teaser__content">
       <h3 class="article-teaser__title" set:html={title} />
-      <div class="article-teaser__excerpt" set:html={excerpt.rendered} />
+      <div class="article-teaser__excerpt" set:html={excerptHtml} />
     </div>
   </a>
 </article-teaser>
@@ -60,7 +65,3 @@ const imageProps = featured_image && typeof featured_image === 'object' ? featur
 <script>
   import "./article-teaser.js";
 </script>
-
-<style lang="scss">
-  @use "./article-teaser.scss";
-</style>

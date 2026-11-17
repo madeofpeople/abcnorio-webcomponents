@@ -3,13 +3,13 @@
 @use "mixins/layout";
 @use "mixins/slider";
 @use "../pagination/pagination.scss";
+@use "blaze-slider/dist/blaze.css";
 
 $event-teaser-out-duration: 0.2s;
 $event-teaser-in-duration: 0.2s;
 $stagger-count: 22;
 $stagger-step: 23ms;
 
-:global {
   @keyframes event-teaser-in {
     from {
       opacity: 0;
@@ -37,9 +37,8 @@ $stagger-step: 23ms;
       filter: blur(0.35rem);
     }
   }
-}
 
-:global(event-listing[data-component="abcnorio/event-listing"] event-teaser) {
+event-listing[data-component="abcnorio/event-listing"] event-teaser {
   position: relative;
   overflow: hidden;
   opacity: 1;
@@ -51,13 +50,13 @@ $stagger-step: 23ms;
   transition-delay: 0ms;
 }
 
-:global(event-listing[data-component="abcnorio/event-listing"].htmx-swapping event-teaser),
-:global(.htmx-swapping event-listing[data-component="abcnorio/event-listing"] event-teaser) {
+event-listing[data-component="abcnorio/event-listing"].htmx-swapping event-teaser,
+.htmx-swapping event-listing[data-component="abcnorio/event-listing"] event-teaser {
   animation: event-teaser-out $event-teaser-out-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-:global(event-listing[data-component="abcnorio/event-listing"].htmx-added event-teaser),
-:global(.htmx-added event-listing[data-component="abcnorio/event-listing"] event-teaser) {
+event-listing[data-component="abcnorio/event-listing"].htmx-added event-teaser,
+.htmx-added event-listing[data-component="abcnorio/event-listing"] event-teaser {
   animation: event-teaser-in $event-teaser-in-duration cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
@@ -82,7 +81,7 @@ $stagger-step: 23ms;
   }
 
   &.blaze-slider {
-    @include slider.slider();
+    @include slider.slider($scoped: false);
 
     &.few-items .blaze-track {
       --slide-width: min(100%, 24rem);

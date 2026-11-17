@@ -35,6 +35,10 @@ export default {
     props: {
       title: 'Featured content',
       items: defaultItems,
+      showCount: true,
+      hasCta: true,
+      ctaLabel: 'More content',
+      ctaUrl: '/articles/',
     },
   },
   slider: {
@@ -42,6 +46,10 @@ export default {
       title: 'Featured content',
       items: defaultItems,
       isSlider: true,
+      showCount: true,
+      hasCta: true,
+      ctaLabel: 'More content',
+      ctaUrl: '/articles/',
     },
   },
 };

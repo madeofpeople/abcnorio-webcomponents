@@ -2,6 +2,7 @@
 /* this file adapts data from expecting API response to a WP block shape */
 import ContentListing from '../../content-listing/content-listing.astro';
 import { normalizePostType } from '../../../util/normalize-post-type.js';
+import { contentListingUrl } from './content-list-request.js';
 
 const {
   attributes = {},
@@ -22,46 +23,21 @@ const hasCta = Boolean(blockData?.hasCta ?? blockData?.has_cta ?? false);
 const ctaLabel = String(blockData?.ctaLabel ?? blockData?.cta_label ?? '').trim();
 const ctaUrl = String(blockData?.ctaUrl ?? blockData?.cta_url ?? '').trim();
 
-function toList(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value.map((entry) => String(entry)).filter(Boolean);
-  }
-
-  if (typeof value === 'string') {
-    return value
-      .split(',')
-      .map((entry) => entry.trim())
-      .filter(Boolean);
-  }
-
-  if (value && typeof value === 'object') {
-    return Object.values(value).map((entry) => String(entry)).filter(Boolean);
-  }
-
-  return [];
+const endpoint = contentListingUrl(restPath, blockData);
+const response = await fetch(endpoint, { signal: AbortSignal.timeout(12000) });
+if (!response.ok) {
+  throw new Error(`Content listing request failed: HTTP ${response.status}.`);
 }
-
-const postTypes = toList(blockData?.listing_post_types ?? blockData?.listingPostTypes);
-const tags = toList(blockData?.listing_tag_filter ?? blockData?.listingTagFilter);
-const count = Math.max(1, parseInt(String(blockData?.listing_count ?? blockData?.listingCount ?? '5'), 10) || 5);
-
-const params = new URLSearchParams();
-if (postTypes.length > 0) params.set('post_types', postTypes.join(','));
-if (tags.length > 0) params.set('tags', tags.join(','));
-params.set('count', String(count));
-
-const apiRoot = cmsUrl ? `${String(cmsUrl).replace(/\/$/, '')}/wp-json/` : '';
-const endpoint = apiRoot ? `${apiRoot}abcnorio/v1/content-listing${params.size ? `?${params.toString()}` : ''}` : '';
-const response = endpoint ? await fetch(endpoint).catch(() => null) : null;
-const rawItems = response?.ok ? await response.json() : [];
-
-const items = Array.isArray(rawItems)
-  ? rawItems.map((item) => normalizePostType(item))
-  : [];
+const rawItems = await response.json();
+if (!Array.isArray(rawItems)) {
+  throw new Error('Content listing response must be an array.');
+}
+const items = rawItems.map((item) => normalizePostType(item));
 ---
 <ContentListing
   class={blockData?.className}
   title={title}
+  showCount={Boolean(blockData?.showCount)}
   items={items}
   isSlider={resolvedIsSlider}
   variant={blockData?.variant}
@@ -76,4 +52,5 @@ const items = Array.isArray(rawItems)
   ctaUrl={ctaUrl}
   articleHrefBase={articleHrefBase}
   eventHrefBase={eventHrefBase}
+  cmsUrl={cmsUrl}
 />

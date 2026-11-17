@@ -1,5 +1,5 @@
 ---
-import './group.scss';
+import stylesHref from './group.scss?url';
 const {
   component: _component,
   attributes,
@@ -20,6 +20,7 @@ const recursiveProps = {
   Block: RecursiveBlock,
 };
 ---
+<link rel="stylesheet" href={stylesHref} />
 <Tag class:list={['wp-block-group', attributes?.className, layoutClasses]}>
   {RecursiveBlock  && innerBlocks?.map((block: any) => (
     <RecursiveBlock

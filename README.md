@@ -22,9 +22,47 @@ Announcement Tout shares Sass mixins between its normal stylesheet and
 `editor.scss`, preserving editor selector specificity without duplicating
 declarations.
 
-Event/Content Listing editor wrappers expose responsive `--listing-preview-slides*`
-values from block settings. Their editor styles preserve configured card widths
+Event/Content Listing editor styles accept responsive `--listing-preview-slides*`
+overrides and supply defaults matching their components. They preserve card widths
 when Blaze clamps its slide count to the number of available items.
+
+## Live WordPress styles (local development)
+
+Hero, group, gallery, event listing, event teaser, content listing and article teaser use portable, component-namespaced
+SCSS. Astro loads these through stylesheet URLs rather than scoped style blocks.
+The same SCSS compiles to separate `styles/<component>.css` assets; it is not also
+bundled into `component-fixtures.css`. Shared slider mixins retain their existing
+Astro-scoped default; these portable entries opt out with `$scoped: false`.
+
+`src/styles/editor-style-entries.js` declares the portable source entries. Manifest
+generation records them in `styleEntries` and adds their packaged CSS to `shared.css`.
+Optional `editor.scss` files continue to use `components[id].editorCss`; migrated
+entries additionally record their editor source in `styleEntries`.
+
+The site frontend's existing Astro/Vite server installs `editorStylesDevPlugin`
+only in development. It serves `/__abcnorio/styles/<component>.css` and
+`/<component>-editor.css` from those source files. No second watcher/server is needed.
+After the one-time build/ingestion for this contract, development WordPress editors
+automatically use the existing `DEV_FRONTEND_URL` environment configuration.
+There is no per-site toggle. Save SCSS and **refresh the editor**; this path
+does not inject Vite's JavaScript client or promise HMR.
+
+WordPress keeps Gutenberg/React in charge of InnerBlocks. Gallery navigation scrolls
+the existing image blocks; it does not initialize the frontend gallery runtime,
+clone images, or open PhotoSwipe. Data/template/JavaScript edits still require their
+normal build workflow. Staging and release builds remain packaged and need no dev server.
+Adding a new live style entry requires restarting the existing Astro process once;
+ordinary SCSS edits still need only an editor refresh.
+
+Event and content listings share slider navigation, responsive refresh and teardown
+in `src/components/_utils/listing-slider.js`. Their breakpoint defaults remain
+component-specific; event listing also owns its HTMX setup.
+
+The WordPress content-list adapter uses the router's server-side `restPath` to fetch
+the custom listing endpoint, including installations in subdirectories. `cmsUrl`
+is for public media URLs, not server-to-server requests. HTTP failures or malformed
+responses are errors, not empty listings. Grid classes `grid-3` and `grid-4` select
+three or four desktop columns; smaller breakpoints remain responsive.
 
 ## Create a component
 

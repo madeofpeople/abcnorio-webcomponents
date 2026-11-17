@@ -23,4 +23,12 @@ export default {
       },
     },
   },
+  'no-image': {
+    props: {
+      href: '/articles/example-article',
+      title: 'Article without an image',
+      dateLabel: 'Jun 10, 2026',
+      excerpt: '',
+    },
+  },
 };

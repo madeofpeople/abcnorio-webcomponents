@@ -49,6 +49,7 @@ $c_gallery-pager--idle: $c-gray--darker;
     --color-filters-panel: #{$c_gray--darker};
     --color-ui-panel: #{$c_gray--darker};
     --color-filter-text: #{$c_gray--lightest};
+    --color-sibling-nav-bg: #{$c_gray--lighter};
     /* teasers */
     --color-teaser-time: #{$c_gray--darkest};
     --color-event-teaser-bg: #{$c_teaser__bg};
@@ -86,6 +87,7 @@ $c_gallery-pager--idle: $c-gray--darker;
         --color-filters-panel: #{$c_gray--darker};
         --color-ui-panel: #{$c_gray--darker};
         --color-filter-text: #{$c_gray--lightest};
+        --color-sibling-nav-bg: #{$c_gray--darkest};
         /* Teasers */
         --color-event-teaser-bg: #{$c_teaser__bg--dark};
         --color-teaser-time: #{$c_teaser__bg};

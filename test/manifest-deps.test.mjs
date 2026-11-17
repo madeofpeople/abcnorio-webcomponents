@@ -11,13 +11,15 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 test('preserves a declared WP dependency even when it is a direct asset', (t) => {
   const project = fs.mkdtempSync(path.join(os.tmpdir(), 'manifest-deps-'));
   t.after(() => fs.rmSync(project, { recursive: true }));
-  for (const dir of ['src/util', 'src/components/sample', 'src/design-tokens', 'dist/elements/.vite']) {
+  for (const dir of ['src/util', 'src/styles', 'src/components/sample', 'src/design-tokens', 'dist/elements/.vite']) {
     fs.mkdirSync(path.join(project, dir), { recursive: true });
   }
   for (const script of ['generate-fixtures-registry.js', 'validate-manifest.js']) {
     fs.copyFileSync(path.join(root, 'src/util', script), path.join(project, 'src/util', script));
   }
   const write = (file, value) => fs.writeFileSync(path.join(project, file), value);
+  write('src/styles/editor-style-entries.js', "export const editorStyleEntries = { sample: { source: 'src/components/sample/sample.scss', editor: 'src/components/sample/editor.scss' } };\n");
+  write('src/components/sample/sample.scss', '.sample { color: blue; }');
   fs.symlinkSync(path.join(root, 'node_modules'), path.join(project, 'node_modules'), 'dir');
   fs.copyFileSync(path.join(root, 'src/design-tokens/_fonts.scss'), path.join(project, 'src/design-tokens/_fonts.scss'));
   fs.mkdirSync(path.join(project, 'dist/assets'));

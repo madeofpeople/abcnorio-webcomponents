@@ -2,9 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
 import * as sass from 'sass-embedded';
+import { editorStyleEntries } from '../styles/editor-style-entries.js';
 
 // Setup paths relative to the execution root
-const distDir = path.resolve('./dist');
+const distDir = path.resolve(process.env.ABCNORIO_COMPONENTS_DIST_DIR || './dist');
 const manifestPath = path.join(distDir, 'manifest.json');
 const legacyManifestPath = path.join(distDir, 'fixtures-manifest.json');
 const elementsManifestPath = path.join(distDir, 'elements', '.vite', 'manifest.json');
@@ -434,6 +435,29 @@ const buildFixtureManifest = (context) => {
 
 const finalizeManifest = (context) => {
   finalizeComponentAssets(context.manifest, context.elementAssets);
+  const sassOptions = {
+    loadPaths: [path.resolve('./src/design-tokens'), path.resolve('./node_modules')],
+    importers: [{
+      findFileUrl(url) {
+        if (url.startsWith('@tokens/')) {
+          return pathToFileURL(path.resolve('./src/design-tokens', url.slice('@tokens/'.length)));
+        }
+        return null;
+      },
+    }],
+    style: 'compressed',
+  };
+  context.manifest.styleEntries = {};
+  for (const [id, entry] of Object.entries(editorStyleEntries)) {
+    const relativePath = `styles/${id}.css`;
+    const css = sass.compile(entry.source, sassOptions).css;
+    if (css.includes(':global') || css.includes('data-astro-cid-')) {
+      fail(`Portable stylesheet ${id} contains Astro-only selectors.`);
+    }
+    fs.writeFileSync(path.join(distDir, relativePath), css);
+    context.manifest.styleEntries[id] = { css: relativePath, source: entry.source };
+    context.manifest.shared.css.push(relativePath);
+  }
   for (const fixtureModulePath of collectFixtureModuleEntries(fixtureSourceDir)) {
     const source = path.join(fixtureSourceDir, path.dirname(fixtureModulePath), 'editor.scss');
     if (!fs.existsSync(source)) {
@@ -446,21 +470,15 @@ const finalizeManifest = (context) => {
       fail(`Editor styles have no fixture component: ${componentId}`);
     }
     const relativePath = `styles/editor/${componentId}.css`;
-    const css = sass.compile(source, {
-      loadPaths: [path.resolve('./src/design-tokens')],
-      importers: [{
-        findFileUrl(url) {
-          if (url.startsWith('@tokens/')) {
-            return pathToFileURL(path.resolve('./src/design-tokens', url.slice('@tokens/'.length)));
-          }
-          return null;
-        },
-      }],
-      style: 'compressed',
-    }).css;
+    const css = sass.compile(source, sassOptions).css;
     fs.mkdirSync(path.join(distDir, 'styles/editor'), { recursive: true });
     fs.writeFileSync(path.join(distDir, relativePath), css);
     component.editorCss = [relativePath];
+    if (context.manifest.styleEntries[componentId]) {
+      const entry = editorStyleEntries[componentId];
+      context.manifest.styleEntries[componentId].editorCss = relativePath;
+      context.manifest.styleEntries[componentId].editorSource = entry.editor;
+    }
   }
 };
 
@@ -498,7 +516,7 @@ const run = async () => {
     writeManifest,
   ], context);
 
-  console.log('\x1b[32m%s\x1b[0m', '🎉 Successfully generated manifest at: ./dist/manifest.json');
+  console.log(`Successfully generated manifest at: ${manifestPath}`);
 };
 
 run().catch((error) => {

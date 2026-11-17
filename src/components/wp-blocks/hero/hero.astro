@@ -1,4 +1,5 @@
 ---
+import stylesHref from './hero.scss?url';
 const {
   component: _component,
   srcset,
@@ -122,6 +123,4 @@ const imageHeight = Number(imageVariant?.height || attributes?.height) || undefi
   import './hero.js';
 </script>
 
-<style is:global lang="scss">
-  @use './hero.scss';
-</style>
+<link rel="stylesheet" href={stylesHref} />

@@ -1,6 +1,6 @@
 ---
 import imageSizes from './image-sizes.json';
-import 'blaze-slider/dist/blaze.css';
+import stylesHref from './gallery.scss?url';
 
 const {
   component: _component,
@@ -59,6 +59,7 @@ const recursiveProps = {
 
 const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 ---
+<link rel="stylesheet" href={stylesHref} />
 <gallery-listing
   class:list={[galleryClass]}
   data-variant={resolvedVariant}
@@ -123,18 +124,3 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 <script>
   import './gallery.js';
 </script>
-
-<style lang="scss">
-  @use 'mixins/slider';
-  @use 'blaze-slider/dist/blaze.css';
-
-  :global(gallery-listing.gallery) {
-    &.blaze-slider {
-      @include slider.slider();
-    }
-  }
-</style>
-
-<style lang="scss" is:global>
-  @use './gallery.scss';
-</style>

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const html = readFileSync(new URL('../dist/hero.html', import.meta.url), 'utf8');
-const css = readFileSync(new URL('../dist/styles/component-fixtures.css', import.meta.url), 'utf8');
+const css = readFileSync(new URL('../dist/styles/hero.css', import.meta.url), 'utf8');
 const editorCss = readFileSync(new URL('../dist/styles/editor/hero.css', import.meta.url), 'utf8');
 const editorRoot = '.block-editor-iframe__body.editor-styles-wrapper .wp-block-abcnorio-hero';
 

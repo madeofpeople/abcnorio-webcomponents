@@ -15,6 +15,7 @@
     "vendor"
   ],
   "exports": {
+    "./dev/editor-styles": "./src/util/editor-styles-dev.js",
     "./fixtures": "./src/fixtures/index.js",
     "./util/dates": "./src/util/dates.js",
     "./add-to-calendar": "./src/components/add-to-calendar/add-to-calendar.astro",

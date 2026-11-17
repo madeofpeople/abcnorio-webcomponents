@@ -9,7 +9,6 @@ import {
 } from "./event-listing.metadata.js";
 import eventTeaserStylesHref from "../event-teaser/event-teaser.scss?url";
 import eventListingStylesHref from "../event-listing/event-listing.scss?url";
-import 'blaze-slider/dist/blaze.css';
 
 const env = import.meta.env || {};
 const mode = import.meta.env.MODE || 'development';
@@ -145,6 +144,8 @@ const resolvedShowAllLinkHref = String(showAllLinkHref || '').trim() || '/events
 const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View all';
 ---
 
+<link rel="stylesheet" href={eventListingStylesHref} />
+<link rel="stylesheet" href={eventTeaserStylesHref} />
 {itemCount > 0 && (
   <event-listing
     id={mountId}
@@ -173,13 +174,13 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
             aria-label={ariaLabel}
             aria-busy={busy ? "true" : "false"}
           >
-            {normalizedItems.map((item) => <EventTeaser {...item} />)}
+            {normalizedItems.map((item) => <EventTeaser {...item} includeStyles={false} />)}
           </section>
 
         </div>
 
-        <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>
-        <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>
+        <button type="button" class="blaze-prev"><span>Previous!</span></button>
+        <button type="button" class="blaze-next"><span>Next!</span></button>
         <div class="blaze-pagination"></div>
       </div>
     ):(
@@ -190,7 +191,7 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
       aria-label={ariaLabel}
       aria-busy={busy ? "true" : "false"}
     >
-      {normalizedItems.map((item) => <EventTeaser {...item} />)}
+      {normalizedItems.map((item) => <EventTeaser {...item} includeStyles={false} />)}
       </section>
 
     )}
@@ -211,7 +212,7 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
     {(isSlider === true || showAllLink === true) && (
       <div class="actions">
         {showAllLink === true && (
-          <button href={resolvedShowAllLinkHref} class="show-all button">{resolvedShowAllLinkLabel}</button>
+          <a href={resolvedShowAllLinkHref} class="show-all button">{resolvedShowAllLinkLabel}</a>
         )}
         {isSlider === true && <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
       </div>
@@ -222,7 +223,3 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
 <script>
   import "./event-listing.js";
 </script>
-
-<style lang="scss">
-  @use "./event-listing.scss";
-</style>

@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
+import { editorStyleEntries } from '../styles/editor-style-entries.js';
 
-const distDir = path.resolve('./dist');
+const distDir = path.resolve(process.env.ABCNORIO_COMPONENTS_DIST_DIR || './dist');
 const manifestPath = path.join(distDir, 'manifest.json');
 const gallerySizesPath = path.join(distDir, 'gallery-image-sizes.json');
 const fixtureSourceDir = path.resolve('./src/components');
@@ -224,6 +225,22 @@ const checkManifestShape = ({ manifest }) => {
   assertObject(manifest.components, 'manifest.components');
   assertObject(manifest.fixtures, 'manifest.fixtures');
   assertObject(manifest.shared, 'manifest.shared');
+  assertObject(manifest.styleEntries, 'manifest.styleEntries');
+  for (const [id, entry] of Object.entries(editorStyleEntries)) {
+    const built = manifest.styleEntries[id];
+    assertObject(built, `styleEntries.${id}`);
+    if (built.source !== entry.source || built.css !== `styles/${id}.css`
+      || (entry.editor && (built.editorSource !== entry.editor || built.editorCss !== `styles/editor/${id}.css`))) {
+      fail(`Invalid source/asset mapping for portable styles: ${id}`);
+    }
+    if (!manifest.shared.css.includes(built.css) || !fs.existsSync(path.join(distDir, built.css))) {
+      fail(`Portable stylesheet missing from shared assets: ${id}`);
+    }
+    const css = fs.readFileSync(path.join(distDir, built.css), 'utf8');
+    if (css.includes(':global') || css.includes('data-astro-cid-')) {
+      fail(`Portable stylesheet contains Astro-only selectors: ${id}`);
+    }
+  }
 };
 
 const checkFixtures = ({ manifest, fileExists, assertAssetFilesExist }) => {

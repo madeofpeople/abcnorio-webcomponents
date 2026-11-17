@@ -1,4 +1,6 @@
 @use "@tokens/breakpoints";
+@use "mixins/slider";
+@use "blaze-slider/dist/blaze.css";
 
 $slide-duration: 0.2s;
 
@@ -111,6 +113,8 @@ gallery-listing.gallery {
   }
 
   &.blaze-slider {
+    @include slider.slider($scoped: false);
+
     background-color: var(--color-gray--darkest);
     margin-bottom: 0;
     padding-top: 2rem;
