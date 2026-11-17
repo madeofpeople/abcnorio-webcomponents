@@ -93,6 +93,19 @@ components and WP block wrappers.
 
 ## Preview and build
 
+Git and the package contain buildable source, not generated `dist` or duplicate
+public font files. After `npm ci`, `npm run build` generates those locally.
+There is no install-time build hook. Astro consumers compile source imports
+directly, including workshop fixtures; WordPress plugin builds explicitly run
+this package's build before copying its output into the release.
+Canonical fonts remain under `src/design-tokens/fonts`; `prebuild` copies them
+to `public/assets`. The patched third-party slider archive in `vendor` is a
+dependency input, not this project's generated output.
+
+Commit/push source, then use `just wc-pin` from the meta repo to update both
+consumers' Git lockfile pins. No tarball hosting, registry or extra publishing
+step is needed. Version builds validate output but never stage it.
+
 Gallery includes a `captioned` variant ("Captioned Gallery" in WordPress).
 It uses slider navigation, renders each image in a figure with its optional
 caption beneath, and does not initialize PhotoSwipe. Captions use the existing

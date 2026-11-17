@@ -1,5 +1,7 @@
 # generated types
 .astro/
+dist/
+public/assets/*.woff2
 .vscode
 
 # dependencies

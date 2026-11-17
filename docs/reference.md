@@ -25,15 +25,16 @@ Use `npm run build` as the canonical artifact build command for ingestion.
 
 ## Package Consumer Contract
 
-- Package installs are expected to expose prebuilt library artifacts under [dist](../dist).
-- Required artifact for downstream ingestion is [dist/manifest.json](../dist/manifest.json).
+- Package installs expose buildable source and build configuration, without generated dist or an install-time build hook.
+- Astro compiles source imports directly; WordPress plugin builds explicitly run the installed package's `npm run build` before ingestion.
+- Required generated artifact for downstream ingestion is [dist/manifest.json](../dist/manifest.json). Neither original nor ingested dist is committed.
 - Manifest schema per component: `id`, `fixtures`, `css`, `js`, `deps`.
 - Fixtures explicitly declare assets needed by WordPress via `export const metadata = { deps: { css: [], js: [] } }`. The manifest `deps` list preserves these paths, including assets also listed under `css` or `js`.
 - WordPress enqueues declared dependencies when its block requests them. Declared JS files are loaded as ES modules; use dist-relative paths. Astro loads component scripts independently.
 - Event Listing declares its slider module for the WordPress editor preview; Gallery does not load its frontend module in WordPress.
 - Gallery uses its own editor controls and does not request the frontend gallery script in WordPress.
 - Runtime shared CSS remains available at [dist/styles/components.css](../dist/styles/components.css) when emitted.
-- Consumers should ingest from package dist and should not execute package-internal build utilities.
+- Consumers use the package's public `npm run build` command, then ingest its generated dist; do not invoke individual internal utilities.
 
 ### WP Block Ingestion Contract
 
