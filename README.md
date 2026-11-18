@@ -28,6 +28,17 @@ when Blaze clamps its slide count to the number of available items.
 
 ## Shared WordPress styles and local development
 
+Group children in flex rows preserve Gutenberg's `style.layout.selfStretch`:
+Fit uses intrinsic sizing, Grow takes available space, Max uses `flexSize` but
+can shrink, and Fixed uses `flexSize` without shrinking. Unconfigured children
+fit their content rather than automatically taking equal shares of the row.
+Fixed widths can intentionally overflow a narrow no-wrap row.
+
+Core images use the selected resolution (`sizeSlug`) and responsive image variants,
+and preserve custom width/height, aspect ratio, scale (cover/contain) and native
+focal point on both captioned and uncaptioned images. Focal point positions the
+image inside its crop; it does not change the source file.
+
 Hero, group, gallery, event listing, event teaser, content listing and article teaser use portable, component-namespaced
 SCSS. Astro loads these through stylesheet URLs rather than scoped style blocks.
 The same SCSS compiles to separate `styles/<component>.css` assets; it is not also

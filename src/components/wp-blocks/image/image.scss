@@ -23,5 +23,6 @@ figure.wp-block-image:has(> figcaption):not(.gallery__image):not(:where(gallery-
         line-height: 1.5;
         padding: 1rem 0.5rem 0.5rem 0.5rem;
         font-size: 0.875rem;
+        color: var(--color-gray--darkest);
     }
 }

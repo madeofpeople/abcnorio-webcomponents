@@ -93,6 +93,38 @@ const height = explicitHeight || (
     : undefined
 );
 
+const focalPoint = attributes?.focalPoint;
+// VIP exposes intrinsic dimensions separately from Gutenberg's resize controls.
+const hasIntrinsicDimensions = attributes?.['resize-width'] !== undefined
+  || attributes?.['resize-height'] !== undefined
+  || (typeof attributes?.width === 'number' && typeof attributes?.height === 'number'
+    && Boolean(attributes?.sizes_data));
+const displayWidth = attributes?.['resize-width']
+  ?? (hasIntrinsicDimensions ? undefined : attributes?.width);
+const displayHeight = attributes?.['resize-height']
+  ?? (hasIntrinsicDimensions ? undefined : attributes?.height);
+const childLayout = attributes?.style?.layout;
+const sizing = childLayout?.selfStretch;
+const childStyle = ['fit', 'fill', 'fixed', 'fixedNoShrink'].includes(sizing) ? {
+  flexGrow: sizing === 'fill' ? 1 : 0,
+  flexShrink: sizing === 'fixedNoShrink' ? 0 : 1,
+  flexBasis: ['fixed', 'fixedNoShrink'].includes(sizing) ? childLayout.flexSize : 'auto',
+  boxSizing: 'border-box',
+} : {};
+const objectPosition = focalPoint
+  && Number.isFinite(focalPoint.x) && Number.isFinite(focalPoint.y)
+  ? `${Math.min(1, Math.max(0, focalPoint.x)) * 100}% ${Math.min(1, Math.max(0, focalPoint.y)) * 100}%`
+  : undefined;
+const displayStyle = {
+  width: typeof displayWidth === 'number' ? `${displayWidth}px` : displayWidth,
+  height: displayHeight
+    ? (typeof displayHeight === 'number' ? `${displayHeight}px` : displayHeight)
+    : 'auto',
+  aspectRatio: attributes?.aspectRatio,
+  objectFit: attributes?.scale,
+  objectPosition,
+};
+
 const sizes = rawSizes || undefined;
 const lightboxSrc = resolveWordPressImageUrl(attributes?.lightboxSrc);
 const lightboxWidth = Number(attributes?.lightboxWidth) || undefined;
@@ -108,12 +140,14 @@ const target = attributes?.linkTarget;
 const rel = attributes?.rel;
 const Link = href ? 'a' : Fragment;
 const linkProps = href ? { href, target, rel } : {};
+const imageStyle = { ...displayStyle, ...(!caption && !href ? childStyle : {}) };
 ---
 
 {src && caption && (
-  <figure class:list={["abcnorio-image", additionalClasses, attributes?.className]}>
+  <figure class:list={["abcnorio-image", additionalClasses, attributes?.className]} style={childStyle}>
     <Link {...linkProps}>
       <img
+        style={displayStyle}
         src={src}
         srcset={rawSrcset || undefined}
         sizes={sizes}
@@ -132,8 +166,9 @@ const linkProps = href ? { href, target, rel } : {};
 )}
 
 {src && !caption && (
-  <Link {...linkProps}>
+  <Link {...linkProps} {...(href ? { style: childStyle } : {})}>
     <img
+      style={imageStyle}
       class:list={["abcnorio-image", additionalClasses, attributes?.className]}
       src={src}
       srcset={rawSrcset || undefined}

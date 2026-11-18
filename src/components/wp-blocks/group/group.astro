@@ -8,6 +8,15 @@ const {
 } = Astro.props;
 const Tag = attributes?.tagName || 'div';
 const layout = attributes?.layout;
+const childLayout = attributes?.style?.layout;
+const sizing = childLayout?.selfStretch;
+const hasSizing = ['fit', 'fill', 'fixed', 'fixedNoShrink'].includes(sizing);
+const childStyle = hasSizing ? {
+  flexGrow: sizing === 'fill' ? 1 : 0,
+  flexShrink: sizing === 'fixedNoShrink' ? 0 : 1,
+  flexBasis: ['fixed', 'fixedNoShrink'].includes(sizing) ? childLayout.flexSize : 'auto',
+  boxSizing: 'border-box',
+} : undefined;
 const layoutClasses = [
   layout?.type && `is-layout-${layout.type}`,
   layout?.orientation && `is-${layout.orientation}`,
@@ -21,7 +30,7 @@ const recursiveProps = {
 };
 ---
 <link rel="stylesheet" href={stylesHref} />
-<Tag class:list={['wp-block-group', attributes?.className, layoutClasses]}>
+<Tag class:list={['wp-block-group', attributes?.className, layoutClasses]} style={childStyle}>
   {RecursiveBlock  && innerBlocks?.map((block: any) => (
     <RecursiveBlock
       {...recursiveProps}
