@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import { editorStylesDevPlugin } from './src/util/editor-styles-dev.js';
 
 const designTokensRoot = './src/design-tokens';
 
@@ -15,7 +14,6 @@ export default defineConfig({
         port: 3033
     },
     vite: {
-        plugins: [editorStylesDevPlugin(process.cwd())],
         css: {
             preprocessorOptions: {
                 scss: {

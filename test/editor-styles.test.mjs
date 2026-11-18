@@ -19,7 +19,7 @@ test('editor styles are separate assets, not frontend dependencies', () => {
   }
   for (const file of readdirSync(new URL('styles/', dist)).filter((file) => file.endsWith('.css'))) {
     const css = readFileSync(new URL(`styles/${file}`, dist), 'utf8');
-    for (const editorRule of ['--listing-preview-columns', 'abcnorio-gallery-editor', 'abcnorio-form__preview-overlay', 'abcnorio-newsletter-signup__preview-label', 'abcnorio-newsletter-signup__preview-input', 'abcnorio-newsletter-signup__preview-button', '.editor-styles-wrapper .wp-block-buttons', '.block-editor-iframe__body .announcement-tout']) {
+    for (const editorRule of ['--listing-preview-columns', 'abcnorio-gallery-editor', 'abcnorio-form__placeholder', 'abcnorio-newsletter-signup__preview-label', 'abcnorio-newsletter-signup__preview-input', 'abcnorio-newsletter-signup__preview-button', '.editor-styles-wrapper .wp-block-buttons', '.block-editor-iframe__body .announcement-tout']) {
       assert.ok(!css.includes(editorRule), `${file} must exclude ${editorRule}`);
     }
   }

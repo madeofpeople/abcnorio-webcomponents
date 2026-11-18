@@ -4,6 +4,13 @@ export const metadata = {
 };
 
 export default {
+  editor: {
+    props: { editorShell: true },
+    slots: {
+      image: '__EDITOR_SLOT_IMAGE__',
+      default: '__EDITOR_SLOT_CONTENT__',
+    },
+  },
   default: {
     props: {
       attributes: {

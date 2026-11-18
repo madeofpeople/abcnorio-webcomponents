@@ -9,9 +9,8 @@ assert.match(css, /\.abcnorio-form \.field\{(?=[^{}]*display:flex)(?=[^{}]*margi
 assert.match(css, /\.abcnorio-form \.field-group>legend\{[^{}]*clip:rect\(0, 0, 0, 0\)/);
 assert.match(css, /\.abcnorio-form \.field label\{[^{}]*font-family:var\(--font-impact-label-reversed\)/);
 assert.match(css, /\.abcnorio-form textarea,\.abcnorio-form input\{[^{}]*width:100%/);
-assert.match(editorCss, /\.editor-styles-wrapper \.abcnorio-form select\{[^{}]*width:100%/);
-assert.match(editorCss, /\.editor-styles-wrapper \.abcnorio-form\{position:relative\}/);
-assert.match(editorCss, /\.abcnorio-form__preview-overlay\{[^{}]*position:absolute/);
+assert.match(editorCss, /\.editor-styles-wrapper \.abcnorio-form__placeholder\{(?=[^{}]*padding:1rem)(?=[^{}]*border:1px solid currentColor)[^{}]*\}/);
+assert.doesNotMatch(editorCss, /preview-overlay|select/);
 assert.doesNotMatch(css, /:global\(/);
 
-console.log('Public form styles are shared with the editor preview.');
+console.log('Public form styles remain shared; the editor adds inert placeholder framing only.');

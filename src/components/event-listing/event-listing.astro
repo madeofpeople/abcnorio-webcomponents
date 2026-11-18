@@ -48,6 +48,7 @@ type SliderPreset = 'default' | 'content-width';
 const {
   class: className,
   title = '',
+  countLabel = '',
   ariaLabel = EVENT_LISTING_DEFAULTS.ariaLabel,
   busy = false,
   items = [],
@@ -162,6 +163,7 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
     }
   >
     {title && <h2 class="event-listing__title">{title}</h2>}
+    {countLabel && <p class="event-listing__count events__count">{countLabel}</p>}
 
     {isSlider === true ? (
       <div class="blaze-container">

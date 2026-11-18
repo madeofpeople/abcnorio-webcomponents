@@ -6,6 +6,7 @@ const {
   attributes,
   innerBlocks = [],
   additionalClasses = '',
+  editorShell = false,
   ...routerProps
 } = Astro.props;
 
@@ -87,9 +88,10 @@ const imageWidth = Number(imageVariant?.width || attributes?.width) || undefined
 const imageHeight = Number(imageVariant?.height || attributes?.height) || undefined;
 
 ---
-<div class:list={["abcnorio-hero", variant !== 'default' ? variant : undefined, additionalClasses, attributes?.className]}>
+<div data-editor-root={editorShell ? '' : undefined} class:list={["abcnorio-hero", variant !== 'default' ? variant : undefined, additionalClasses, attributes?.className]}>
 
-<div class="abcnorio-hero__image-wrapper">
+<div class="abcnorio-hero__image-wrapper" data-editor-bind={editorShell ? 'image' : undefined}>
+  <slot name="image">
   {imageSrc && (
     <img
       class="abcnorio-hero__image"
@@ -104,9 +106,11 @@ const imageHeight = Number(imageVariant?.height || attributes?.height) || undefi
       decoding="async"
     />
   )}
+  </slot>
 </div>
   <div class="abcnorio-hero__content-wrapper">
       <div class="abcnorio-hero__content">
+        <slot>
         {RecursiveBlock && innerBlocks.map((block: any) => (
           <RecursiveBlock
             {...recursiveProps}
@@ -115,6 +119,7 @@ const imageHeight = Number(imageVariant?.height || attributes?.height) || undefi
             innerBlocks={block.innerBlocks || null}
           />
         ))}
+        </slot>
       </div>
     </div>
 </div>

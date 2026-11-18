@@ -8,14 +8,15 @@ const {
   title = '',
   source = '',
   sourceUrl = '',
+  editorShell = false,
 } = Astro.props;
 
 const formattedDate = formatDate(String(date));
 ---
-<article class:list={['press-item', className]}>
-  {formattedDate ? <time datetime={formattedDate.datetime}>{formattedDate.label_date}</time> : fallbackDate && <time>{fallbackDate}</time>}
-  {title && <h3>{title}</h3>}
-  {sourceUrl && source ? <p>— <a class="source" href={sourceUrl} target="_blank" rel="noopener">{source}</a></p> : source && <p>— <span class="source">{source}</span></p>}
+<article class:list={['press-item', className]} data-editor-root={editorShell ? '' : undefined}>
+  {editorShell ? <time data-editor-bind="date"></time> : formattedDate ? <time datetime={formattedDate.datetime}>{formattedDate.label_date}</time> : fallbackDate && <time>{fallbackDate}</time>}
+  {(title || editorShell) && <h3 data-editor-bind={editorShell ? 'title' : undefined}>{title}</h3>}
+  {editorShell ? <p>— <span class="source" data-editor-bind="source"></span></p> : sourceUrl && source ? <p>— <a class="source" href={sourceUrl} target="_blank" rel="noopener">{source}</a></p> : source && <p>— <span class="source">{source}</span></p>}
 </article>
 
 <style is:global lang="scss">

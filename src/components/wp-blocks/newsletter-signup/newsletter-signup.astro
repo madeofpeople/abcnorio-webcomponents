@@ -1,9 +1,12 @@
 ---
 import './newsletter-signup.scss';
+import NewsletterPreview from './NewsletterPreview.astro';
 
 const {
   attributes = {},
   cmsUrl = '',
+  preview = false,
+  editorShell = false,
 } = Astro.props;
 
 const header = String(attributes?.header || '').trim();
@@ -14,7 +17,7 @@ const showRequiredIndicator = Boolean(attributes?.showRequiredIndicator ?? true)
 const template = String(attributes?.template || 'default').trim() || 'default';
 
 const apiRoot = cmsUrl ? `${String(cmsUrl).replace(/\/$/, '')}/wp-json/abcnorio/v1/mailchimp` : '';
-const listDataEndpoint = apiRoot ? `${apiRoot}/list-data` : '';
+const listDataEndpoint = !preview && apiRoot ? `${apiRoot}/list-data` : '';
 const submitEndpoint = apiRoot ? `${apiRoot}/submit` : '';
 
 const listDataResponse = listDataEndpoint ? await fetch(listDataEndpoint).catch(() => null) : null;
@@ -271,7 +274,7 @@ for (const block of groupBlocks) {
 }
 ---
 
-<div class:list={["abcnorio-newsletter-signup", attributes?.className]} data-newsletter-signup>
+{preview ? <NewsletterPreview attributes={attributes} editorShell={editorShell} /> : <div class:list={["abcnorio-newsletter-signup", attributes?.className]} data-newsletter-signup>
   {header && <h3 class="abcnorio-newsletter-signup__header">{header}</h3>}
   {subHeader && <p class="abcnorio-newsletter-signup__sub-header">{subHeader}</p>}
 
@@ -398,7 +401,7 @@ for (const block of groupBlocks) {
       <button class="button reversed" type="submit" data-submit-button>{submitText}</button>
     </div>
   </form>
-</div>
+</div>}
 
 <script>
   import './newsletter-signup.js';

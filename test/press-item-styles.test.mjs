@@ -4,6 +4,10 @@ import { readFileSync } from 'node:fs';
 const primary = readFileSync(new URL('../dist/press-item.html', import.meta.url), 'utf8');
 const fallback = readFileSync(new URL('../dist/press-item/fallback.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../dist/styles/component-fixtures.css', import.meta.url), 'utf8');
+const editor = readFileSync(new URL('../dist/press-item/editor.html', import.meta.url), 'utf8');
+assert.match(editor, /data-editor-root/);
+for (const name of ['date', 'title', 'source']) assert.match(editor, new RegExp(`data-editor-bind="${name}"`));
+assert.doesNotMatch(primary + fallback, /data-editor-/);
 
 assert.match(primary, /<article class="press-item"><time datetime="2026-06-06">[^<]+<\/time><h3>Press item title<\/h3><p>.*<a class="source" href="\/example"/);
 assert.match(fallback, /<article class="press-item"><time>June 2026<\/time><h3>Another press item<\/h3><p>.*<span class="source">Publication<\/span>/);

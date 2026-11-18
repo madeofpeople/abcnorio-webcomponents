@@ -1,6 +1,7 @@
 export const metadata = { deps: { css: [], js: [] } };
 
 export default {
+  editor: { props: { editorShell: true } },
   default: {
     props: {
       date: '2026-06-06',

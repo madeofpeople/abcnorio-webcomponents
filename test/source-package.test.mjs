@@ -13,7 +13,7 @@ test('source package contains build inputs but no project build output', () => {
   const files = new Set(packed.files.map(({ path }) => path));
   for (const required of [
     'astro.config.mjs', 'vite.elements.config.mjs', 'tsconfig.json',
-    'scripts/sync-font-assets.sh', 'src/pages/[...slug].astro',
+    'scripts/sync-font-assets.sh', 'scripts/build.sh', 'src/pages/[...slug].astro',
     'src/util/generate-fixtures-registry.js', 'src/util/validate-manifest.js',
     'src/design-tokens/fonts/SourceSans3-Regular.woff2',
   ]) {

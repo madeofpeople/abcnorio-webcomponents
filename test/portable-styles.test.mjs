@@ -3,7 +3,6 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { editorStyleEntries } from '../src/styles/editor-style-entries.js';
-import { editorStylesDevPlugin } from '../src/util/editor-styles-dev.js';
 
 const dist = path.resolve(process.env.ABCNORIO_COMPONENTS_DIST_DIR || 'dist');
 const read = (file) => readFileSync(path.join(dist, file), 'utf8');
@@ -46,27 +45,4 @@ test('portable styles are manifest-owned, unscoped, and absent from combined fix
     assert.doesNotMatch(slider, /javascript:void|<button href=/);
   }
   assert.match(read('event-listing/slider.html'), /<a href="[^"]+" class="show-all button">/);
-});
-
-test('existing Vite server maps only declared CSS routes to direct source requests', () => {
-  let middleware;
-  const plugin = editorStylesDevPlugin('/components');
-  assert.equal(plugin.apply, 'serve');
-  plugin.configureServer({ middlewares: { use(callback) { middleware = callback; } } });
-  for (const [id, entry] of Object.entries(editorStyleEntries)) {
-    for (const [suffix, source] of [['', entry.source], ['-editor', entry.editor]]) {
-      if (!source) continue;
-      const request = { url: `/__abcnorio/styles/${id}${suffix}.css?ver=123` };
-      let next = false;
-      middleware(request, {}, () => { next = true; });
-      assert.equal(request.url, `/@fs//components/${source}?direct`);
-      assert.equal(next, true);
-    }
-  }
-  const response = { end(message) { this.message = message; } };
-  middleware({ url: '/__abcnorio/styles/missing.css' }, response, () => assert.fail('Unknown style must not fall through'));
-  assert.equal(response.statusCode, 404);
-  let unrelated = false;
-  middleware({ url: '/events/' }, {}, () => { unrelated = true; });
-  assert.equal(unrelated, true);
 });

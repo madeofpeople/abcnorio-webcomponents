@@ -21,7 +21,6 @@
     "vendor"
   ],
   "exports": {
-    "./dev/editor-styles": "./src/util/editor-styles-dev.js",
     "./fixtures": "./src/fixtures/index.js",
     "./util/dates": "./src/util/dates.js",
     "./add-to-calendar": "./src/components/add-to-calendar/add-to-calendar.astro",
@@ -102,10 +101,9 @@
     "dev": "astro dev",
     "predocker-dev": "npm run sync:fonts",
     "docker-dev": "astro dev --host 0.0.0.0 --port 3033",
-    "prebuild": "npm run sync:fonts",
     "preversion": "npm run sync:fonts && test -d src/design-tokens && test -d src/design-tokens/mixins && test -d src/design-tokens/fonts",
     "version": "npm run build && test -d dist && test -d src/design-tokens",
-    "build": "astro build && cp src/components/wp-blocks/gallery/image-sizes.json dist/gallery-image-sizes.json && vite build --config vite.elements.config.mjs && node src/util/generate-fixtures-registry.js && node src/util/validate-manifest.js",
+    "build": "bash scripts/build.sh",
     "check:payloads": "node test/payload-normalization.test.mjs",
     "check:manifest": "node src/util/validate-manifest.js",
     "check": "astro check",

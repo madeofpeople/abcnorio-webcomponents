@@ -1,6 +1,7 @@
 ---
 import imageSizes from './image-sizes.json';
 import stylesHref from './gallery.scss?url';
+import GalleryItem from './GalleryItem.astro';
 
 const {
   component: _component,
@@ -8,6 +9,7 @@ const {
   innerBlocks = [],
   variant,
   additionalClasses = '',
+  editorShell = false,
   ...routerProps
 } = Astro.props;
 
@@ -61,14 +63,16 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
 ---
 <link rel="stylesheet" href={stylesHref} />
 <gallery-listing
-  class:list={[galleryClass]}
+  class:list={[editorShell ? 'gallery' : galleryClass]}
   data-variant={resolvedVariant}
   data-navigation-mode={navigationMode}
   data-items-per-page={itemsPerPage}
+  data-editor-root={editorShell ? '' : undefined}
 >
-  <div class:list={{ 'blaze-container': usesBlaze }}>
-    <div class:list={{ 'blaze-track-container': usesBlaze }}>
-      <div class:list={['images', usesBlaze && 'blaze-track']}>
+  <div class:list={{ 'blaze-container': usesBlaze }} data-editor-bind={editorShell ? 'container' : undefined}>
+    <div class:list={{ 'blaze-track-container': usesBlaze }} data-editor-bind={editorShell ? 'viewport' : undefined}>
+      <div class:list={['images', usesBlaze && 'blaze-track']} data-editor-bind={editorShell ? 'track' : undefined}>
+        <slot>
         {RecursiveBlock && blocks.length > 0 && blocks.map((block: any) => {
           const imageSize = imageSizes[resolvedVariant as keyof typeof imageSizes] || imageSizes.default;
           const imageVariant = block.attributes.sizes_data?.[imageSize]
@@ -87,7 +91,7 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
             loading: 'lazy',
           };
           return (
-            <div class="gallery-item">
+            <GalleryItem>
               {isCaptioned ? (
                 <figure class="gallery__image">
                   <RecursiveBlock
@@ -106,19 +110,33 @@ const blocks = Array.isArray(innerBlocks) ? innerBlocks : [];
                 innerBlocks={block.innerBlocks || null}
                 additionalClasses="gallery__image"
               />}
-            </div>
+            </GalleryItem>
           );
         })}
+        </slot>
       </div>
     </div>
 
-    {usesBlaze && <a href="javascript:void(0)" role="button" class="blaze-prev"><span>Previous!</span></a>}
-    {usesBlaze && <a href="javascript:void(0)" role="button" class="blaze-next"><span>Next!</span></a>}
-    {usesBlaze && <div class="blaze-pagination"></div>}
+    {(usesBlaze || editorShell) && <button type="button" class="blaze-prev" data-editor-bind={editorShell ? 'previous' : undefined}><span>Previous!</span></button>}
+    {(usesBlaze || editorShell) && <button type="button" class="blaze-next" data-editor-bind={editorShell ? 'next' : undefined}><span>Next!</span></button>}
+    {(usesBlaze || editorShell) && <div class="blaze-pagination" data-editor-bind={editorShell ? 'pagination' : undefined}></div>}
   </div>
 
-  {usesBlaze && <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
-  {isPagedGrid && <nav class="gallery-pagination" aria-label="Gallery pagination" hidden></nav>}
+  {(usesBlaze || editorShell) && <nav class="blaze-slide-dots" aria-label="Slide navigation" data-editor-bind={editorShell ? 'dots' : undefined}>
+    <template data-gallery-template="dot" data-editor-repeat={editorShell ? 'dots' : undefined}>
+      <button type="button" class="blaze-slide-dot" data-editor-bind={editorShell ? 'button' : undefined}></button>
+    </template>
+  </nav>}
+  {(isPagedGrid || editorShell) && <nav class="gallery-pagination" aria-label="Gallery pagination" hidden={!editorShell} data-editor-bind={editorShell ? 'pages' : undefined}>
+    <ul>
+      <li><button type="button" aria-label="Previous page" data-editor-bind={editorShell ? 'previous-page' : undefined}>&laquo; Prev</button></li>
+      <template data-gallery-template="page" data-editor-repeat={editorShell ? 'pages' : undefined}>
+        <li><button type="button" data-editor-bind={editorShell ? 'button' : undefined}></button></li>
+      </template>
+      <li><button type="button" aria-label="Next page" data-editor-bind={editorShell ? 'next-page' : undefined}>Next &raquo;</button></li>
+    </ul>
+  </nav>}
+  <template data-gallery-template="item"><GalleryItem /></template>
 </gallery-listing>
 
 <script>

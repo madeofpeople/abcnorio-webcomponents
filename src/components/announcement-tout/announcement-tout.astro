@@ -6,26 +6,24 @@ const {
   toast = "",
   toastHeadingLevel = 2,
   title = "",
+  editorShell = false,
 } = Astro.props;
 
 const parsedToastHeadingLevel = Number.parseInt(String(toastHeadingLevel), 10);
 const normalizedToastHeadingLevel = Number.isFinite(parsedToastHeadingLevel) && parsedToastHeadingLevel >= 1 && parsedToastHeadingLevel <= 6
   ? parsedToastHeadingLevel
   : 2;
+const ToastHeading = `h${normalizedToastHeadingLevel}`;
 
 ---
 
 <div
   class:list={["announcement-tout", className]}
   data-component={ANNOUNCEMENT_TOUT_TAG}
+  data-editor-root={editorShell ? '' : undefined}
 >
-  {toast && normalizedToastHeadingLevel === 1 && <h1 class="announcement-tout__toast">{toast}</h1>}
-  {toast && normalizedToastHeadingLevel === 2 && <h2 class="announcement-tout__toast">{toast}</h2>}
-  {toast && normalizedToastHeadingLevel === 3 && <h3 class="announcement-tout__toast">{toast}</h3>}
-  {toast && normalizedToastHeadingLevel === 4 && <h4 class="announcement-tout__toast">{toast}</h4>}
-  {toast && normalizedToastHeadingLevel === 5 && <h5 class="announcement-tout__toast">{toast}</h5>}
-  {toast && normalizedToastHeadingLevel === 6 && <h6 class="announcement-tout__toast">{toast}</h6>}
-  {title && <h3 class="announcement-tout__title">{title}</h3>}
+  {(toast || editorShell) && <ToastHeading class="announcement-tout__toast" data-editor-bind={editorShell ? 'toast' : undefined}>{toast}</ToastHeading>}
+  {(title || editorShell) && <h3 class="announcement-tout__title" data-editor-bind={editorShell ? 'title' : undefined}>{title}</h3>}
   <div class="announcement-tout__content">
     <slot />
   </div>

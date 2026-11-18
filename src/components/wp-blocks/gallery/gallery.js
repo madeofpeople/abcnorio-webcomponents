@@ -5,7 +5,6 @@ const MAX_PAGED_GRID_PAGE_SIZE = 24;
 const DEFAULT_PAGED_GRID_PAGE_SIZE = 8;
 const SLIDE_MS = 200; // keep in sync with gallery.scss $slide-duration
 export class GalleryListing extends HTMLElement {
-    realItemCount = 0;
     lightbox = null;
     photoswipeLoadAttempted = false;
     pagedGridResizeObserver = null;
@@ -13,10 +12,9 @@ export class GalleryListing extends HTMLElement {
     unsubscribeSlideDots = null;
     unsubscribeAlignTrack = null;
     alignTrack = null;
-    sliderResizeHandler = null;
+    sliderStyleObserver = null;
     trackResizeHandler = null;
     trackAlignmentEvents = [];
-    renderedPages = 0;
     getSliderConfig() {
         return {
             all: {
@@ -49,14 +47,7 @@ export class GalleryListing extends HTMLElement {
         if (!this.slider) {
             return;
         }
-        const pageCount = this.slider.states.length;
-        if (pageCount !== this.renderedPages) {
-            this.renderedPages = pageCount;
-            this.initSlideDots(this.slider, this.querySelector('.blaze-slide-dots'));
-        }
-    }
-    getNavigationMode() {
-        return this.dataset.navigationMode === 'page' ? 'page' : 'item';
+        this.initSlideDots(this.slider, this.querySelector('.blaze-slide-dots'));
     }
     getClassNumber(prefix) {
         const token = Array.from(this.classList).find((entry) => entry.startsWith(`${prefix}-`));
@@ -227,43 +218,8 @@ export class GalleryListing extends HTMLElement {
         }
         return false;
     }
-    getCurrentRealItemIndex(slider) {
-        if (!slider) {
-            return 0;
-        }
-        const maxRealIndex = Math.max(this.realItemCount - 1, 0);
-        const stateIndex = Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
-        return Math.max(0, Math.min(stateIndex, maxRealIndex));
-    }
     getCurrentNavigationIndex(slider) {
-        if (!slider) {
-            return 0;
-        }
-        if (this.getNavigationMode() === 'page') {
-            return Number.isFinite(slider.stateIndex) ? slider.stateIndex : 0;
-        }
-        return this.getCurrentRealItemIndex(slider);
-    }
-    prepareSlideTrack(slidesToShow) {
-        const track = this.querySelector('.images.blaze-track');
-        if (!track) {
-            this.realItemCount = 0;
-            return;
-        }
-        Array.from(track.querySelectorAll('.gallery-item--ghost')).forEach((ghost) => ghost.remove());
-        // editor children aren't wrapped in .gallery-item, so count direct children generically
-        const realItems = Array.from(track.querySelectorAll(':scope > *:not(.gallery-item--ghost)'));
-        this.realItemCount = realItems.length;
-        if (this.getNavigationMode() === 'page') {
-            return;
-        }
-        const ghostCount = Math.max(slidesToShow - 1, 0);
-        for (let i = 0; i < ghostCount; i += 1) {
-            const ghostItem = document.createElement('div');
-            ghostItem.className = 'gallery-item gallery-item--ghost';
-            ghostItem.setAttribute('aria-hidden', 'true');
-            track.appendChild(ghostItem);
-        }
+        return Number.isFinite(slider?.stateIndex) ? slider.stateIndex : 0;
     }
     updateArrowVisibility(slider) {
         if (!slider) {
@@ -272,9 +228,7 @@ export class GalleryListing extends HTMLElement {
         const prev = this.querySelector('.blaze-prev');
         const next = this.querySelector('.blaze-next');
         const currentNavigationIndex = this.getCurrentNavigationIndex(slider);
-        const lastIndex = this.getNavigationMode() === 'page'
-            ? Math.max(Array.isArray(slider.states) ? slider.states.length - 1 : 0, 0)
-            : Math.max(this.realItemCount - 1, 0);
+        const lastIndex = Math.max(Array.isArray(slider.states) ? slider.states.length - 1 : 0, 0);
         const hidePrev = currentNavigationIndex <= 0;
         const hideNext = currentNavigationIndex >= lastIndex;
         if (prev) {
@@ -310,17 +264,19 @@ export class GalleryListing extends HTMLElement {
             return;
         }
         const totalPages = Math.max(Array.isArray(slider.states) ? slider.states.length : 0, 0);
+        const template = dotsEl.querySelector('template[data-gallery-template="dot"]');
+        if (!template?.content?.firstElementChild) {
+            throw new Error('Gallery dot template missing from component markup.');
+        }
         if (totalPages <= 1) {
-            dotsEl.innerHTML = '';
+            dotsEl.replaceChildren(template);
             this.updateArrowVisibility(slider);
             return;
         }
-        dotsEl.innerHTML = '';
+        dotsEl.replaceChildren(template);
         const dots = [];
         for (let pageIndex = 0; pageIndex < totalPages; pageIndex += 1) {
-            const dot = document.createElement('button');
-            dot.type = 'button';
-            dot.className = 'blaze-slide-dot';
+            const dot = template.content.firstElementChild.cloneNode(true);
             dot.setAttribute('aria-label', `Go to page ${pageIndex + 1}`);
             dot.addEventListener('click', () => {
                 this.goToState(slider, pageIndex);
@@ -369,7 +325,7 @@ export class GalleryListing extends HTMLElement {
         align();
     }
     initPagedGrid() {
-        const items = Array.from(this.querySelectorAll('.images > *:not(.gallery-item--ghost)'));
+        const items = Array.from(this.querySelectorAll('.images > *'));
         const pagination = this.querySelector('.gallery-pagination');
         const requestedPageSize = Number.parseInt(this.dataset.itemsPerPage || '', 10) || DEFAULT_PAGED_GRID_PAGE_SIZE;
         const pageSize = Math.min(MAX_PAGED_GRID_PAGE_SIZE, Math.max(MIN_PAGED_GRID_PAGE_SIZE, requestedPageSize));
@@ -387,31 +343,21 @@ export class GalleryListing extends HTMLElement {
             maxPageHeight = Math.max(maxPageHeight, this.getBoundingClientRect().height);
             this.style.setProperty('--gallery-paged-grid-min-height', `${maxPageHeight}px`);
         };
-        const list = document.createElement('ul');
-        const previousItem = document.createElement('li');
-        const previousButton = document.createElement('button');
-        previousButton.type = 'button';
-        previousButton.textContent = '\u00ab Prev';
-        previousButton.setAttribute('aria-label', 'Previous page');
-        previousItem.append(previousButton);
-        list.append(previousItem);
+        const list = pagination.querySelector('ul');
+        const previousButton = list?.querySelector('li:first-child button');
+        const nextButton = list?.querySelector('li:last-child button');
+        const template = list?.querySelector('template[data-gallery-template="page"]');
+        if (!previousButton || !nextButton || !template?.content?.firstElementChild) {
+            throw new Error('Gallery page navigation template missing from component markup.');
+        }
         const pageButtons = Array.from({ length: totalPages }, (_, index) => {
-            const pageItem = document.createElement('li');
-            const pageButton = document.createElement('button');
+            const pageItem = template.content.firstElementChild.cloneNode(true);
+            const pageButton = pageItem.querySelector('button');
             const pageNumber = index + 1;
-            pageButton.type = 'button';
             pageButton.textContent = String(pageNumber);
-            pageItem.append(pageButton);
-            list.append(pageItem);
+            list.insertBefore(pageItem, nextButton.parentElement);
             return pageButton;
         });
-        const nextItem = document.createElement('li');
-        const nextButton = document.createElement('button');
-        nextButton.type = 'button';
-        nextButton.textContent = 'Next \u00bb';
-        nextButton.setAttribute('aria-label', 'Next page');
-        nextItem.append(nextButton);
-        list.append(nextItem);
         function showPage(pageNumber) {
             currentPage = Math.max(1, Math.min(pageNumber, totalPages));
             const firstItemIndex = (currentPage - 1) * pageSize;
@@ -465,7 +411,6 @@ export class GalleryListing extends HTMLElement {
         pageButtons.forEach((button, index) => {
             button.addEventListener('click', () => updatePage(index + 1));
         });
-        pagination.replaceChildren(list);
         pagination.hidden = false;
         updatePage(currentPage);
         this.pagedGridResizeObserver = new ResizeObserver(() => {
@@ -494,22 +439,20 @@ export class GalleryListing extends HTMLElement {
         if (!this.classList.contains('blaze-slider')) {
             return;
         }
-        this.prepareSlideTrack(4);
         const slider = new BlazeSlider(this, this.getSliderConfig());
         this.slider = slider;
         this.updateArrowVisibility(slider);
         this.alignTrackToSlides(slider);
         this.updateSliderDots();
-        this.sliderResizeHandler = () => this.updateSliderDots();
-        window.addEventListener('resize', this.sliderResizeHandler);
+        // Blaze refreshes after resize; its inline slide-count update signals the new states are ready.
+        this.sliderStyleObserver = new MutationObserver(() => this.updateSliderDots());
+        this.sliderStyleObserver.observe(this, { attributes: true, attributeFilter: ['style'] });
     }
     disconnectedCallback() {
         this.pagedGridResizeObserver?.disconnect();
         this.pagedGridResizeObserver = null;
-        if (this.sliderResizeHandler) {
-            window.removeEventListener('resize', this.sliderResizeHandler);
-            this.sliderResizeHandler = null;
-        }
+        this.sliderStyleObserver?.disconnect();
+        this.sliderStyleObserver = null;
         if (this.trackResizeHandler) {
             window.removeEventListener('resize', this.trackResizeHandler);
             this.trackResizeHandler = null;

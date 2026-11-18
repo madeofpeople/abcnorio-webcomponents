@@ -178,7 +178,7 @@ const ensureComponentEntry = (manifest, componentId) => {
   return manifest.components[componentId];
 };
 
-const createManifest = () => {
+const createManifest = async (compiler) => {
   const manifest = {
     components: {},
     fixtures: {},
@@ -196,10 +196,10 @@ const createManifest = () => {
     manifest.shared.css.push(stableStyleRelativePath);
   }
 
-  const fontCss = sass.compileString('@use "fonts" with ($font-url-root: "../assets");', {
+  const fontCss = (await compiler.compileStringAsync('@use "fonts" with ($font-url-root: "../assets");', {
     loadPaths: [path.resolve('./src/design-tokens')],
     style: 'compressed',
-  }).css;
+  })).css;
   fs.mkdirSync(path.join(distDir, 'styles'), { recursive: true });
   fs.writeFileSync(path.join(distDir, fontStyleRelativePath), fontCss);
   manifest.shared.css.push(fontStyleRelativePath);
@@ -433,7 +433,7 @@ const buildFixtureManifest = (context) => {
   }
 };
 
-const finalizeManifest = (context) => {
+const finalizeManifest = async (context) => {
   finalizeComponentAssets(context.manifest, context.elementAssets);
   const sassOptions = {
     loadPaths: [path.resolve('./src/design-tokens'), path.resolve('./node_modules')],
@@ -450,7 +450,7 @@ const finalizeManifest = (context) => {
   context.manifest.styleEntries = {};
   for (const [id, entry] of Object.entries(editorStyleEntries)) {
     const relativePath = `styles/${id}.css`;
-    const css = sass.compile(entry.source, sassOptions).css;
+    const css = (await context.compiler.compileAsync(entry.source, sassOptions)).css;
     if (css.includes(':global') || css.includes('data-astro-cid-')) {
       fail(`Portable stylesheet ${id} contains Astro-only selectors.`);
     }
@@ -470,7 +470,7 @@ const finalizeManifest = (context) => {
       fail(`Editor styles have no fixture component: ${componentId}`);
     }
     const relativePath = `styles/editor/${componentId}.css`;
-    const css = sass.compile(source, sassOptions).css;
+    const css = (await context.compiler.compileAsync(source, sassOptions)).css;
     fs.mkdirSync(path.join(distDir, 'styles/editor'), { recursive: true });
     fs.writeFileSync(path.join(distDir, relativePath), css);
     component.editorCss = [relativePath];
@@ -502,19 +502,25 @@ const run = async () => {
   ensureBuildInputs();
 
   const context = {
-    manifest: createManifest(),
+    compiler: await sass.initAsyncCompiler(),
+    manifest: null,
     fixtureEntries: [],
     elementAssets: {},
     metadataDepsByComponent: {},
   };
 
-  await runSteps([
-    collectBuildInputs,
-    buildFixtureManifest,
-    finalizeManifest,
-    () => removeLegacyManifest(),
-    writeManifest,
-  ], context);
+  try {
+    context.manifest = await createManifest(context.compiler);
+    await runSteps([
+      collectBuildInputs,
+      buildFixtureManifest,
+      finalizeManifest,
+      () => removeLegacyManifest(),
+      writeManifest,
+    ], context);
+  } finally {
+    await context.compiler.dispose();
+  }
 
   console.log(`Successfully generated manifest at: ${manifestPath}`);
 };

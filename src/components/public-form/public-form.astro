@@ -1,5 +1,14 @@
 ---
 import './public-form.scss';
+const { editorShell = false } = Astro.props;
 ---
 
-<slot />
+{editorShell ? (
+  <div class="abcnorio-form abcnorio-form__placeholder" data-editor-root>
+    <h3 data-editor-bind="title">Public form</h3>
+    <p data-editor-bind="slug"></p>
+    <p role="status" data-editor-bind="status">Select a configured ACF public form.</p>
+    <p>Editor placeholder only. The form is active on the website.</p>
+    <button class="button reversed" type="button" disabled data-editor-bind="submit">Submit</button>
+  </div>
+) : <slot />}

@@ -26,7 +26,7 @@ Event/Content Listing editor styles accept responsive `--listing-preview-slides*
 overrides and supply defaults matching their components. They preserve card widths
 when Blaze clamps its slide count to the number of available items.
 
-## Live WordPress styles (local development)
+## Shared WordPress styles and local development
 
 Hero, group, gallery, event listing, event teaser, content listing and article teaser use portable, component-namespaced
 SCSS. Astro loads these through stylesheet URLs rather than scoped style blocks.
@@ -39,20 +39,78 @@ generation records them in `styleEntries` and adds their packaged CSS to `shared
 Optional `editor.scss` files continue to use `components[id].editorCss`; migrated
 entries additionally record their editor source in `styleEntries`.
 
-The site frontend's existing Astro/Vite server installs `editorStylesDevPlugin`
-only in development. It serves `/__abcnorio/styles/<component>.css` and
-`/<component>-editor.css` from those source files. No second watcher/server is needed.
-After the one-time build/ingestion for this contract, development WordPress editors
-automatically use the existing `DEV_FRONTEND_URL` environment configuration.
-There is no per-site toggle. Save SCSS and **refresh the editor**; this path
-does not inject Vite's JavaScript client or promise HMR.
+For WordPress development, run `just dev-local` from the sibling meta repository
+after installing host dependencies in webcomponents and the plugin and installing
+Watchexec (`brew install watchexec` on macOS). Its queued watcher invokes this
+package's `scripts/build.sh`; the plugin validates/publishes the result locally.
+Wait for `[components] Ready`, then refresh the editor. Markup, styles and element
+JS all use this same build path. No commits, dependency pins, editor auto-reload
+or running Astro frontend are required.
+
+`npm run build` delegates to the same script, including font synchronization.
+Manifest generation reuses one asynchronous Sass compiler for all styles.
+The Astro frontend continues importing source with native live updates.
 
 WordPress keeps Gutenberg/React in charge of InnerBlocks. Gallery navigation scrolls
 the existing image blocks; it does not initialize the frontend gallery runtime,
 clone images, or open PhotoSwipe. Data/template/JavaScript edits still require their
-normal build workflow. Staging and release builds remain packaged and need no dev server.
-Adding a new live style entry requires restarting the existing Astro process once;
-ordinary SCSS edits still need only an editor refresh.
+automatic build workflow. Staging and release builds remain packaged and need no dev server.
+
+Hero shares its Astro presentation markup with the WordPress editor. Its named
+`image` slot and default slot retain normal frontend fallbacks. The `editor`
+fixture supplies `__EDITOR_SLOT_IMAGE__` and `__EDITOR_SLOT_CONTENT__` as plain
+text markers; the plugin's shared shell adapter inserts React-owned media
+controls and InnerBlocks there, in light DOM. Its editor-only `data-editor-root`
+and `data-editor-bind="image"` identify the block root and image-style binding.
+Keep each marker exactly once. This is generated
+markup reuse, not runtime native slot projection or an Astro server in WordPress.
+Changes to that shell follow the same build/publish/refresh workflow above.
+Do not pass HTML strings into the fixture slots: Astro escapes them.
+
+Announcement tout follows the same contract: its `editor` fixture declares a
+content region and toast/title bindings (text, heading level and optional
+visibility). The normal Astro component owns their tags/classes; WordPress
+supplies inspector state and InnerBlocks, not a second JSX presentation tree.
+All `<component>/editor` fixtures are discovered from the packaged manifest and
+loaded in one editor configuration. Editor declaration attributes must not leak
+into normal frontend fixtures.
+
+Gallery uses the same shell adapter with refs and `useInnerBlocksProps` bound to
+the actual editable track. Astro owns its item wrapper and navigation markup.
+`<template data-editor-repeat="name">` declares scoped keyed editor repeaters;
+the public runtime clones the same `data-gallery-template` page/dot markup.
+The item template uses the same `GalleryItem.astro` partial as normal image items.
+WordPress retains its required outer editor wrapper and core/image edit/save
+elements rather than wrapping/reparenting React-owned images.
+All gallery navigation is page-based; responsive slider visibility/scroll
+counts remain 2 at base/XS, 3 at SM/MD and 4 at LG. Paged-grid page size is a
+separate setting. Runtime dots refresh after Blaze updates its responsive states,
+not before its deferred resize refresh.
+
+Newsletter WordPress previews intentionally remain generic placeholders, not
+working forms or a recreation of selected fields/groups. `NewsletterPreview.astro`
+owns the inert markup shared through `newsletter-signup/preview` (PHP) and
+`newsletter-signup/editor` (React text/visibility bindings). It has a disabled
+button and no actual form, inputs or runtime initialization marker. Preview
+fixtures do not fetch list data. The normal Astro form remains unchanged.
+
+Public forms follow the same placeholder approach. The `public-form/editor`
+fixture declares title, slug, status and submit-label bindings and a disabled
+button. It contains no real form/inputs, field/group presentation or submission
+runtime. The normal `public-form` component remains a style-owning slot wrapper;
+the frontend application's FormShell/FieldControl and submission code stay put.
+
+Press item declares an `editor` fixture for its existing article/time/heading/
+source markup. WordPress binds RichText to the declared elements using the
+shared adapter's render binding; no custom element or frontend JS is needed.
+Date formatting comes from the exported `util/dates` helper in both consumers.
+The normal linked-source/fallback-date frontend fixtures retain their markup.
+
+Event/collective listing fixtures include optional count regions for WordPress
+to populate or remove. Event listing's `countLabel` is opt-in and empty by
+default; collective listing retains its existing `showCount` opt-in. The PHP
+adapter populates existing event-teaser date spans and card image regions rather
+than constructing parallel presentation markup.
 
 Event and content listings share slider navigation, responsive refresh and teardown
 in `src/components/_utils/listing-slider.js`. Their breakpoint defaults remain
@@ -98,7 +156,7 @@ public font files. After `npm ci`, `npm run build` generates those locally.
 There is no install-time build hook. Astro consumers compile source imports
 directly, including workshop fixtures; WordPress plugin builds explicitly run
 this package's build before copying its output into the release.
-Canonical fonts remain under `src/design-tokens/fonts`; `prebuild` copies them
+Canonical fonts remain under `src/design-tokens/fonts`; the build script copies them
 to `public/assets`. The patched third-party slider archive in `vendor` is a
 dependency input, not this project's generated output.
 

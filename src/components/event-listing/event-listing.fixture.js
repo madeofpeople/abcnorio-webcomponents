@@ -70,6 +70,7 @@ export default {
   default: {
     props: {
       title: 'Featured events',
+      countLabel: 'Displaying 4 items.',
       items: defaultItems,
       isSlider: false,
     },
@@ -77,6 +78,7 @@ export default {
   slider: {
     props: {
       title: 'Featured events',
+      countLabel: 'Displaying 4 items.',
       items: defaultItems,
       isSlider: true,
     },

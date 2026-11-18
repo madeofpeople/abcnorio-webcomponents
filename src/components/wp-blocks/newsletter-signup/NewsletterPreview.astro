@@ -1,0 +1,18 @@
+---
+const { attributes = {}, editorShell = false } = Astro.props;
+const header = String(attributes.header || 'Newsletter Signup');
+const subHeader = String(attributes.subHeader || '');
+const submitText = String(attributes.submitText || 'Subscribe');
+const requiredText = String(attributes.requiredIndicatorText || '* = required field');
+const showRequired = attributes.showRequiredIndicator !== false;
+---
+<div class="abcnorio-newsletter-signup abcnorio-newsletter-signup__preview" data-newsletter-preview data-editor-root={editorShell ? '' : undefined}>
+  <h3 class="abcnorio-newsletter-signup__header" data-newsletter-bind="header" data-editor-bind={editorShell ? 'header' : undefined}>{header}</h3>
+  {(subHeader || editorShell) && <p class="abcnorio-newsletter-signup__sub-header" data-newsletter-bind="sub-header" data-editor-bind={editorShell ? 'sub-header' : undefined}>{subHeader}</p>}
+  <div class="abcnorio-newsletter-signup__field">
+    <span class="abcnorio-newsletter-signup__preview-label">Email address<span data-newsletter-bind="required-star" data-editor-bind={editorShell ? 'required-star' : undefined} hidden={!showRequired}> *</span></span>
+    <div class="abcnorio-newsletter-signup__preview-input"></div>
+  </div>
+  <p class="abcnorio-newsletter-signup__required" data-newsletter-bind="required-text" data-editor-bind={editorShell ? 'required-text' : undefined} hidden={!showRequired}>{requiredText}</p>
+  <button type="button" class="abcnorio-newsletter-signup__preview-button" disabled data-newsletter-bind="submit" data-editor-bind={editorShell ? 'submit' : undefined}>{submitText}</button>
+</div>

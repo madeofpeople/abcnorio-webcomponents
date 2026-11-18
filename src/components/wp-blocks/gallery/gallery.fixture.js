@@ -8,6 +8,10 @@ export const metadata = {
 };
 
 export default {
+  editor: {
+    props: { editorShell: true },
+    slots: { default: '__EDITOR_SLOT_CONTENT__' },
+  },
   default: {
     props: {
       attributes: {
@@ -22,4 +26,7 @@ export default {
       innerBlocks: [],
     },
   },
+  slider: { props: { attributes: { variant: 'slider' } } },
+  'paged-grid': { props: { attributes: { variant: 'paged-grid' } } },
+  masonry: { props: { attributes: { variant: 'masonry' } } },
 };

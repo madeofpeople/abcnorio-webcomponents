@@ -148,12 +148,6 @@ gallery-listing.gallery {
       height: 100%;
     }
 
-    .gallery-item--ghost {
-      opacity: 0;
-      pointer-events: none;
-      user-select: none;
-    }
-
     @media (min-width: breakpoints.get(md)) {
       .gallery-item {
         height: 400px;

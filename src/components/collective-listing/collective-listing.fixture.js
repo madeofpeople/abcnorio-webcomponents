@@ -40,6 +40,7 @@ export default {
   default: {
     props: {
       items: defaultItems,
+      showCount: true,
     },
   },
 };
