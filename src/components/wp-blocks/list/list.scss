@@ -4,12 +4,14 @@ ul.wp-block-list,
 ol.wp-block-list {
     margin-block: 1rem;
     padding-inline: 1.5rem;
-
+    list-style: decimal;
+    list-style-type: disc;
+    
     li {
         margin: 0;
-        display: block;
-        padding: 0.5rem 0.5rem;
-        border-bottom: 1px #dedede solid;
+        display: list-item;
+        padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+        position: relative;
     }
 
     ul,
