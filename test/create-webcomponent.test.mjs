@@ -124,7 +124,7 @@ for (const [label, args, setup, message] of [
 test('rolls back files if writing fails', (t) => {
   const project = workspace(t);
   const preload = path.join(path.dirname(project), 'fail-write.mjs');
-  const typesPath = path.join(project, 'src/types/index.d.ts');
+  const typesPath = fs.realpathSync(path.join(project, 'src/types/index.d.ts'));
   fs.writeFileSync(preload, `
 import fs from 'node:fs';
 const write = fs.writeFileSync;
