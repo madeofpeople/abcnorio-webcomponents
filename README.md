@@ -12,11 +12,9 @@ Do not target every editor `button`: WordPress controls and block appenders
 retain their native styles. Components with no editor-specific presentation
 need no `editor.scss`.
 
-For fully global component Sass, use Astro's `<style lang="scss" is:global>`
-and normal nested selectors anchored to the component root. Keep targeted
-`:global(...)` escapes when a stylesheet intentionally mixes scoped elements
-with child-component or dynamically generated markup. A Sass `:global { ... }`
-block is not a substitute for Astro's `is:global`.
+Anchor shared Sass selectors to the component root. Use normal CSS selectors
+for styles loaded through stylesheet URLs or compiled into manifest assets:
+Astro's `:global(...)` escapes are not valid in those outputs.
 
 Announcement Tout shares Sass mixins between its normal stylesheet and
 `editor.scss`, preserving editor selector specificity without duplicating
@@ -39,16 +37,26 @@ and preserve custom width/height, aspect ratio, scale (cover/contain) and native
 focal point on both captioned and uncaptioned images. Focal point positions the
 image inside its crop; it does not change the source file.
 
-Hero, group, gallery, event listing, event teaser, content listing and article teaser use portable, component-namespaced
+Hero, group, gallery, event listing, event teaser, content listing, article
+listing, article teaser and collective teaser use portable, component-namespaced
 SCSS. Astro loads these through stylesheet URLs rather than scoped style blocks.
 The same SCSS compiles to separate `styles/<component>.css` assets; it is not also
-bundled into `component-fixtures.css`. Shared slider mixins retain their existing
-Astro-scoped default; these portable entries opt out with `$scoped: false`.
+bundled into `component-fixtures.css`. The shared slider mixin uses plain
+selectors nested under the caller's slider root.
 
 `src/styles/editor-style-entries.js` declares the portable source entries. Manifest
 generation records them in `styleEntries` and adds their packaged CSS to `shared.css`.
 Optional `editor.scss` files continue to use `components[id].editorCss`; migrated
 entries additionally record their editor source in `styleEntries`.
+
+To debug styling, run `npm run build` in this package and check the Astro/Vite
+output for invalid pseudo-class warnings. On the `article-listing` or
+`collective-teaser` fixture, use DevTools Network to confirm the component
+stylesheet loads, and Elements to confirm the matching rules (HTMX animation
+on the article teaser, or zero margin and padding on a collective excerpt
+paragraph). For WordPress, check `dist/manifest.json` under `styleEntries` and
+`shared.css`, then inspect the corresponding `dist/styles/<component>.css`
+and the stylesheet loaded by the editor after publication.
 
 For WordPress development, run `just dev-local` from the sibling meta repository
 after installing host dependencies in webcomponents and the plugin and installing

@@ -113,7 +113,7 @@ gallery-listing.gallery {
   }
 
   &.blaze-slider {
-    @include slider.slider($scoped: false);
+    @include slider.slider;
 
     background-color: var(--color-gray--darkest);
     margin-bottom: 0;

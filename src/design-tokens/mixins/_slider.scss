@@ -2,13 +2,6 @@
 @use "../breakpoints";
 @use '../../components/button/button-rules' as buttons;
 
-@function child-selector($selector, $scoped) {
-    @if $scoped {
-        @return ':global(#{$selector})';
-    }
-    @return $selector;
-}
-
 @mixin slide-count($attribute) {
     @each $count in 1, 2, 3, 3.5, 4, 5, 6 {
         &[#{$attribute}="#{$count}"] {
@@ -17,21 +10,21 @@
     }
 }
 
-@mixin slider($global-arrows: false, $scoped: true) {
+@mixin slider {
 
     --slides-to-show: 1;
     --slide-gap: 1rem;
     direction: ltr;
 
-    #{child-selector('.blaze-container', $scoped)} {
+    .blaze-container {
         position: relative;
     }
 
-    #{child-selector('.blaze-track-container', $scoped)} {
+    .blaze-track-container {
         overflow: hidden;
     }
 
-    #{child-selector('.blaze-track', $scoped)} {
+    .blaze-track {
         display: flex;
         gap: var(--slide-gap);
         box-sizing: border-box;
@@ -43,7 +36,7 @@
         );
     }
 
-    #{child-selector('.blaze-track > *', $scoped)} {
+    .blaze-track > * {
         box-sizing: border-box;
         width: var(--slide-width);
         flex-shrink: 0;
@@ -68,8 +61,8 @@
     }
 
     // Teaser max-width/height would leave slides narrower than blaze's computed
-    // width, so neighbouring slides peek in. :global because teasers are child components.
-    .blaze-track > #{child-selector('*', $scoped)} {
+    // width, so neighbouring slides peek in.
+    .blaze-track > * {
         max-width: none;
         max-height: none;
     }
@@ -92,7 +85,7 @@
         padding-bottom: 0.5rem;
     }
 
-    #{child-selector('button.blaze-slide-dot', $scoped)} {
+    button.blaze-slide-dot {
         box-sizing: border-box;
         width: 0.875rem;
         height: 0.875rem;
@@ -110,14 +103,14 @@
         }
     }
 
-    #{child-selector('button.blaze-slide-dot:hover', $scoped)},
-    #{child-selector('button.blaze-slide-dot.active', $scoped)},
-    #{child-selector('button.blaze-slide-dot.is-active', $scoped)} {
+    button.blaze-slide-dot:hover,
+    button.blaze-slide-dot.active,
+    button.blaze-slide-dot.is-active {
         background: var(--color-text);
         border: 2px var(--color-text) solid;
     }
 
-    @include arrows($global-arrows);
+    @include arrows;
 
     @media (min-width: breakpoints.get(md)) {
         margin-left: -2rem;
@@ -125,19 +118,9 @@
     }
 }
 
-@mixin arrows($global: false) {
-    $prev: '.blaze-prev';
-    $next: '.blaze-next';
-    $label: 'span';
-
-    @if $global {
-        $prev: ':global(.blaze-prev)';
-        $next: ':global(.blaze-next)';
-        $label: ':global(span)';
-    }
-
-    #{$prev},
-    #{$next} {
+@mixin arrows {
+    .blaze-prev,
+    .blaze-next {
 
         position: absolute;
         top: 40%;
@@ -151,7 +134,7 @@
         text-decoration: none;
         display: inline-block;
 
-        #{$label} {
+        span {
             @include visibility.sr-only;
         }
 
@@ -166,22 +149,22 @@
         }
     }
 
-    #{$prev}:hover,
-    #{$prev}:focus-visible,
-    #{$next}:hover,
-    #{$next}:focus-visible {
+    .blaze-prev:hover,
+    .blaze-prev:focus-visible,
+    .blaze-next:hover,
+    .blaze-next:focus-visible {
         background-color: var(--color-text);
         box-shadow: 1px 1px 4px #00000066; 
     }
 
-    #{$prev} {
+    .blaze-prev {
         left: 0;
         &::after {
             content: '‹';
         }
     }
 
-    #{$next} {
+    .blaze-next {
         right: 0;
         &::after {
             content: '›';
@@ -190,8 +173,8 @@
 
     @media (min-width: breakpoints.get(sm)) {
 
-        #{$prev},
-        #{$next} {
+        .blaze-prev,
+        .blaze-next {
             width: 3rem;
             height: 3rem;
 
@@ -205,14 +188,14 @@
     }
 
     @media (min-width: breakpoints.get(md)) {
-        #{$prev} {
+        .blaze-prev {
             left: -0.75rem;
             &:hover {
                 left: 0;
             }
         }
 
-        #{$next} {
+        .blaze-next {
             right: -0.75rem;
             &:hover {
                 right: 0rem;

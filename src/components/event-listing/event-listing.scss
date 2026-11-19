@@ -83,7 +83,7 @@ event-listing[data-component="abcnorio/event-listing"].htmx-added event-teaser,
   }
 
   &.blaze-slider {
-    @include slider.slider($scoped: false);
+    @include slider.slider;
 
     &.few-items .blaze-track {
       --slide-width: min(100%, 24rem);

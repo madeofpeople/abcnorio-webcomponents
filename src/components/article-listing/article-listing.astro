@@ -62,6 +62,7 @@ const resolvedCountText =
     : `The current filters are displaying ${displayCount} ${displayCount === 1 ? 'article' : 'articles'}.`;
 
 ---
+<link rel="stylesheet" href={articleListingStylesHref} />
 <link rel="stylesheet" href={articleTeaserStylesHref} />
 <article-listing
   id={mountId}
@@ -100,7 +101,3 @@ const resolvedCountText =
 <script>
   import './article-listing.js';
 </script>
-
-<style lang="scss">
-  @use './article-listing.scss';
-</style>

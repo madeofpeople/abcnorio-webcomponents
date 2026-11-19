@@ -6,10 +6,10 @@
   
   &--past {
 
-    background-color: var(--color-event-teaser-past-bg, #666);
+    background-color: var(--color-event-gray-mid);
 
 
-    &__content {
+    .event-teaser__content {
 
       &::after {
         position: absolute;
@@ -22,20 +22,19 @@
         text-align: center;
         vertical-align: middle;
         background-color: rgba(0, 0, 0, 0.9);
-        color: var(--color-text);
+        color: var(--color-gray--lightest);
         font-family: var(--font-impact-label-reversed), monospace;
         bottom: 0.5rem;
         left: 0rem;
       }
     }
 
-    &__title {
+    .event-teaser__title {
       bottom: 4rem;
     }
 
-    &__image {
-      opacity: 0.35;
-      mix-blend-mode: multiply;
+    .event-teaser__image {
+      opacity: 0.25;
     }
   }
 }

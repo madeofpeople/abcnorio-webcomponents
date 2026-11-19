@@ -42,6 +42,7 @@ const collectiveItems = sourceItems
 const displayCount = typeof totalResults === 'number' ? totalResults : sourceItems.length;
 ---
 
+<link rel="stylesheet" href={collectiveTeaserStylesHref} />
 <collective-listing
   id={mountId}
   class:list={['collective-listing', className]}
@@ -60,7 +61,7 @@ const displayCount = typeof totalResults === 'number' ? totalResults : sourceIte
     aria-label={ariaLabel}
     aria-busy={busy ? 'true' : 'false'}
   >
-    {collectiveItems.map((item: any) => <CollectiveTeaser class="collective-listing__item collective-listing__item--collective" {...item} />)}
+    {collectiveItems.map((item: any) => <CollectiveTeaser class="collective-listing__item collective-listing__item--collective" {...item} includeStyles={false} />)}
   </section>
 </collective-listing>
 

@@ -1,15 +1,19 @@
 ---
+import stylesHref from './collective-teaser.scss?url';
+
 const {
   class: className,
   href = '#',
   title = 'Untitled collective',
   excerpt,
   featured_image = null,
+  includeStyles = true,
 } = Astro.props;
 
 const imageProps = featured_image && typeof featured_image === 'object' ? featured_image : null;
 ---
 
+{includeStyles && <link rel="stylesheet" href={stylesHref} />}
 <collective-teaser class:list={['collective-teaser', className]} data-component="abcnorio/collective-teaser">
   <a href={href}>
     {imageProps?.url && (
@@ -34,7 +38,3 @@ const imageProps = featured_image && typeof featured_image === 'object' ? featur
 <script>
   import './collective-teaser.js';
 </script>
-
-<style lang="scss">
-  @use './collective-teaser.scss';
-</style>
