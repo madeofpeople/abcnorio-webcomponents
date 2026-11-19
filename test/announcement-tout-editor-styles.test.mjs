@@ -20,6 +20,7 @@ test('announcement tout editor preserves shared rules and editor specificity', (
 
   assert.ok(editor.includes('.block-editor-iframe__body .announcement-tout{'));
   assert.ok(editor.includes('.block-editor-iframe__body .announcement-tout--secondary{'));
-  assert.equal(editor.replaceAll('.block-editor-iframe__body ', ''), shared);
+  const editorShared = editor.replace(/\.editor-styles-wrapper \.wp-block\.wp-block-abcnorio-announcement-tout\{[^}]*\}/, '');
+  assert.equal(editorShared.replaceAll('.block-editor-iframe__body ', ''), shared);
   assert.ok(!shared.includes('.block-editor-iframe__body'));
 });

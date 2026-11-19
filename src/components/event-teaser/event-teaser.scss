@@ -7,34 +7,35 @@
   &--past {
 
     background-color: var(--color-event-teaser-past-bg, #666);
-  }
 
-  &__content {
 
-    &::after {
-      position: absolute;
-      box-sizing: border-box;
-      content: 'Past Event';
-      padding: 1rem 0.5rem;
-      font-size: 1.2rem;
-      letter-spacing: 1;
-      width: 100%;
-      text-align: center;
-      vertical-align: middle;
-      background-color: rgba(0, 0, 0, 0.9);
-      color: var(--color-text);
-      font-family: var(--font-impact-label-reversed), monospace;
-      bottom: 0.5rem;
-      left: 0rem;
+    &__content {
+
+      &::after {
+        position: absolute;
+        box-sizing: border-box;
+        content: 'Past Event';
+        padding: 1rem 0.5rem;
+        font-size: 1.2rem;
+        letter-spacing: 1;
+        width: 100%;
+        text-align: center;
+        vertical-align: middle;
+        background-color: rgba(0, 0, 0, 0.9);
+        color: var(--color-text);
+        font-family: var(--font-impact-label-reversed), monospace;
+        bottom: 0.5rem;
+        left: 0rem;
+      }
     }
-  }
 
-  &__title {
-    bottom: 4rem;
-  }
+    &__title {
+      bottom: 4rem;
+    }
 
-  &__image {
-    opacity: 0.35;
-    mix-blend-mode: multiply;
+    &__image {
+      opacity: 0.35;
+      mix-blend-mode: multiply;
+    }
   }
 }

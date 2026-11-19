@@ -1,5 +1,13 @@
 @use '@tokens/breakpoints';
 
+.editor-styles-wrapper .wp-block.wp-block-abcnorio-content-listing {
+  margin: 0 0 3rem;
+
+  .content-listing {
+    margin-bottom: 0;
+  }
+}
+
 .editor-styles-wrapper .wp-block-abcnorio-content-listing .content-listing.card-grid {
   --listing-preview-default-columns: 4;
 

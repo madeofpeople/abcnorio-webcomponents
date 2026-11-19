@@ -13,6 +13,7 @@ segmented-control {
   .segmented-control__options {
     position: relative;
     display: inline-flex;
+    width: fit-content;
     background-color: var(--color-panel-bg);
     box-shadow: 0 0 3px inset rgba(0, 0, 0, 0.3);
     border-radius: 2em;
@@ -68,7 +69,7 @@ segmented-control {
     left: 0;
     height: 100%;
     border-radius: 0.85rem;
-    background: var(--color-accent--secondary);
+    background: var(--color-pill-highlight);
     color: var(--color-text);
     transition:
       transform 0.2s ease,

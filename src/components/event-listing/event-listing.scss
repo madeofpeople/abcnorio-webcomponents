@@ -61,6 +61,8 @@ event-listing[data-component="abcnorio/event-listing"].htmx-added event-teaser,
 }
 
 .event-listing {
+  display: block;
+
   .event-listing__title {
     margin: 0 0 1rem;
   }

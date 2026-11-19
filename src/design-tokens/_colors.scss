@@ -50,13 +50,17 @@ $c_gallery-pager--idle: $c-gray--darker;
     --color-ui-panel: #{$c_gray--darker};
     --color-filter-text: #{$c_gray--lightest};
     --color-sibling-nav-bg: #{$c_gray--lighter};
+    --color-pill-highlight: #{$c_accent-secondary};
     /* teasers */
     --color-teaser-time: #{$c_gray--darkest};
     --color-event-teaser-bg: #{$c_teaser__bg};
     --color-event-teaser-title: #{$c_gray--darkest};
     /* Groups & Galleries */
     --color-group-bg--dark: #{$c_gray--darkest};
-    --color-gallery-pager--idle: #{$c_gallery-pager--idle};  
+    --color-gallery-pager--idle: #{$c_gallery-pager--idle}; 
+    /* Events */
+    --color-date-stamp-bg: #{$c_gray--darkest};
+    --color-date-stamp-color: #{$c_gray--lightest}; 
     /* Grayscale */
     --color-gray--lightest: #{$c_gray--lightest};
     --color-gray--darkest: #{$c_gray--darkest};
@@ -81,13 +85,14 @@ $c_gallery-pager--idle: $c-gray--darker;
         --color-footer-link: #{$c_accent-primary};
         --color-ui-panel: #{$c_gray--darker};
         --color-nav-link-hover: #{$c_gray--lightest};
-        --color-text: #{$c_gray--lightest};
+        --color-text: #f3f3f3;
         --color-text--reversed: #{$c_gray--darkest};
         /* ui */
         --color-filters-panel: #{$c_gray--darker};
         --color-ui-panel: #{$c_gray--darker};
         --color-filter-text: #{$c_gray--lightest};
         --color-sibling-nav-bg: #{$c_gray--darkest};
+        --color-pill-highlight: #{$c_gray--lightest};
         /* Teasers */
         --color-event-teaser-bg: #{$c_teaser__bg--dark};
         --color-teaser-time: #{$c_teaser__bg};
@@ -95,6 +100,9 @@ $c_gallery-pager--idle: $c-gray--darker;
         --color-event-teaser-title-color: #{$c_gray--darkest};
         /* Galleries */
         --color-group-bg--dark: #{$c_gray--darkest};
+        /* Events */
+        --color-date-stamp-bg: #{$c_sheet}; 
+        --color-date-stamp-color: #{$c_gray--darkest}; 
         /* Grayscale */
         --color-gray-0: #{$c_gray--lightest};
         --color-gray-1: #{$c_gray--lighter};
