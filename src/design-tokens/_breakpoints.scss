@@ -2,7 +2,7 @@
 
 $breakpoints: (
     xs: 520px,
-    sm: 720px,
+    sm: 780px,
     md: 1024px,
     lg: 1250px,
     xl: 1540px
@@ -17,3 +17,45 @@ $breakpoints: (
 @function get($name) {
     @return map.get($breakpoints, $name);
 }
+
+/* 
+Breakpoint visualizer, 
+Uncomment to see a tiny breakpoint indicator on the bottom right of the viewport.
+
+*/
+
+@mixin bp-viz() {
+    &::after {
+        z-index: 10001;
+        background-color: #000;
+        color: white;
+        padding: 0.5rem;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        width: 1rem;
+        height: 1rem;
+
+        content: 'mob';
+        @media(min-width: get(xs)) {
+            content: "xs";
+        }
+        @media(min-width: get(sm)) {
+            content: "sm";
+        }
+        @media(min-width: get(md)) {
+            content: "md";
+        }
+        @media(min-width: get(lg)) {
+            content: "lg";
+        }
+        @media(min-width: get(xl)) {
+            content: "xl";
+        }
+    }
+}
+
+// body {
+//     @include bp-viz();
+// }

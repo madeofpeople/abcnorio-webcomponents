@@ -1,4 +1,5 @@
-/* Component styles */
+@use "@tokens/breakpoints";
+
 .taxonomy-links {
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -21,6 +22,27 @@
         &:hover,
         &:focus-visible {
             background-color: var(--color-link);
+        }
+    }
+
+    :global(aside.sidebar) > & {
+        width: calc(100% - 4rem);
+        margin-left: 1rem;
+
+        a {
+            color: var(--color-sheet);
+        }
+
+        @media (min-width: breakpoints.get(xs)) {
+            margin-left: 0;
+        }
+
+        @media (min-width: breakpoints.get(sm)) {
+            margin-left: 1rem;
+        }
+
+        @media (min-width: breakpoints.get(md)) {
+            margin-left: 0;
         }
     }
 }

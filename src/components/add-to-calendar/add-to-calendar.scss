@@ -5,6 +5,10 @@
   display: block;
   position: relative;
 
+  .atc-actuator {
+    text-align: left;
+  }
+
   .atc-drawer {
     position: absolute;
     z-index: 55;

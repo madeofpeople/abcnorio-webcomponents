@@ -89,7 +89,8 @@
         @include ui.panel-shadow();
         background-color: var(--color-link);
 
-        &__title {
+        .article-teaser__title {
+            border: 1px #f00 solid;
             color: var(--color-event-teaser-title);
             background-color:  var(--color-gray--darkest);
         }

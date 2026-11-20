@@ -223,14 +223,14 @@ gallery-listing.gallery--paged-grid .gallery-pagination {
     font-family: var(--font-impact-label-reversed);
     border-radius: 2px;
     border-width: 0;
-    color: var(--color-gray--lightest);
+    color: var(--color-gray-0);
     outline: none;
     background-color: var(--color-sheet);
     &:hover,
     &:focus-visible,
     &.is-current {
       color: var(--color-accent);
-      background-color: var(--color-gray--lightest);
+      background-color: var(--color-gray-1);
     }
 
     &:disabled {

@@ -11,6 +11,8 @@ $c_gray--mid: #999;
 $c_gray--dark: #666;
 $c_gray--darker: #333;
 $c_gray--darkest: #222;
+$c_gray--lightest-90: #fafafaee;
+$c_gray--darkest-90: #222222ee;
 // other colors
 $c_sheet: #fffef3;
 $c_panel: #eee;
@@ -55,15 +57,18 @@ $c_gallery-pager--idle: $c-gray--darker;
     --color-teaser-time: #{$c_gray--darkest};
     --color-event-teaser-bg: #{$c_teaser__bg};
     --color-event-teaser-title: #{$c_gray--darkest};
+    --color-article-teaser-bg: #{$c_gray--lightest-90};
     /* Groups & Galleries */
     --color-group-bg--dark: #{$c_gray--darkest};
     --color-gallery-pager--idle: #{$c_gallery-pager--idle}; 
     /* Events */
     --color-date-stamp-bg: #{$c_gray--darkest};
     --color-date-stamp-color: #{$c_gray--lightest}; 
+    --color-article-teaser-flare: #fff79b;
     /* Grayscale */
     --color-gray--lightest: #{$c_gray--lightest};
     --color-gray--darkest: #{$c_gray--darkest};
+    --color-gray--mid: #{$c_gray--mid};
 
     --color-gray-0: #{$c_gray--darkest};
     --color-gray-1: #{$c_gray--darker};
@@ -98,6 +103,8 @@ $c_gallery-pager--idle: $c-gray--darker;
         --color-teaser-time: #{$c_teaser__bg};
         --color-event-teaser-title: #{$c_teaser__bg};
         --color-event-teaser-title-color: #{$c_gray--darkest};
+        --color-article-teaser-bg: #{$c_gray--darkest-90};
+        --color-article-teaser-flare: #{$c_gray--darkest};
         /* Galleries */
         --color-group-bg--dark: #{$c_gray--darkest};
         /* Events */

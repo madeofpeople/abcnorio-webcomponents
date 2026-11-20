@@ -1,10 +1,10 @@
 @use "@tokens/breakpoints";
 @use "mixins/layout";
 
-.collective-listing {
-  display: block;
-  margin-bottom: 3rem;
-}
+// .collective-listing {
+//   display: block;
+//   margin-bottom: 3rem;
+// }
 
 .collective-listing__items {
   @include layout.max-width();
