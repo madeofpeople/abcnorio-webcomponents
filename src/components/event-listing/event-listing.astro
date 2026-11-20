@@ -213,10 +213,15 @@ const resolvedShowAllLinkLabel = String(showAllLinkLabel || '').trim() || 'View 
 
     {(isSlider === true || showAllLink === true) && (
       <div class="actions">
+        {isSlider === true && sliderPreset === 'content-width' && (
+          <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>
+        )}
         {showAllLink === true && (
           <a href={resolvedShowAllLinkHref} class="show-all button">{resolvedShowAllLinkLabel}</a>
         )}
-        {isSlider === true && <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>}
+        {isSlider === true && sliderPreset !== 'content-width' && (
+          <nav class="blaze-slide-dots" aria-label="Slide navigation"></nav>
+        )}
       </div>
     )}
   </event-listing>

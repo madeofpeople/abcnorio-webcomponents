@@ -64,6 +64,7 @@ gallery-listing.gallery {
       display: block;
       width: 100%;
       height: auto;
+      max-height: 400px;
     }
 
     @media (min-width: breakpoints.get(sm)) {
@@ -124,21 +125,17 @@ gallery-listing.gallery {
       padding: 0 1rem;
     }
 
-    .gallery-item {
-      height: 300px;
+    // .gallery-item {
+    //   // height: 300px;
+    // }
+
+    .gallery-item > a {
+
     }
 
-    .gallery-item > a,
-    .gallery-item > figure,
-    .gallery-item > img {
+    .gallery-item img {
       display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .images .gallery-item img {
-      display: block;
-      object-fit: contain;
+      object-fit: cover;
       width: 100%;
       height: 100% !important;
     }
@@ -147,11 +144,10 @@ gallery-listing.gallery {
       .gallery-item {
         height: 400px;
         width: fit-content;
-      }
-
-      .gallery-item img {
-        width: auto;
-        height: 400px;
+        a > img {
+          width: auto;
+          height: 100%;
+        }
       }
     }
   }
