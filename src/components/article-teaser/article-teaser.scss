@@ -53,6 +53,7 @@
     top: -1.5rem;
     background-color: var(--color-text);
     color: var(--color-page-bg);
+
   }
 
   &__excerpt {
@@ -94,7 +95,13 @@
       background-size: 11px 11px;
   }
 
+  &:focus-visible,
   &:hover {
     background-color: #000;
+    .article-teaser__title {
+      background-color: var(--color-text);
+      color: var(--color-page-bg);
+    }
   }
+
 }

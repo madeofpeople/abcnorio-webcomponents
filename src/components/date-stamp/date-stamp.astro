@@ -1,7 +1,7 @@
 ---
-const { date, time } = Astro.props;
+const { date, time, datetime } = Astro.props;
 ---
-<time class="date-stamp">
+<time class="date-stamp" datetime={datetime}>
   <div set:html={`&nbsp;${date}&nbsp;`} />
   <div set:html={`&nbsp;${time}&nbsp;`} />
 </time>
