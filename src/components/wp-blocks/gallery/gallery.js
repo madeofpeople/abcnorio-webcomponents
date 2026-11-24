@@ -15,6 +15,89 @@ export class GalleryListing extends HTMLElement {
     sliderStyleObserver = null;
     trackResizeHandler = null;
     trackAlignmentEvents = [];
+    captionedCleanup = null;
+    initCaptioned() {
+        const track = this.querySelector('.images');
+        const viewport = track.parentElement;
+        const prev = this.querySelector('.blaze-prev');
+        const next = this.querySelector('.blaze-next');
+        const dotsEl = this.querySelector('.blaze-slide-dots');
+        const template = dotsEl.querySelector('template[data-gallery-template="dot"]');
+        if (!prev || !next || !template?.content?.firstElementChild) {
+            throw new Error('Gallery navigation template missing from component markup.');
+        }
+        let offsets = [0];
+        let frame;
+        let dots = [];
+        const currentIndex = () => offsets.reduce((nearest, offset, index) =>
+            Math.abs(offset - viewport.scrollLeft) < Math.abs(offsets[nearest] - viewport.scrollLeft)
+                ? index : nearest, 0);
+        const publish = () => {
+            const index = currentIndex();
+            for (const [button, hidden] of [[prev, index === 0], [next, index === offsets.length - 1]]) {
+                button.hidden = hidden;
+                button.style.display = hidden ? 'none' : '';
+                button.setAttribute('aria-hidden', String(hidden));
+                button.tabIndex = hidden ? -1 : 0;
+            }
+            dots.forEach((dot, candidate) => {
+                dot.classList.toggle('is-active', candidate === index);
+                dot.setAttribute('aria-current', candidate === index ? 'true' : 'false');
+            });
+        };
+        const goTo = index => viewport.scrollTo({
+            left: offsets[Math.max(0, Math.min(index, offsets.length - 1))],
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+        });
+        const measure = () => {
+            const slides = Array.from(track.children);
+            const maximum = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+            const start = slides[0]?.offsetLeft ?? 0;
+            const candidates = [...new Set([0, ...slides.map(slide =>
+                Math.min(maximum, Math.max(0, slide.offsetLeft - start))), maximum])];
+            const pages = [0];
+            while (pages[pages.length - 1] < maximum) {
+                const current = pages[pages.length - 1];
+                const remaining = candidates.filter(offset => offset > current);
+                const fitting = remaining.filter(offset => offset <= current + viewport.clientWidth);
+                pages.push(fitting.length ? fitting[fitting.length - 1] : remaining[0]);
+            }
+            offsets = pages;
+            if (dots.length !== (offsets.length > 1 ? offsets.length : 0)) {
+                dotsEl.replaceChildren(template);
+                dots = offsets.length > 1 ? offsets.map((_, index) => {
+                    const dot = template.content.firstElementChild.cloneNode(true);
+                    dot.setAttribute('aria-label', `Go to page ${index + 1}`);
+                    dot.addEventListener('click', () => goTo(index));
+                    dotsEl.append(dot);
+                    return dot;
+                }) : [];
+            }
+            publish();
+        };
+        const scheduleMeasure = () => {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(measure);
+        };
+        const observer = new ResizeObserver(scheduleMeasure);
+        observer.observe(viewport);
+        Array.from(track.children).forEach(slide => observer.observe(slide));
+        const previous = () => goTo(currentIndex() - 1);
+        const following = () => goTo(currentIndex() + 1);
+        prev.addEventListener('click', previous);
+        next.addEventListener('click', following);
+        viewport.addEventListener('scroll', publish, { passive: true });
+        track.addEventListener('load', scheduleMeasure, true);
+        measure();
+        this.captionedCleanup = () => {
+            observer.disconnect();
+            cancelAnimationFrame(frame);
+            prev.removeEventListener('click', previous);
+            next.removeEventListener('click', following);
+            viewport.removeEventListener('scroll', publish);
+            track.removeEventListener('load', scheduleMeasure, true);
+        };
+    }
     getSliderConfig() {
         return {
             all: {
@@ -310,8 +393,9 @@ export class GalleryListing extends HTMLElement {
         this.unsubscribeAlignTrack = slider.onSlide(align);
         this.alignTrack = align;
         this.trackAlignmentEvents = ['pointermove', 'pointerup', 'touchmove', 'touchend'];
+        // Run after Blaze's track handlers, which reset the transform on release.
         this.trackAlignmentEvents.forEach((eventName) => {
-            track.addEventListener(eventName, align);
+            this.addEventListener(eventName, align);
         });
         // Blaze refreshes 200ms after a width change (e.g. scrollbar removed when lightbox opens) and resets the transform
         this.trackResizeHandler = () => {
@@ -432,6 +516,10 @@ export class GalleryListing extends HTMLElement {
         this.dataset.upgraded = 'true';
         this.classList.add('is-upgraded');
         void this.initPhotoSwipe();
+        if (this.dataset.variant === 'captioned') {
+            this.initCaptioned();
+            return;
+        }
         if (this.dataset.variant === 'paged-grid') {
             this.initPagedGrid();
             return;
@@ -449,6 +537,8 @@ export class GalleryListing extends HTMLElement {
         this.sliderStyleObserver.observe(this, { attributes: true, attributeFilter: ['style'] });
     }
     disconnectedCallback() {
+        this.captionedCleanup?.();
+        this.captionedCleanup = null;
         this.pagedGridResizeObserver?.disconnect();
         this.pagedGridResizeObserver = null;
         this.sliderStyleObserver?.disconnect();
@@ -459,7 +549,7 @@ export class GalleryListing extends HTMLElement {
         }
         window.removeEventListener('load', this.alignTrack);
         this.trackAlignmentEvents.forEach((eventName) => {
-            this.track?.removeEventListener(eventName, this.alignTrack);
+            this.removeEventListener(eventName, this.alignTrack);
         });
         this.track?.removeEventListener('load', this.alignTrack, true);
         this.trackAlignmentEvents = [];

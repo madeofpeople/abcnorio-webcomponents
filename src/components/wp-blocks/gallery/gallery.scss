@@ -137,6 +137,9 @@ gallery-listing.gallery {
       display: block;
       object-fit: cover;
       width: 100%;
+    }
+
+    &:not(.gallery--captioned) .gallery-item img {
       height: 100% !important;
     }
 
@@ -155,6 +158,18 @@ gallery-listing.gallery {
   &.gallery--captioned.blaze-slider {
     .blaze-track {
       align-items: flex-start;
+      gap: 2rem;
+      touch-action: auto;
+    }
+
+    .blaze-track-container {
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .gallery-item {
+      flex: 0 0 auto;
+      width: fit-content;
     }
 
     .gallery-item,
@@ -165,26 +180,25 @@ gallery-listing.gallery {
     .gallery-item > figure {
       display: table;
       width: auto;
+      margin: 0;
     }
 
     .gallery-item img {
       width: auto;
-      height: 300px;
+      max-width: none;
+      object-fit: contain;
+      height: 400px !important;
     }
 
     figcaption {
       display: table-caption;
       caption-side: bottom;
+      min-width: 12rem;
       padding: 0.75rem 0;
       color: var(--color-gray--lightest);
       overflow-wrap: anywhere;
     }
 
-    @media (min-width: breakpoints.get(md)) {
-      .gallery-item img {
-        height: 400px;
-      }
-    }
   }
 
   button.blaze-slide-dot:hover,

@@ -186,12 +186,12 @@
   > aside.sidebar,
   > aside.sidebar-secondary {
     display: flex;
-    row-gap: 1rem;
     padding: 0;
   }
 
   > aside.sidebar {
     order: 2;
+    row-gap: 1rem;
 
     button {
       display: block;
