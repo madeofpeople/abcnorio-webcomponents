@@ -24,13 +24,25 @@ gallery-listing.gallery {
   &.gallery--paged-grid {
     padding: 2rem;
 
-    .images {
+    .images,
+    .gallery-page {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
     }
 
-    .images > * {
+    .images:has(> .gallery-page) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .gallery-page {
+      grid-area: 1 / 1;
+      align-self: start;
+    }
+
+    .images > *,
+    .gallery-page > * {
       min-width: 0;
     }
 
@@ -52,8 +64,10 @@ gallery-listing.gallery {
         both;
     }
 
-    .images > [hidden] {
-      display: none !important;
+    .gallery-page[hidden] {
+      display: grid !important;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .images figure {
@@ -68,7 +82,8 @@ gallery-listing.gallery {
     }
 
     @media (min-width: breakpoints.get(sm)) {
-      .images {
+      .images,
+      .gallery-page {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }

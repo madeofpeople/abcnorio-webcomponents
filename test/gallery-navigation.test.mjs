@@ -23,7 +23,16 @@ class Element {
     if (name === 'hidden') this.hidden = enabled;
   }
   addEventListener(name, callback) { this.listeners[name] = callback; }
-  append(child) { this.children.push(child); }
+  append(...children) {
+    children.forEach((child) => {
+      if (child.parentElement) {
+        const siblings = child.parentElement.children;
+        siblings.splice(siblings.indexOf(child), 1);
+      }
+      child.parentElement = this;
+      this.children.push(child);
+    });
+  }
   replaceChildren(...children) { this.children = children; }
   set innerHTML(value) { if (value === '') this.children = []; }
 }
@@ -143,8 +152,9 @@ test('Paged grid fills component-owned page templates and preserves image nodes'
   const Gallery = await loadGallery();
   const gallery = new Gallery();
   gallery.dataset.itemsPerPage = '8';
-  gallery.getBoundingClientRect = () => ({ height: 400 });
   const items = Array.from({ length: 18 }, () => new Element());
+  const grid = new Element();
+  grid.append(...items);
   const previous = new Element();
   const next = new Element();
   const pages = [];
@@ -164,18 +174,43 @@ test('Paged grid fills component-owned page templates and preserves image nodes'
     insertBefore() {},
   };
   const pagination = { querySelector: () => list };
-  gallery.querySelectorAll = () => items;
-  gallery.querySelector = () => pagination;
+  gallery.querySelector = (selector) => ({
+    '.images': grid,
+    '.gallery-pagination': pagination,
+  })[selector];
   gallery.initPagedGrid();
   assert.equal(pages.length, 3);
   assert.equal(pagination.hidden, false);
   assert.equal(previous.disabled, true);
-  assert.equal(items.filter((item) => !item.hidden).length, 8);
+  assert.deepEqual(grid.children.map((page) => page.children.length), [8, 8, 2]);
+  assert.deepEqual(grid.children.flatMap((page) => page.children), items);
+  assert.deepEqual(grid.children.map((page) => page.hidden), [false, true, true]);
+  assert.deepEqual(grid.children.map((page) => page.inert), [false, true, true]);
   pages[2].listeners.click();
-  assert.equal(items.filter((item) => !item.hidden).length, 2);
+  assert.deepEqual(grid.children.map((page) => page.hidden), [true, true, false]);
+  assert.deepEqual(grid.children.map((page) => page.inert), [true, true, false]);
+  assert.equal(grid.children[2].attributes.get('aria-hidden'), 'false');
   assert.equal(next.disabled, true);
   assert.equal(pages[2].attributes.get('aria-current'), 'page');
   previous.listeners.click();
-  assert.equal(items.filter((item) => !item.hidden).length, 8);
+  assert.deepEqual(grid.children.map((page) => page.hidden), [true, false, true]);
   assert.equal(pages[1].attributes.get('aria-label'), 'Page 2, current page');
+});
+
+test('Paged grid leaves a single page unwrapped with pagination hidden', async () => {
+  const Gallery = await loadGallery();
+  const gallery = new Gallery();
+  gallery.dataset.itemsPerPage = '8';
+  const grid = new Element();
+  const items = Array.from({ length: 8 }, () => new Element());
+  grid.append(...items);
+  const pagination = new Element();
+  pagination.hidden = true;
+  gallery.querySelector = (selector) => ({
+    '.images': grid,
+    '.gallery-pagination': pagination,
+  })[selector];
+  gallery.initPagedGrid();
+  assert.deepEqual(grid.children, items);
+  assert.equal(pagination.hidden, true);
 });

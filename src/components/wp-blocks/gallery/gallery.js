@@ -5,7 +5,6 @@ const SLIDE_MS = 200; // keep in sync with gallery.scss $slide-duration
 export class GalleryListing extends HTMLElement {
     lightbox = null;
     photoswipeLoadAttempted = false;
-    pagedGridResizeObserver = null;
     sliderCleanup = null;
     initSlider() {
         const track = this.querySelector('.images');
@@ -287,7 +286,8 @@ export class GalleryListing extends HTMLElement {
         this.lightbox = lightbox;
     }
     initPagedGrid() {
-        const items = Array.from(this.querySelectorAll('.images > *'));
+        const grid = this.querySelector('.images');
+        const items = Array.from(grid.children);
         const pagination = this.querySelector('.gallery-pagination');
         const requestedPageSize = Number.parseInt(this.dataset.itemsPerPage || '', 10) || DEFAULT_PAGED_GRID_PAGE_SIZE;
         const pageSize = Math.min(MAX_PAGED_GRID_PAGE_SIZE, Math.max(MIN_PAGED_GRID_PAGE_SIZE, requestedPageSize));
@@ -297,14 +297,8 @@ export class GalleryListing extends HTMLElement {
         }
         let currentPage = 1;
         let isSliding = false;
-        let measuredWidth = this.clientWidth;
-        let maxPageHeight = 0;
         const host = this;
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const preserveTallestPage = () => {
-            maxPageHeight = Math.max(maxPageHeight, this.getBoundingClientRect().height);
-            this.style.setProperty('--gallery-paged-grid-min-height', `${maxPageHeight}px`);
-        };
         const list = pagination.querySelector('ul');
         const previousButton = list?.querySelector('li:first-child button');
         const nextButton = list?.querySelector('li:last-child button');
@@ -312,6 +306,13 @@ export class GalleryListing extends HTMLElement {
         if (!previousButton || !nextButton || !template?.content?.firstElementChild) {
             throw new Error('Gallery page navigation template missing from component markup.');
         }
+        const pages = Array.from({ length: totalPages }, (_, index) => {
+            const page = document.createElement('div');
+            page.className = 'gallery-page';
+            page.append(...items.slice(index * pageSize, (index + 1) * pageSize));
+            grid.append(page);
+            return page;
+        });
         const pageButtons = Array.from({ length: totalPages }, (_, index) => {
             const pageItem = template.content.firstElementChild.cloneNode(true);
             const pageButton = pageItem.querySelector('button');
@@ -322,13 +323,12 @@ export class GalleryListing extends HTMLElement {
         });
         function showPage(pageNumber) {
             currentPage = Math.max(1, Math.min(pageNumber, totalPages));
-            const firstItemIndex = (currentPage - 1) * pageSize;
-            items.forEach((item, index) => {
-                const isVisible = index >= firstItemIndex && index < firstItemIndex + pageSize;
-                item.toggleAttribute('hidden', !isVisible);
-                item.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+            pages.forEach((page, index) => {
+                const inactive = index !== currentPage - 1;
+                page.hidden = inactive;
+                page.inert = inactive;
+                page.setAttribute('aria-hidden', inactive ? 'true' : 'false');
             });
-            requestAnimationFrame(preserveTallestPage);
             previousButton.disabled = currentPage === 1;
             nextButton.disabled = currentPage === totalPages;
             pageButtons.forEach((button, index) => {
@@ -355,13 +355,13 @@ export class GalleryListing extends HTMLElement {
                 return;
             }
             host.dataset.slide = targetPage > currentPage ? 'next' : 'prev';
-            const leaving = items.filter((item) => !item.hidden);
+            const leaving = pages.filter((page) => !page.hidden);
             leaving.forEach((item) => item.classList.add('is-leaving'));
             isSliding = true;
             window.setTimeout(() => {
                 leaving.forEach((item) => item.classList.remove('is-leaving'));
                 showPage(targetPage);
-                items.filter((item) => !item.hidden).forEach((item) => {
+                pages.filter((page) => !page.hidden).forEach((item) => {
                     item.classList.add('is-entering');
                     item.addEventListener('animationend', () => item.classList.remove('is-entering'), { once: true });
                 });
@@ -375,17 +375,6 @@ export class GalleryListing extends HTMLElement {
         });
         pagination.hidden = false;
         updatePage(currentPage);
-        this.pagedGridResizeObserver = new ResizeObserver(() => {
-            const width = this.clientWidth;
-            if (width === measuredWidth) {
-                return;
-            }
-            measuredWidth = width;
-            maxPageHeight = 0;
-            this.style.removeProperty('--gallery-paged-grid-min-height');
-            requestAnimationFrame(preserveTallestPage);
-        });
-        this.pagedGridResizeObserver.observe(this);
     }
     connectedCallback() {
         if (this.dataset.upgraded === 'true') {
@@ -406,8 +395,6 @@ export class GalleryListing extends HTMLElement {
     disconnectedCallback() {
         this.sliderCleanup?.();
         this.sliderCleanup = null;
-        this.pagedGridResizeObserver?.disconnect();
-        this.pagedGridResizeObserver = null;
         if (!this.lightbox) {
             return;
         }
