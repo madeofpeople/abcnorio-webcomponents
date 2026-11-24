@@ -115,6 +115,25 @@ gallery-listing.gallery {
 
   &.blaze-slider {
     @include slider.slider;
+    contain: inline-size;
+    --slides-to-show: 2;
+
+    .blaze-track-container {
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .blaze-track {
+      touch-action: auto;
+    }
+
+    @media (min-width: breakpoints.get(sm)) {
+      --slides-to-show: 3;
+    }
+
+    @media (min-width: breakpoints.get(lg)) {
+      --slides-to-show: 4;
+    }
 
     background-color: var(--color-gray--darkest);
     margin-bottom: 0;
@@ -159,12 +178,6 @@ gallery-listing.gallery {
     .blaze-track {
       align-items: flex-start;
       gap: 2rem;
-      touch-action: auto;
-    }
-
-    .blaze-track-container {
-      overflow-x: auto;
-      scrollbar-width: none;
     }
 
     .gallery-item {
@@ -173,11 +186,13 @@ gallery-listing.gallery {
     }
 
     .gallery-item,
-    .gallery-item > figure {
+    .gallery-item > figure,
+    .gallery-item > a > figure {
       height: auto;
     }
 
-    .gallery-item > figure {
+    .gallery-item > figure,
+    .gallery-item > a > figure {
       display: table;
       width: auto;
       margin: 0;

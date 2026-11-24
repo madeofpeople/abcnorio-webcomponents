@@ -101,10 +101,11 @@ the public runtime clones the same `data-gallery-template` page/dot markup.
 The item template uses the same `GalleryItem.astro` partial as normal image items.
 WordPress retains its required outer editor wrapper and core/image edit/save
 elements rather than wrapping/reparenting React-owned images.
-All gallery navigation is page-based; responsive slider visibility/scroll
-counts remain 2 at base/XS, 3 at SM/MD and 4 at LG. Paged-grid page size is a
-separate setting. Runtime dots refresh after Blaze updates its responsive states,
-not before its deferred resize refresh.
+Slider galleries share page-based navigation measured from actual image widths,
+mouse dragging, native touch scrolling, and PhotoSwipe. Regular slider sizing
+remains 2 at base/XS, 3 at SM/MD and 4 at LG; captioned images share a 400px height
+with proportional widths. Dots and arrows update after image loads and resizing.
+Paged-grid page size is a separate setting.
 
 Newsletter WordPress previews intentionally remain generic placeholders, not
 working forms or a recreation of selected fields/groups. `NewsletterPreview.astro`
@@ -185,7 +186,7 @@ step is needed. Version builds validate output but never stage it.
 
 Gallery includes a `captioned` variant ("Captioned Gallery" in WordPress).
 It uses slider navigation, renders each image in a figure with its optional
-caption beneath, and does not initialize PhotoSwipe. Captions use the existing
+caption beneath, and shares PhotoSwipe with regular sliders. Captions use the existing
 core/image caption field; empty captions render no caption block.
 
 From this package:
